@@ -12,6 +12,8 @@
 
 namespace rc {
 
+
+	/** Just a wrapper to hold the SDL structures for a texture and ensure RAII clean up. */
 	class Image {
 	public:
 		Image(const std::string& file_path, SDL_Renderer* renderer);
@@ -26,15 +28,24 @@ namespace rc {
 		void operator=(const Image&) = delete;
 	};
 
+
+	/** This class is the entry point to visualize things and react to keys.
+	    "Glues" the SDL calls and the rest of the game, ensures RAII handling of the SDL
+		data.
+
+		It implements the Canvas interface so that it can be called back by the projection plane
+		(it is a dependency inversion).
+	*/
 	class UserInterface : public Canvas
 	{
 	public:
-		static const int SCREEN_WIDTH;
-		static const int SCREEN_HEIGHT;
+		static constexpr int SCREEN_WIDTH = 640;
+		static constexpr int SCREEN_HEIGHT = 480;
 
-		/** Try not to create more than one! */
+		/** Try not to create more than one! It instantiates SDL structures on creation.*/
 		UserInterface();
 		~UserInterface();
+
 		void openWindow();
 		void game_loop(const Grid& world, Player& player);
 		void set_wall_texture(const std::string& file_path);
@@ -53,6 +64,13 @@ namespace rc {
 		void operator=(const UserInterface&) = delete;
 
 		void poll_input(Player& player);
+
+		/** Cleans the frame buffer, draws the ceiling.
+		Striclty speaking, this class should only offer primitives to do so, and let the 
+		"game logic" tell it what to draw and when. But since there is NO game logic to 
+		do it and the visual effect is nice, I break the single responsibility principle
+		and "dump" this little bit of graphics here. */
+		void draw_background();
 	};
 
 }

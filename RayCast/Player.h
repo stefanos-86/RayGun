@@ -22,8 +22,8 @@ namespace rc {
 	class Player
 	{
 	public:
-		void advance(const float axis);
-		void turn(const float axis);
+		void advance(const float axis) noexcept;
+		void turn(const float axis) noexcept;
 
 		float x_position;
 		float z_position;

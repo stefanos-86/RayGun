@@ -31,10 +31,6 @@ namespace rc {
 		SDL_FreeSurface(surface);
 	}
 
-
-	const int UserInterface::SCREEN_WIDTH = 640;
-	const int UserInterface::SCREEN_HEIGHT = 480;
-
 	UserInterface::UserInterface() :
 		main_window(nullptr),
 		main_window_surface(nullptr),
@@ -77,41 +73,55 @@ namespace rc {
 			if (user_input.type == SDL_QUIT)
 				halt_game_loop = true;
 
-		const Uint8* currentKeyStates = SDL_GetKeyboardState(nullptr);
-		if (currentKeyStates[SDL_SCANCODE_UP])
+
+		// Intentionally ignore nonsensical key combos.
+		const Uint8* key_states = SDL_GetKeyboardState(nullptr);
+		if (key_states[SDL_SCANCODE_UP])
 			player.advance(1);
-		else if (currentKeyStates[SDL_SCANCODE_DOWN])
+		else if (key_states[SDL_SCANCODE_DOWN])
 			player.advance(-1);
 		
-		if (currentKeyStates[SDL_SCANCODE_LEFT])
+		if (key_states[SDL_SCANCODE_LEFT])
 			player.turn(-1);
-		else if (currentKeyStates[SDL_SCANCODE_RIGHT])
+		else if (key_states[SDL_SCANCODE_RIGHT])
 			player.turn(+1);
+	}
+
+	void UserInterface::draw_background() {
+		int rc = 0;
+
+		rc = SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
+		sdl_return_check(rc);
+		
+		rc = SDL_RenderClear(renderer);
+		sdl_return_check(rc);
+
+		// Draw the floor darker than the ceiling and the texture. It looks better.
+		rc = SDL_SetRenderDrawColor(renderer, 80, 80, 80, 255);
+		sdl_return_check(rc);
+
+		SDL_Rect half_screen;
+		half_screen.x = 0;
+		half_screen.y = UserInterface::SCREEN_HEIGHT / 2;
+		half_screen.h = UserInterface::SCREEN_HEIGHT / 2;
+		half_screen.w = UserInterface::SCREEN_WIDTH;
+
+		rc = SDL_RenderFillRect(renderer, &half_screen);
+		sdl_return_check(rc);
 	}
 
 	void UserInterface::game_loop(const Grid& world, Player& player)
 	{
-		halt_game_loop = false;
-
 		ProjectionPlane projection(UserInterface::SCREEN_WIDTH, UserInterface::SCREEN_HEIGHT, 60);
 
+		halt_game_loop = false;
 		while (! halt_game_loop) {
 			poll_input(player);
 
 			if (halt_game_loop)
 				return;
 
-			SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);  // TODO! Error code.
-			SDL_RenderClear(renderer);
-
-			SDL_SetRenderDrawColor(renderer, 80, 80, 80, 255);  // TODO! Make a function.
-			SDL_Rect half_screen;
-			half_screen.x = 0;
-			half_screen.y = UserInterface::SCREEN_HEIGHT / 2;
-			half_screen.h = UserInterface::SCREEN_HEIGHT / 2;
-			half_screen.w = UserInterface::SCREEN_WIDTH;
-			SDL_RenderFillRect(renderer, &half_screen);  // TODO error code
-
+			draw_background();
 			projection.project_walls(world, player, *this);
 			SDL_RenderPresent(renderer);
 		}
@@ -128,7 +138,7 @@ namespace rc {
 		source_slice.x = texture_offset;
 		source_slice.y = 0;
 		source_slice.w = 1;
-		source_slice.h = wall_texture->surface->w;  // assume widht and heigth match.
+		source_slice.h = wall_texture->surface->w;  // Assume widht and height match.
 
 		SDL_Rect dest_slice;
 		dest_slice.x = column;

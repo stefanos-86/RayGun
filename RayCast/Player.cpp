@@ -7,7 +7,7 @@
 
 namespace rc {
 	
-	void Player::advance(const float axis)
+	void Player::advance(const float axis) noexcept
 	{
 		constexpr float advance_speed = 5.0f;   /// Distance units per key press.
 
@@ -18,7 +18,7 @@ namespace rc {
 		x_position += x_step;
 	}
 
-	void Player::turn(const float axis)
+	void Player::turn(const float axis) noexcept
 	{
 		constexpr float turn_speed = 0.025f;   /// Circa 0.25 degrees per key frame.
 
