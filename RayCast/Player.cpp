@@ -9,7 +9,7 @@ namespace rc {
 	
 	void Player::advance(const float axis)
 	{
-		constexpr float advance_speed = 10.0f;   /// Distance units per key press.
+		constexpr float advance_speed = 5.0f;   /// Distance units per key press.
 
 		const float z_step = std::sin(orientation) * advance_speed * axis;
 		const float x_step = std::cos(orientation) * advance_speed * axis;
@@ -20,7 +20,7 @@ namespace rc {
 
 	void Player::turn(const float axis)
 	{
-		constexpr float turn_speed = 0.05f;   /// Circa 2.5 degrees per key press.
+		constexpr float turn_speed = 0.025f;   /// Circa 0.25 degrees per key frame.
 
 		orientation += turn_speed * axis;
 

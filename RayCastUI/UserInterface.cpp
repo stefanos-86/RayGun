@@ -18,7 +18,7 @@ namespace rc {
 
 	Image::Image(const std::string& file_path, SDL_Renderer* renderer)
 	{
-		surface = SDL_LoadBMP(file_path.c_str());  // Assumes it handles bad files.
+		surface = SDL_LoadBMP(file_path.c_str());  // Assuming it handles bad files.
 		sdl_null_check(surface);
 
 		texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -73,30 +73,20 @@ namespace rc {
 	void UserInterface::poll_input(Player& player)
 	{
 		SDL_Event user_input;
-		while (SDL_PollEvent(&user_input) != 0) {
+		while (SDL_PollEvent(&user_input) != 0)
 			if (user_input.type == SDL_QUIT)
 				halt_game_loop = true;
 
-			else if (user_input.type == SDL_KEYDOWN)
-			{
-				switch (user_input.key.keysym.sym)
-				{
-				case SDLK_UP:
-					player.advance(1);
-					break;
-				case SDLK_DOWN:
-					player.advance(-1);
-					break;
-				case SDLK_LEFT:
-					player.turn(-1);  // TODO Cross check this. The angles don't match...
-					break;
-				case SDLK_RIGHT:
-					player.turn(+1);
-					break;
-				}
-			}
-		}
-
+		const Uint8* currentKeyStates = SDL_GetKeyboardState(nullptr);
+		if (currentKeyStates[SDL_SCANCODE_UP])
+			player.advance(1);
+		else if (currentKeyStates[SDL_SCANCODE_DOWN])
+			player.advance(-1);
+		
+		if (currentKeyStates[SDL_SCANCODE_LEFT])
+			player.turn(-1);
+		else if (currentKeyStates[SDL_SCANCODE_RIGHT])
+			player.turn(+1);
 	}
 
 	void UserInterface::game_loop(const Grid& world, Player& player)
