@@ -7,8 +7,6 @@
 #include "PI.h"
 
 namespace rc {
-	const uint8_t GridCoordinate::OUTSIDE = std::numeric_limits<uint8_t>::max();  // TODO: ensure other parts of the code knows this value is reserved.
-
 	Ray::Ray(const float x, const float z, const float alpha_rad) :
 		x(x),
 		z(z),
@@ -19,7 +17,9 @@ namespace rc {
 Grid::Grid(uint8_t x_size, uint8_t z_size, uint8_t cell_size):
 	x_size(x_size),
 	z_size(z_size),
-	cell_size(cell_size)
+	cell_size(cell_size),
+	max_x((float) x_size * cell_size),
+	max_z((float) z_size * cell_size)
 {
 }
 
@@ -43,9 +43,7 @@ bool Grid::wall_at(uint8_t x, uint8_t z) const
 
 GridCoordinate Grid::grid_coordinate(const float x, const float z) const
 {
-	// TODO: compute on construction.
-	const float max_x = (float) x_size * cell_size;
-	const float max_z = (float) z_size * cell_size;
+
 
 	GridCoordinate result{GridCoordinate::OUTSIDE, GridCoordinate::OUTSIDE };
 	
@@ -57,17 +55,24 @@ GridCoordinate Grid::grid_coordinate(const float x, const float z) const
 	return result;
 }
 
+
 RayHit Grid::cast_ray(const Ray& r) const
 {
-	const float tangent = std::abs(std::tan(r.alpha_rad)); // Hoisted up just to micro optimize.
+	const float tangent = std::abs(std::tan(r.alpha_rad));
+
 	RayHit horizontal_hit = cast_ray_horizontal(r, tangent);
 	RayHit vertical_hit = cast_ray_vertical(r, tangent);
 
-	// Texture mapping.
-	horizontal_hit.offset = (int) horizontal_hit.x % cell_size;  // The brutality of this cast...
-	vertical_hit.offset = (int)vertical_hit.z % cell_size;
+	// Texture mapping. The hit is defined in walk_along_ray, which does not know
+	// if it is looking for vertical or horizontal hits.
+	horizontal_hit.offset = (int) horizontal_hit.x % cell_size;  // This cast is a bit brutal, but works decently.
+	vertical_hit.offset = (int) vertical_hit.z % cell_size;
 
-	RayHit candidate = horizontal_hit;  // Sooo many copies to micro optimize!!!
+	// Select the closest point.
+	// I assume that copying the RayHit is not too bad for performances.
+	// A trick could be to assume that the ray will always hit (e. g. by adding wall
+	// in the external perimenter of every level). No more need to test if hit is outside the world.
+	RayHit candidate = horizontal_hit;
 	if (horizontal_hit.cell.outside_world())
 		candidate = vertical_hit;
 	else if (vertical_hit.cell.outside_world())
@@ -102,7 +107,7 @@ RayHit Grid::cast_ray_horizontal(const Ray& r, const float tangent) const
 		cell_size / tangent : 
 		- cell_size / tangent;
 
-	RayHit hit = cast_ray_walk_along_ray(r, first_point_x, first_point_z,
+	RayHit hit = walk_along_ray(r, first_point_x, first_point_z,
 		horizontal_step, vertical_step);
 	hit.z -= push_into_previous_row;
 	return hit;
@@ -132,14 +137,14 @@ RayHit Grid::cast_ray_vertical(const Ray& r, const float tangent) const
 		cell_size * tangent :
 		-cell_size * tangent;
 
-	RayHit hit = cast_ray_walk_along_ray(r, first_point_x, first_point_z,
+	RayHit hit = walk_along_ray(r, first_point_x, first_point_z,
 		horizontal_step, vertical_step);
 	hit.x -= push_into_previous_column;
 	return hit;
 
 }
 
-RayHit Grid::cast_ray_walk_along_ray(const Ray& r,
+RayHit Grid::walk_along_ray(const Ray& r,
 	                                 float candidate_point_x,
 									 float candidate_point_z, 
 									 const float horizontal_step,
@@ -176,15 +181,18 @@ bool Grid::facing_up(const Ray& r) const
 
 bool Grid::facing_right(const Ray& r) const
 {
+	// This expression makes me wonder if it would be better to normalize angles between -PI and +PI.
 	return (0 <= r.alpha_rad && r.alpha_rad < PI / 2) || (3 * PI / 2 <= r.alpha_rad && r.alpha_rad < 2 * PI);
 }
 
+
+/** Pithagora's theorem style. */
 float Grid::distance(const float x1, const float z1, const float x2, const float z2) const
 {
 	const float side1 = x1 - x2;
 	const float side2 = z1 - z2;
 
-	return std::sqrt(side1 * side1 + side2 * side2);  // To micro optimize, use squared distance, do the sqrt only on the closest point.
+	return std::sqrt(side1 * side1 + side2 * side2);  // To micro optimize, use squared distance, do the sqrt only on the closest point. But would it make a difference?
 }
 
 
