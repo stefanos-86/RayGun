@@ -4,12 +4,15 @@
 
 #include "ProjectionPlane.h"
 
-#include <iostream>
-
 namespace rc {
 
 	static void sdl_null_check(const void* pointer) {
 		if (!pointer)
+			throw std::runtime_error(SDL_GetError());
+	}
+
+	static void sdl_return_check(const int rc) {
+		if (rc != 0)
 			throw std::runtime_error(SDL_GetError());
 	}
 
@@ -40,22 +43,6 @@ namespace rc {
 	{
 	}
 
-	/** Overkill? */
-	std::unique_ptr<UserInterface> UserInterface::make_only_one()
-	{
-		static std::mutex avoid_concurrent_creation;
-		static bool already_created = false;
-
-		const std::lock_guard<std::mutex> lock(avoid_concurrent_creation);
-
-		if (already_created)
-			throw std::runtime_error("UI already created.");
-			
-		already_created = true;
-		//return std::make_unique... no, can't see constructor.
-		return std::unique_ptr<UserInterface>(new UserInterface());
-	}
-
 	UserInterface::~UserInterface()
 	{
 		SDL_DestroyRenderer(renderer);
@@ -68,6 +55,7 @@ namespace rc {
 	{
 		if (SDL_Init(SDL_INIT_VIDEO) < 0)
 			throw std::runtime_error(SDL_GetError());
+
 		main_window = SDL_CreateWindow(
 			"Ray Cast Exercise", 
 			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
@@ -111,31 +99,28 @@ namespace rc {
 
 	}
 
-	void UserInterface::game_loop(const rc::Grid& world)
+	void UserInterface::game_loop(const Grid& world, Player& player)
 	{
 		halt_game_loop = false;
 
 		ProjectionPlane projection(UserInterface::SCREEN_WIDTH, UserInterface::SCREEN_HEIGHT, 60);
-		Player player{ 32 +128, 32 + 128, 2.63};
 
-		SDL_SetRenderDrawColor(renderer, 120, 120, 120, 255);  // Background color.
-		
 		while (! halt_game_loop) {
 			poll_input(player);
 
 			if (halt_game_loop)
 				return;
 
-			SDL_SetRenderDrawColor(renderer, 120, 120, 120, 255);
+			SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
 			SDL_RenderClear(renderer);
 
 			SDL_SetRenderDrawColor(renderer, 80, 80, 80, 255);
 			SDL_Rect half_screen;
 			half_screen.x = 0;
-			half_screen.y = 0;
+			half_screen.y = UserInterface::SCREEN_HEIGHT / 2;
 			half_screen.h = UserInterface::SCREEN_HEIGHT / 2;
 			half_screen.w = UserInterface::SCREEN_WIDTH;
-			SDL_RenderFillRect(renderer, &half_screen);
+			SDL_RenderFillRect(renderer, &half_screen);  // TODO error code
 
 			projection.project_walls(world, player, *this);
 			SDL_RenderPresent(renderer);
@@ -153,7 +138,7 @@ namespace rc {
 		source_slice.x = texture_offset;
 		source_slice.y = 0;
 		source_slice.w = 1;
-		source_slice.h = 64;
+		source_slice.h = wall_texture->surface->w;  // assume widht and heigth match.
 
 		SDL_Rect dest_slice;
 		dest_slice.x = column;
@@ -161,7 +146,8 @@ namespace rc {
 		dest_slice.w = 1;
 		dest_slice.h = height;
 
-		SDL_RenderCopy(renderer, wall_texture->texture, &source_slice, &dest_slice);
+		const int rc = SDL_RenderCopy(renderer, wall_texture->texture, &source_slice, &dest_slice);
+		sdl_return_check(rc);
 	}
 
 

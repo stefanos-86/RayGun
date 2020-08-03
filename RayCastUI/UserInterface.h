@@ -32,11 +32,11 @@ namespace rc {
 		static const int SCREEN_WIDTH;
 		static const int SCREEN_HEIGHT;
 
-		static std::unique_ptr<UserInterface> make_only_one();
-
+		/** Try not to create more than one! */
+		UserInterface();
 		~UserInterface();
 		void openWindow();
-		void game_loop(const rc::Grid& world);
+		void game_loop(const Grid& world, Player& player);
 		void set_wall_texture(const std::string& file_path);
 
 		void draw_wall_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset) final;
@@ -49,7 +49,6 @@ namespace rc {
 		bool halt_game_loop;
 		std::unique_ptr<Image> wall_texture;
 
-		UserInterface();
 		UserInterface(const UserInterface&) = delete;
 		void operator=(const UserInterface&) = delete;
 
