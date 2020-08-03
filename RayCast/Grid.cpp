@@ -23,12 +23,12 @@ Grid::Grid(uint8_t x_size, uint8_t z_size, uint8_t cell_size):
 {
 }
 
-void Grid::build_wall(uint8_t x, uint8_t z)
+void Grid::build_wall(uint8_t x, uint8_t z) noexcept
 {
 	walls[x][z] = true;
 }
 
-bool Grid::wall_at(uint8_t x, uint8_t z) const
+bool Grid::wall_at(uint8_t x, uint8_t z) const noexcept
 {
 	const auto row = walls.find(x);
 	if (row == walls.end())
@@ -41,16 +41,15 @@ bool Grid::wall_at(uint8_t x, uint8_t z) const
 	return cell->second;
 }
 
-GridCoordinate Grid::grid_coordinate(const float x, const float z) const
+GridCoordinate Grid::grid_coordinate(const float x, const float z) const noexcept
 {
-
-
 	GridCoordinate result{GridCoordinate::OUTSIDE, GridCoordinate::OUTSIDE };
 	
-	if (x >= 0 && x < max_x && z >= 0 && z < max_z) {
+	if (x >= 0 && x < max_x)
 		result.x = (uint8_t)std::floor(x / cell_size);
+		
+	if (z >= 0 && z < max_z)
 		result.z = (uint8_t)std::floor(z / cell_size);
-	}
 
 	return result;
 }
@@ -144,6 +143,12 @@ RayHit Grid::cast_ray_vertical(const Ray& r, const float tangent) const
 
 }
 
+
+/** In case anyone asks, this function is the bottleneck... of the custom code.
+Profiling tells that the "heavy lifting" is done by the SDL library.
+The hottest line here are 161 and 175, with a scant 6% of the samples each.
+...how many of you had a bet on the trig functions or the square roots?
+*/
 RayHit Grid::walk_along_ray(const Ray& r,
 	                                 float candidate_point_x,
 									 float candidate_point_z, 

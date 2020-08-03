@@ -67,10 +67,10 @@ namespace rc {
 		/**Y is the vertical axis. The grid is on the floor, covers X and Z. */
 		Grid(uint8_t x_size, uint8_t z_size, uint8_t cell_size);
 		
-		void build_wall(uint8_t x, uint8_t z);
-		bool wall_at(uint8_t x, uint8_t z) const;
+		void build_wall(uint8_t x, uint8_t z) noexcept;
+		bool wall_at(uint8_t x, uint8_t z) const noexcept;
 
-		GridCoordinate grid_coordinate(const float x, const float z) const;
+		GridCoordinate grid_coordinate(const float x, const float z) const noexcept;
 		RayHit cast_ray(const Ray& r) const;
 
 		const uint8_t x_size;

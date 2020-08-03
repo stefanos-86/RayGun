@@ -113,7 +113,7 @@ namespace rc {
         ASSERT_EQ(0, hit.cell.x);
         ASSERT_EQ(1, hit.cell.z);
 
-        ASSERT_FLOAT_EQ(32, hit.x);  // TODO: insufficient precision?
+        ASSERT_FLOAT_EQ(32, hit.x);
         ASSERT_FLOAT_EQ(64, hit.z);
     }
 
@@ -208,8 +208,6 @@ namespace rc {
         Grid g(3, 3, 64);
         g.build_wall(0, 0);
 
-        //Ray r(32 + 128, 32 + 128, 2 * PI - PI / 4);  // INVALID! not looking at the wall and not in normalized interval.
-        //Ray r(32 + 128, 32 + 128, PI - PI / 4);  // INVALID! not looking at the wall
         Ray r(50 + 128, 50 + 128, PI + PI / 4);
 
         RayHit hit = g.cast_ray(r);
