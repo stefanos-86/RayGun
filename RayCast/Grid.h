@@ -29,6 +29,8 @@ namespace rc {
 		uint8_t z;
 
 		static const uint8_t OUTSIDE;
+
+		bool outside_world() const noexcept;
 	};
 
 	struct RayHit {

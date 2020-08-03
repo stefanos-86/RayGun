@@ -68,9 +68,9 @@ RayHit Grid::cast_ray(const Ray& r) const
 	vertical_hit.offset = (int)vertical_hit.z % cell_size;
 
 	RayHit candidate = horizontal_hit;  // Sooo many copies to micro optimize!!!
-	if (horizontal_hit.cell.x == GridCoordinate::OUTSIDE || horizontal_hit.cell.z == GridCoordinate::OUTSIDE)
+	if (horizontal_hit.cell.outside_world())
 		candidate = vertical_hit;
-	else if (vertical_hit.cell.x == GridCoordinate::OUTSIDE || vertical_hit.cell.z == GridCoordinate::OUTSIDE)
+	else if (vertical_hit.cell.outside_world())
 		return candidate; // Both out, failure.
 	else if (vertical_hit.distance < horizontal_hit.distance)
 		candidate = vertical_hit;
@@ -150,8 +150,7 @@ RayHit Grid::cast_ray_walk_along_ray(const Ray& r,
 	result.cell.z = GridCoordinate::OUTSIDE;
 
 	GridCoordinate candidate_point_cell = grid_coordinate(candidate_point_x, candidate_point_z);
-	while (candidate_point_cell.x != GridCoordinate::OUTSIDE &&
-		candidate_point_cell.z != GridCoordinate::OUTSIDE)
+	while (! candidate_point_cell.outside_world())
 	{
 		if (wall_at(candidate_point_cell.x, candidate_point_cell.z)) {
 			result.x = candidate_point_x;
@@ -188,5 +187,10 @@ float Grid::distance(const float x1, const float z1, const float x2, const float
 	return std::sqrt(side1 * side1 + side2 * side2);  // To micro optimize, use squared distance, do the sqrt only on the closest point.
 }
 
+
+bool GridCoordinate::outside_world() const noexcept
+{
+	return (x == GridCoordinate::OUTSIDE || z == GridCoordinate::OUTSIDE);
+}
 
 }

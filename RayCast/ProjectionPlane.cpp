@@ -8,8 +8,8 @@
 namespace rc {
 
 	ProjectionPlane::ProjectionPlane(uint16_t h_resolution, uint16_t v_resolution, float FOV_degrees) :
-		columns(h_resolution), // Could it be optimized away using x_center?
-		x_center(h_resolution / 2), // Round down if odd... maybe emit a warning?
+		columns(h_resolution),
+		x_center(h_resolution / 2),
 		y_center(v_resolution / 2),
 		distance_to_POV(pov_distance(h_resolution, FOV_degrees)),
 		scan_step_radians(to_radians(FOV_degrees / h_resolution))
@@ -36,13 +36,13 @@ namespace rc {
 			r.alpha_rad = normalize_0_2pi(r.alpha_rad);
 			RayHit hit = grid.cast_ray(r);
 
-			if (hit.cell.x != GridCoordinate::OUTSIDE && hit.cell.z != GridCoordinate::OUTSIDE) {
-				
-				// Fishbowl.
+			if (! hit.cell.outside_world()) {
+
+				// Fishbowl correction.
 				const float beta = original_ray_orientation - r.alpha_rad;
 				hit.distance *= std::cos(beta);
 				
-				WallSliceProjection wall_projection = project_wall_slice(hit.distance, grid.cell_size);
+				const WallSliceProjection wall_projection = project_wall_slice(hit.distance, grid.cell_size);
 				c.draw_wall_slice(scan_column, wall_projection.top_row, wall_projection.height, hit.offset);
 			}
 
@@ -64,11 +64,12 @@ namespace rc {
 		*/
 	uint16_t ProjectionPlane::pov_distance(uint16_t h_resolution, float FOV_degrees) const
 	{
-		const float FOV_radians = to_radians(FOV_degrees);  // TODO: what if FOV <= 0 or PI/2? 
+		const float FOV_radians = to_radians(FOV_degrees);
 		const float distance = (h_resolution / 2) / (std::tan(FOV_radians / 2));
 
-		return (uint16_t)std::floor(distance);  // TODO: this will overflow, sooner or later.
+		return (uint16_t)std::floor(distance);
 	}
+
 
 	float ProjectionPlane::to_radians(const float degrees) const
 	{
