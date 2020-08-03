@@ -217,7 +217,7 @@ namespace rc {
         ASSERT_EQ(0, hit.cell.x);
         ASSERT_EQ(0, hit.cell.z);
 
-        ASSERT_FLOAT_EQ(63.000038, hit.x); //TODO! What happened to the precision?
+        ASSERT_FLOAT_EQ(63.000038f, hit.x); //TODO! What happened to the precision?
         ASSERT_FLOAT_EQ(64, hit.z);
     }
 
@@ -225,14 +225,14 @@ namespace rc {
         Grid g(2, 2, 64);
         g.build_wall(0, 0);
 
-        Ray r(32 + 64, 32 + 64, 2 * PI - PI / 4);
+        Ray r(32 + 64, 32 + 64, PI + PI / 4);
 
         RayHit hit = g.cast_ray(r);
 
         ASSERT_EQ(0, hit.cell.x);
         ASSERT_EQ(0, hit.cell.z);
 
-        ASSERT_FLOAT_EQ(62.999977f, hit.x); //TODO! What happened to the precision?
+        ASSERT_FLOAT_EQ(63.000011f, hit.x); //TODO! What happened to the precision?
         ASSERT_FLOAT_EQ(64, hit.z);
     }
 }

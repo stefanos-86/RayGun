@@ -74,6 +74,6 @@ namespace rc {
 		Player p{ 0, 0, 0 };
 
 		p.turn(-1);
-		ASSERT_FLOAT_EQ(-0.05f, p.orientation);
+		ASSERT_FLOAT_EQ(6.2831855f, p.orientation);
 	}
 }

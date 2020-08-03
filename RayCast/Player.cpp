@@ -5,34 +5,34 @@
 
 #include "PI.h"
 
-#include <iostream>
-
 namespace rc {
-	const float Player::advance_speed = 10;
-	const float Player::turn_speed = 0.05f;
-
+	
 	void Player::advance(const float axis)
 	{
+		constexpr float advance_speed = 10.0f;   /// Distance units per key press.
+
 		const float z_step = std::sin(orientation) * advance_speed * axis;
 		const float x_step = std::cos(orientation) * advance_speed * axis;
-		// TODO: collisions!  Proabably also prevents going to a negative position (which I think it is not well handled).
 
 		z_position += z_step;
 		x_position += x_step;
-
-		std::cout << x_position << ' ' << z_position << ' ' << orientation << std::endl;
 	}
 
 	void Player::turn(const float axis)
 	{
-		orientation += turn_speed * axis; // TODO Must normalize!
+		constexpr float turn_speed = 0.05f;   /// Circa 2.5 degrees per key press.
 
+		orientation += turn_speed * axis;
+
+		// Normalize between 0 and 2 PI, like all the angles in the project.
+		// Notice that the clamping is really "severe" (e. g. negative angles
+		// go to 2PI, no matter how much behind 0 they are), but in practice
+		// it works. You don't see jitter in the game.
+		// This is surprising enough - keep this code as a "memento".
 		if (orientation < 0)
 			orientation = 2 * PI;
 		if (orientation > 2 * PI)
 			orientation = 0;
-
-		std::cout << x_position << ' ' << z_position << ' ' << orientation << std::endl;
 	}
 
 }

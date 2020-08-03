@@ -4,18 +4,30 @@
 
 namespace rc {
 
+	/** Simplifed-to-the-bone class to represent the player character. Position and movement.
+		
+		Since SDL should take care of the frame rate and v-synch it to the screen refresh rate,
+		I can imagine that each game loop has a fixed duration.
+		It is reasonable to assume that the framerate won't drop too much below 60 FPS on a modern
+		PC, given how simple the code is.
+
+		Therefore, the movement function only take the direction, without the frame duration.
+
+		Player-wall collisions ignored on purpose, not part of this exercise (it would not be too difficult 
+		to implement them just using the grid, or reusing the ray cast to find the distance to the nearest wall).
+
+		The position is directly in world coordinates. The orientation is absolute (0 means "toward +X",
+		PI is "towards -X"...).
+	*/
 	class Player
 	{
 	public:
-		static const float advance_speed;  // "10 unit per key press" or so.
-		static const float turn_speed;  // "2.5 degrees per key press" or so.
-
-		void advance(const float axis); // TODO account for timestamp.
-		void turn(const float axis); // TODO account for timestamp.
+		void advance(const float axis);
+		void turn(const float axis);
 
 		float x_position;
 		float z_position;
-		float orientation;  // TODO: normalize, once there is logic to move the player.
+		float orientation;
 	};
 
 }

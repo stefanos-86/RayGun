@@ -111,10 +111,10 @@ namespace rc {
 			if (halt_game_loop)
 				return;
 
-			SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
+			SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);  // TODO! Error code.
 			SDL_RenderClear(renderer);
 
-			SDL_SetRenderDrawColor(renderer, 80, 80, 80, 255);
+			SDL_SetRenderDrawColor(renderer, 80, 80, 80, 255);  // TODO! Make a function.
 			SDL_Rect half_screen;
 			half_screen.x = 0;
 			half_screen.y = UserInterface::SCREEN_HEIGHT / 2;
