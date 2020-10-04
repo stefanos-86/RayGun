@@ -52,6 +52,7 @@ int main(int argc, char* args[])
 		rc::UserInterface ui;
 		ui.openWindow();
 		ui.set_wall_texture("stone_wall.bmp");
+		ui.set_enemy_texture("bad_guy.bmp");
 		ui.game_loop(world, player);
 	}
 	catch (std::runtime_error& x) {

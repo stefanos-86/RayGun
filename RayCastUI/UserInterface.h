@@ -49,6 +49,7 @@ namespace rc {
 		void openWindow();
 		void game_loop(const Grid& world, Player& player);
 		void set_wall_texture(const std::string& file_path);
+		void set_enemy_texture(const std::string& file_path);
 
 		void draw_wall_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset) final;
 
@@ -59,6 +60,7 @@ namespace rc {
 
 		bool halt_game_loop;
 		std::unique_ptr<Image> wall_texture;
+		std::unique_ptr<Image> enemy_texture;
 
 		UserInterface(const UserInterface&) = delete;
 		void operator=(const UserInterface&) = delete;

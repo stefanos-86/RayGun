@@ -132,6 +132,11 @@ namespace rc {
 		wall_texture = std::make_unique<Image>(file_path, renderer);
 	}
 
+	void UserInterface::set_enemy_texture(const std::string& file_path)
+	{
+		enemy_texture = std::make_unique<Image>(file_path, renderer);
+	}
+
 	void UserInterface::draw_wall_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset)
 	{
 		SDL_Rect source_slice;
