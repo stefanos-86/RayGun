@@ -159,7 +159,7 @@ namespace rc {
 	{
 		// TODO: tons of duplication. No, actually it is identical to the wall drawing, barring the texture.
 		SDL_Rect source_slice;
-		source_slice.x = texture_offset;
+		source_slice.x = texture_offset;  // Well, this is another diff.
 		source_slice.y = 0;
 		source_slice.w = 1;
 		source_slice.h = enemy_texture->surface->w;  // Assume widht and height match.

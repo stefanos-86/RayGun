@@ -22,10 +22,13 @@ namespace rc {
 			always facing the ray. */
 		RayHit intersection(const Ray& ray) const;
 
+		/** Must be public to know how to scale the projection. */
+		const uint8_t size;
 	private:
 		const float x;
 		const float z;
-		const uint8_t size;
+
 	};
+
 
 }

@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include "PI.h"
+#include "Sprite.h"
 
 namespace rc {
 
@@ -27,6 +28,8 @@ namespace rc {
 
 	void ProjectionPlane::project_walls(const Grid& grid, const Player& player, Canvas& c) const
 	{
+		static Sprite testSprite(320, 512, 64);
+
 		const float original_ray_orientation = player.orientation;
 
 		Ray r{player.x_position, player.z_position, player.orientation};
@@ -44,6 +47,21 @@ namespace rc {
 				
 				const WallSliceProjection wall_projection = project_wall_slice(hit.distance, grid.cell_size);
 				c.draw_wall_slice(scan_column, wall_projection.top_row, wall_projection.height, hit.offset);
+			}
+
+
+			RayHit enemy_hit = testSprite.intersection(r);
+			if (!enemy_hit.cell.outside_world() &&
+				enemy_hit.distance < hit.distance) // Not behind the wall
+			{
+				// Fishbowl correction AGAIN! Well, it does not seem so evident...
+				//const float beta = original_ray_orientation - r.alpha_rad;
+				//enemy_hit.distance *= std::cos(beta);
+
+				// Try to see if the same projection works... at least until sprite and cell are the same size.
+				const WallSliceProjection enemy_projection = project_wall_slice(enemy_hit.distance, testSprite.size);
+				c.draw_enemy_slice(scan_column, enemy_projection.top_row, enemy_projection.height, enemy_hit.offset);
+
 			}
 
 			r.alpha_rad += scan_step_radians;

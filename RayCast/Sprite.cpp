@@ -56,9 +56,10 @@ RayHit Sprite::intersection(const Ray& ray) const
 	const float origin_distance = distance * std::cos(gamma);
 	const float center_distance = distance * std::sin(gamma);
 
+	const float half_span = size / 2;
 	RayHit result{};
 	if ((origin_distance * horizontal_difference) < 0 ||  // Behind the ray. Discovered by trial and error.
-		(std::abs(center_distance) > size / 2)) // Ouside the segment "covered" by the texture. Half-size each side of the center.
+		(std::abs(center_distance) > half_span)) // Ouside the segment "covered" by the texture. Half-size each side of the center.
 	{
 		result.cell.z = GridCoordinate::OUTSIDE;  // TODO: massive abuse here. The hit struct is too specialized for the grid algoritm.
 		result.cell.x = GridCoordinate::OUTSIDE;
@@ -66,7 +67,12 @@ RayHit Sprite::intersection(const Ray& ray) const
 
 	if (! result.cell.outside_world()) {
 		result.distance = std::abs(origin_distance);
-		result.offset = center_distance;
+		result.offset = center_distance + half_span;  // Texture offsets are non-negative.
+		// Notice that the point on the texture at offset 0 changes depending on wich side
+		// of the virtual plan you are looking at it. I have seen the texture being
+		// inverted even by simply getting closer...
+		// TODO... how to correct?
+
 		// We will never use the exact coordinate (TODO: until you can shoot the sprites, probably).
 	}
 	

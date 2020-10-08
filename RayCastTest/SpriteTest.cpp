@@ -14,7 +14,7 @@ namespace rc {
 
         ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_EQ(hit.distance, 10);
-        ASSERT_EQ(hit.offset, 0);
+        ASSERT_EQ(hit.offset, 32);
     }
 
     TEST(Sprite, rayIntersection_onTheRight_behind) {
@@ -34,7 +34,7 @@ namespace rc {
 
         ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_EQ(hit.distance, 10);
-        ASSERT_EQ(hit.offset, 0);
+        ASSERT_EQ(hit.offset, 32);
     }
 
     TEST(Sprite, rayIntersection_onTheLeft_behind) {
@@ -55,7 +55,7 @@ namespace rc {
 
         ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_EQ(hit.distance, 10);
-        ASSERT_EQ(hit.offset, 0);
+        ASSERT_EQ(hit.offset, 32);
     }
 
     TEST(Sprite, rayIntersection_up_below) {
@@ -84,7 +84,7 @@ namespace rc {
 
         ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_EQ(hit.distance, 10);
-        ASSERT_EQ(hit.offset, 0);
+        ASSERT_EQ(hit.offset, 32);
     }
 
 
@@ -96,7 +96,7 @@ namespace rc {
 
         ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_FLOAT_EQ(hit.distance, 14.14213562373095);
-        ASSERT_EQ(hit.offset, 0);
+        ASSERT_EQ(hit.offset, 32);
     }
 
     TEST(Sprite, rayIntersection_2ndQuadrant) {
@@ -107,7 +107,7 @@ namespace rc {
 
         ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_FLOAT_EQ(hit.distance, 14.14213562373095);
-        ASSERT_EQ(hit.offset, 0);
+        ASSERT_EQ(hit.offset, 31);
     }
 
     TEST(Sprite, rayIntersection_3rdQuadrant) {
@@ -118,7 +118,7 @@ namespace rc {
 
         ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_FLOAT_EQ(hit.distance, 14.14213562373095);
-        ASSERT_EQ(hit.offset, 0);
+        ASSERT_EQ(hit.offset, 31);
     }
 
     TEST(Sprite, rayIntersection_4thQuadrant) {
@@ -129,7 +129,7 @@ namespace rc {
 
         ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_FLOAT_EQ(hit.distance, 14.14213562373095);
-        ASSERT_EQ(hit.offset, 0);
+        ASSERT_EQ(hit.offset, 32);
     }
 
     TEST(Sprite, rayIntersection_outside) {
