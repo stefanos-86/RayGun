@@ -155,5 +155,24 @@ namespace rc {
 		sdl_return_check(rc);
 	}
 
+	void UserInterface::draw_enemy_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset)
+	{
+		// TODO: tons of duplication. No, actually it is identical to the wall drawing, barring the texture.
+		SDL_Rect source_slice;
+		source_slice.x = texture_offset;
+		source_slice.y = 0;
+		source_slice.w = 1;
+		source_slice.h = enemy_texture->surface->w;  // Assume widht and height match.
+
+		SDL_Rect dest_slice;
+		dest_slice.x = column;
+		dest_slice.y = top_row;
+		dest_slice.w = 1;
+		dest_slice.h = height;
+
+		const int rc = SDL_RenderCopy(renderer, enemy_texture->texture, &source_slice, &dest_slice);
+		sdl_return_check(rc);
+	}
+
 
 }

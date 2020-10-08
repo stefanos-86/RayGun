@@ -52,6 +52,7 @@ namespace rc {
 		void set_enemy_texture(const std::string& file_path);
 
 		void draw_wall_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset) final;
+		void draw_enemy_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset) final;
 
 	private:
 		SDL_Window* main_window;

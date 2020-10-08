@@ -26,5 +26,8 @@ namespace rc {
 		to a wall.
 		*/
 		virtual void draw_wall_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset) = 0;
+		
+		/** Same as draw_wall_slice, but uses the enemy sprite texture. */
+		virtual void draw_enemy_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset) = 0;
 	};
 }

@@ -18,6 +18,12 @@ namespace rc {
             height_calls.push_back(height);
         }
 
+        void draw_enemy_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset) final {
+            column_calls.push_back(column);
+            top_row_calls.push_back(top_row);
+            height_calls.push_back(height);
+        }
+
         std::vector<uint16_t> column_calls;
         std::vector<uint16_t> top_row_calls;
         std::vector<uint16_t> height_calls;
