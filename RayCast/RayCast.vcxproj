@@ -158,6 +158,7 @@
     <ClInclude Include="PI.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ProjectionPlane.h" />
+    <ClInclude Include="Sprite.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Grid.cpp" />
@@ -169,6 +170,7 @@
     </ClCompile>
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ProjectionPlane.cpp" />
+    <ClCompile Include="Sprite.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
