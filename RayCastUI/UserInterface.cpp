@@ -4,8 +4,6 @@
 
 #include "ProjectionPlane.h"
 
-#include <iostream>
-
 namespace rc {
 
 	static void sdl_null_check(const void* pointer) {
@@ -78,12 +76,9 @@ namespace rc {
 			else if (user_input.type == SDL_KEYDOWN && user_input.key.keysym.scancode == SDL_SCANCODE_P)
 				pause_game_loop = !pause_game_loop;
 
-
-		if (pause_game_loop) {
-		//	std::cout << player.x_position << " " << player.z_position << " " << player.orientation << "\n";
-
+		if (pause_game_loop)
 			return;
-		}
+			// Ignore any other input.
 
 		// Intentionally ignore nonsensical key combos.
 		const Uint8* key_states = SDL_GetKeyboardState(nullptr);

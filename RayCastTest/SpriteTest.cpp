@@ -107,7 +107,7 @@ namespace rc {
 
         ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_FLOAT_EQ(hit.distance, 14.14213562373095);
-        ASSERT_EQ(hit.offset, 31);
+        ASSERT_EQ(hit.offset, 32);
     }
 
     TEST(Sprite, rayIntersection_3rdQuadrant) {
@@ -118,7 +118,7 @@ namespace rc {
 
         ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_FLOAT_EQ(hit.distance, 14.14213562373095);
-        ASSERT_EQ(hit.offset, 31);
+        ASSERT_EQ(hit.offset, 32);
     }
 
     TEST(Sprite, rayIntersection_4thQuadrant) {
