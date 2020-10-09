@@ -4,6 +4,10 @@
 #include <cmath>
 #include <float.h>
 
+#include "PI.h"
+
+#include <iostream>
+
 namespace rc {
 		
 Sprite::Sprite(const float x_position, const float z_position, const uint8_t size) :
@@ -35,7 +39,6 @@ Sprite::Sprite(const float x_position, const float z_position, const uint8_t siz
    segments between the ray origin and any wall hit and between the two endpoints of
    the sprite. But, on a dare, I am trying to not use vector math.
 */
-
 RayHit Sprite::intersection(const Ray& ray) const
 {
 	const float vertical_difference = z - ray.z;  // H in the drawing.
@@ -66,14 +69,28 @@ RayHit Sprite::intersection(const Ray& ray) const
 	}
 
 	if (! result.cell.outside_world()) {
+		//std::cout << "c d  " << (int)center_distance << " alpha" << ray.alpha_rad << " beta " << beta << " gamma " << gamma << "\n";
+		//std::cout << horizontal_difference << " " << vertical_difference << "\n";
+
 		result.distance = std::abs(origin_distance);
 		result.offset = center_distance + half_span;  // Texture offsets are non-negative.
-		// Notice that the point on the texture at offset 0 changes depending on wich side
-		// of the virtual plan you are looking at it. I have seen the texture being
-		// inverted even by simply getting closer...
-		// TODO... how to correct?
+	
+		// For reasons that I won't even pretend to understand, the texture would be inverted
+		// under those conditions. Probably something to do to where the atan changes sign.
+		// This mirrors the texture again.
+		if (vertical_difference < 0 && horizontal_difference < 0)
+			result.offset = half_span - (result.offset - half_span);
+
+		if (vertical_difference > 0 && horizontal_difference < 0)
+			result.offset = half_span - (result.offset - half_span);
+
+
+		//	apparentemente si inverte quando il personaggio salta da un quadrante all'altro.
+		//	costruire un print di debug con https ://stackoverflow.com/questions/22886500/how-to-render-text-in-sdl2?
 
 		// We will never use the exact coordinate (TODO: until you can shoot the sprites, probably).
+
+		
 	}
 	
 	return result;

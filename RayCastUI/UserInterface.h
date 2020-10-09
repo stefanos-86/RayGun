@@ -60,6 +60,7 @@ namespace rc {
 		SDL_Renderer* renderer;
 
 		bool halt_game_loop;
+		bool pause_game_loop;
 		std::unique_ptr<Image> wall_texture;
 		std::unique_ptr<Image> enemy_texture;
 

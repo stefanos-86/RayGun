@@ -4,6 +4,8 @@
 
 #include "ProjectionPlane.h"
 
+#include <iostream>
+
 namespace rc {
 
 	static void sdl_null_check(const void* pointer) {
@@ -35,7 +37,8 @@ namespace rc {
 		main_window(nullptr),
 		main_window_surface(nullptr),
 		renderer(nullptr),
-		halt_game_loop(true)  // Safe default.
+		halt_game_loop(true),  // Safe default.
+		pause_game_loop(false)
 	{
 	}
 
@@ -72,7 +75,15 @@ namespace rc {
 		while (SDL_PollEvent(&user_input) != 0)
 			if (user_input.type == SDL_QUIT)
 				halt_game_loop = true;
+			else if (user_input.type == SDL_KEYDOWN && user_input.key.keysym.scancode == SDL_SCANCODE_P)
+				pause_game_loop = !pause_game_loop;
 
+
+		if (pause_game_loop) {
+		//	std::cout << player.x_position << " " << player.z_position << " " << player.orientation << "\n";
+
+			return;
+		}
 
 		// Intentionally ignore nonsensical key combos.
 		const Uint8* key_states = SDL_GetKeyboardState(nullptr);
@@ -120,6 +131,11 @@ namespace rc {
 
 			if (halt_game_loop)
 				return;
+
+			if (pause_game_loop) {
+				continue; // Keep looping to poll input and unpause
+			
+			}
 
 			draw_background();
 			projection.project_walls(world, player, *this);
