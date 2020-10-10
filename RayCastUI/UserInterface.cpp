@@ -27,6 +27,7 @@ namespace rc {
 
 	Image::~Image()
 	{
+		// TODO: handle null in case of move? Can SDL do it?
 		SDL_DestroyTexture(texture);
 		SDL_FreeSurface(surface);
 	}
@@ -138,23 +139,21 @@ namespace rc {
 		}
 	}
 
-	void UserInterface::set_wall_texture(const std::string& file_path)
+
+	void UserInterface::set_texture(const TextureIndex name, const std::string& file_path)
 	{
-		wall_texture = std::make_unique<Image>(file_path, renderer);
+		textures.emplace(name, Image(file_path, renderer));
 	}
 
-	void UserInterface::set_enemy_texture(const std::string& file_path)
+	void UserInterface::draw_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset, const TextureIndex what_to_draw)
 	{
-		enemy_texture = std::make_unique<Image>(file_path, renderer);
-	}
+		const Image& texture = textures.at(what_to_draw);
 
-	void UserInterface::draw_wall_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset)
-	{
 		SDL_Rect source_slice;
 		source_slice.x = texture_offset;
 		source_slice.y = 0;
 		source_slice.w = 1;
-		source_slice.h = wall_texture->surface->w;  // Assume widht and height match.
+		source_slice.h = texture.surface->w;  // Assume widht and height match.
 
 		SDL_Rect dest_slice;
 		dest_slice.x = column;
@@ -162,28 +161,8 @@ namespace rc {
 		dest_slice.w = 1;
 		dest_slice.h = height;
 
-		const int rc = SDL_RenderCopy(renderer, wall_texture->texture, &source_slice, &dest_slice);
+		const int rc = SDL_RenderCopy(renderer, texture.texture, &source_slice, &dest_slice);
 		sdl_return_check(rc);
 	}
-
-	void UserInterface::draw_enemy_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset)
-	{
-		// TODO: tons of duplication. No, actually it is identical to the wall drawing, barring the texture.
-		SDL_Rect source_slice;
-		source_slice.x = texture_offset;  // Well, this is another diff.
-		source_slice.y = 0;
-		source_slice.w = 1;
-		source_slice.h = enemy_texture->surface->w;  // Assume widht and height match.
-
-		SDL_Rect dest_slice;
-		dest_slice.x = column;
-		dest_slice.y = top_row;
-		dest_slice.w = 1;
-		dest_slice.h = height;
-
-		const int rc = SDL_RenderCopy(renderer, enemy_texture->texture, &source_slice, &dest_slice);
-		sdl_return_check(rc);
-	}
-
 
 }

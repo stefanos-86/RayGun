@@ -47,7 +47,7 @@ namespace rc {
 				hit.distance *= std::cos(beta);
 				
 				const WallSliceProjection wall_projection = project_wall_slice(hit.distance, grid.cell_size);
-				c.draw_wall_slice(scan_column, wall_projection.top_row, wall_projection.height, hit.offset);
+				c.draw_slice(scan_column, wall_projection.top_row, wall_projection.height, hit.offset, TextureIndex::WALL);
 			}
 
 
@@ -62,7 +62,7 @@ namespace rc {
 
 					// Try to see if the same projection works... at least until sprite and cell are the same size.
 					const WallSliceProjection enemy_projection = project_wall_slice(enemy_hit.distance, testSprite.size);
-					c.draw_enemy_slice(scan_column, enemy_projection.top_row, enemy_projection.height, enemy_hit.offset);
+					c.draw_slice(scan_column, enemy_projection.top_row, enemy_projection.height, enemy_hit.offset, TextureIndex::ENEMY);
 
 				}
 			}

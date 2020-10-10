@@ -1,8 +1,7 @@
 #pragma once
 
-#include <memory>
-#include <mutex>
 #include <string>
+#include <unordered_map>
 
 #include <SDL.h>
 
@@ -17,6 +16,29 @@ namespace rc {
 	public:
 		Image(const std::string& file_path, SDL_Renderer* renderer);
 		~Image();
+
+		/** Must be there to allow use in STD collections.
+		TODO: test and bring in cpp file.*/
+		Image(Image&& other) noexcept :
+			surface(other.surface),
+			texture(other.texture)
+		{
+			other.surface = nullptr;
+			other.texture = nullptr;
+		} ;
+
+		/** Must be there to allow use in STD collections.
+			TODO: test and bring in cpp file.*/
+		Image& operator=(Image&& other) noexcept { 
+
+			this->surface = other.surface;
+			this->texture = other.texture;
+
+			other.surface = nullptr;
+			other.texture = nullptr;
+
+			return *this; 
+		} ;
 
 		SDL_Surface* surface;
 		SDL_Texture* texture;
@@ -47,11 +69,10 @@ namespace rc {
 
 		void openWindow();
 		void game_loop(World& world);
-		void set_wall_texture(const std::string& file_path);
-		void set_enemy_texture(const std::string& file_path);
 
-		void draw_wall_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset) final;
-		void draw_enemy_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset) final;
+		void set_texture(const TextureIndex name, const std::string& file_path);
+
+		void draw_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset, const TextureIndex what_to_draw) final;
 
 	private:
 		SDL_Window* main_window;
@@ -60,8 +81,8 @@ namespace rc {
 
 		bool halt_game_loop;
 		bool pause_game_loop;
-		std::unique_ptr<Image> wall_texture;
-		std::unique_ptr<Image> enemy_texture;
+
+		std::unordered_map<TextureIndex, Image> textures;
 
 		UserInterface(const UserInterface&) = delete;
 		void operator=(const UserInterface&) = delete;

@@ -4,6 +4,12 @@
 
 namespace rc {
 
+	enum class TextureIndex {
+		WALL,
+		ENEMY
+	};
+
+
 	/** Interface that hides the real graphics API and allows to replace it with a mock. 
 	
 	Not worried about the indirection performance cost. Testing is more important.
@@ -13,7 +19,7 @@ namespace rc {
 	public:
 		virtual ~Canvas() {};
 
-		/** This is the only primitive operation required to draw the walls. 
+		/** This is the only primitive operation required to draw any object. 
 		
 		The slice is a 1-pixel-wide strip, to be drawn at the given column of the window.
 		The strip starts at the top_row and goes down for all its height. The content is whatever is in the
@@ -23,11 +29,8 @@ namespace rc {
 		top row and the top row+height (scale it if necessary).
 
 		Notice that the top row may be negative, the slice may start outside the screen when the player is very close
-		to a wall.
+		to a the object.
 		*/
-		virtual void draw_wall_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset) = 0;
-		
-		/** Same as draw_wall_slice, but uses the enemy sprite texture. */
-		virtual void draw_enemy_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset) = 0;
+		virtual void draw_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset, const TextureIndex what_to_draw) = 0;
 	};
 }

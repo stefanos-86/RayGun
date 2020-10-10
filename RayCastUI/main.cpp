@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "Grid.h"
+#include "UserInterface.h"
 
 /** I am not going to implement code to load the world from a file. 
     This simple hardcode will do. */
@@ -54,8 +55,10 @@ int main(int argc, char* args[])
 
 		rc::UserInterface ui;
 		ui.openWindow();
-		ui.set_wall_texture("stone_wall.bmp");
-		ui.set_enemy_texture("bad_guy.bmp");
+
+		ui.set_texture(rc::TextureIndex::WALL, "stone_wall.bmp");
+		ui.set_texture(rc::TextureIndex::ENEMY, "bad_guy.bmp");
+
 		ui.game_loop(world);
 	}
 	catch (std::runtime_error& x) {

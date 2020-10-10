@@ -13,14 +13,10 @@ namespace rc {
 
     class MockCanvas : public Canvas {
     public:
-        void draw_wall_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset) final {
+        void draw_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset, const TextureIndex what_to_draw) final {
             column_calls.push_back(column);
             top_row_calls.push_back(top_row);
             height_calls.push_back(height);
-        }
-
-        void draw_enemy_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset) final {
-            //Not tested for the moment.
         }
 
         std::vector<uint16_t> column_calls;
