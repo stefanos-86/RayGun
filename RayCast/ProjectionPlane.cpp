@@ -26,9 +26,10 @@ namespace rc {
 		return projected_slice;
 	}
 
-	void ProjectionPlane::project_walls(const Grid& grid, const Player& player, Canvas& c) const
+	void ProjectionPlane::project_objects(const World& world, Canvas& c) const
 	{
-		static Sprite testSprite(320, 512, 64);
+		const Grid& grid = world.map;
+		const Player& player = world.player;
 
 		const float original_ray_orientation = player.orientation;
 
@@ -50,18 +51,20 @@ namespace rc {
 			}
 
 
-			RayHit enemy_hit = testSprite.intersection(r);
-			if (!enemy_hit.cell.outside_world() &&
-				enemy_hit.distance < hit.distance) // Not behind the wall
-			{
-				// Fishbowl correction AGAIN! Well, it does not seem so evident...
-				//const float beta = original_ray_orientation - r.alpha_rad;
-				//enemy_hit.distance *= std::cos(beta);
+			for (const Sprite& testSprite : world.enemies.sprites) {
+				RayHit enemy_hit = testSprite.intersection(r);
+				if (!enemy_hit.cell.outside_world() &&
+					enemy_hit.distance < hit.distance) // Not behind the wall
+				{
+					// Fishbowl correction AGAIN! Well, it does not seem so evident...
+					//const float beta = original_ray_orientation - r.alpha_rad;
+					//enemy_hit.distance *= std::cos(beta);
 
-				// Try to see if the same projection works... at least until sprite and cell are the same size.
-				const WallSliceProjection enemy_projection = project_wall_slice(enemy_hit.distance, testSprite.size);
-				c.draw_enemy_slice(scan_column, enemy_projection.top_row, enemy_projection.height, enemy_hit.offset);
+					// Try to see if the same projection works... at least until sprite and cell are the same size.
+					const WallSliceProjection enemy_projection = project_wall_slice(enemy_hit.distance, testSprite.size);
+					c.draw_enemy_slice(scan_column, enemy_projection.top_row, enemy_projection.height, enemy_hit.offset);
 
+				}
 			}
 
 			r.alpha_rad += scan_step_radians;

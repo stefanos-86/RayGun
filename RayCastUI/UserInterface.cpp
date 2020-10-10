@@ -116,13 +116,13 @@ namespace rc {
 		sdl_return_check(rc);
 	}
 
-	void UserInterface::game_loop(const Grid& world, Player& player)
+	void UserInterface::game_loop(World& world)
 	{
 		ProjectionPlane projection(UserInterface::SCREEN_WIDTH, UserInterface::SCREEN_HEIGHT, 60);
 
 		halt_game_loop = false;
 		while (! halt_game_loop) {
-			poll_input(player);
+			poll_input(world.player);
 
 			if (halt_game_loop)
 				return;
@@ -133,7 +133,7 @@ namespace rc {
 			}
 
 			draw_background();
-			projection.project_walls(world, player, *this);
+			projection.project_objects(world, *this);
 			SDL_RenderPresent(renderer);
 		}
 	}

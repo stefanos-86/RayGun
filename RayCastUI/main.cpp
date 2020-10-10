@@ -46,14 +46,17 @@ int main(int argc, char* args[])
 		// Used only to find where the image files are supposed to go. #include <filesystem> to reuse.
 		//std::cout << "Current path is " << std::filesystem::current_path() << std::endl;
 
-		rc::Grid world = fake_load_level();
-		rc::Player player{335, 862, 4.7f};  // "Fake load player", hardcode it to a "nice" position in the world.
+		rc::World world{
+			fake_load_level(),
+			{335, 862, 4.7f},  // "Fake load player", hardcode it to a "nice" position in the world.
+			{ { {320.0f, 512.0f, 64} } }  // Just one enemy, just for testing. 
+		};
 
 		rc::UserInterface ui;
 		ui.openWindow();
 		ui.set_wall_texture("stone_wall.bmp");
 		ui.set_enemy_texture("bad_guy.bmp");
-		ui.game_loop(world, player);
+		ui.game_loop(world);
 	}
 	catch (std::runtime_error& x) {
 		std::cerr << x.what() << std::endl;

@@ -159,6 +159,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="ProjectionPlane.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Grid.cpp" />

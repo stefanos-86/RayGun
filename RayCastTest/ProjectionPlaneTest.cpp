@@ -7,6 +7,7 @@
 #include "Canvas.h"
 #include "Grid.h"
 #include "Player.h"
+#include "World.h"
 
 namespace rc {
 
@@ -50,9 +51,11 @@ namespace rc {
         ProjectionPlane plane(320, 200, 60);
         Grid g(10, 10, 64);
         Player p{ 32, 32, 0.5 };
+        World w{ g, p, {{}} };
         MockCanvas mc;
 
-        plane.project_walls(g, p, mc);
+
+        plane.project_objects(w, mc);
 
         ASSERT_TRUE(mc.column_calls.empty());
     }
@@ -63,12 +66,15 @@ namespace rc {
         Grid g(2, 1, 64);
         g.build_wall(1, 0);
         Player p{ 63, 32, 0 };  // 1 unit in front of the wall.
+        World w{ g, p, {} };
         MockCanvas mc;
 
-        plane.project_walls(g, p, mc);
+        plane.project_objects(w, mc);
 
         ASSERT_EQ(2, mc.column_calls.size());
         ASSERT_EQ(61988, mc.top_row_calls.at(0));  // Severe underflow?
         ASSERT_EQ(7296, mc.height_calls.at(0));
     }
+
+    // TODO: test projection of enemies.
 }

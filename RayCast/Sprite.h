@@ -31,4 +31,9 @@ namespace rc {
 	};
 
 
+	/** Just a collection to keep track of all the enemies. */
+	class Enemies {
+	public:
+		std::vector<Sprite> sprites;
+	};
 }

@@ -2,9 +2,10 @@
 
 #include <cstdint>
 
+#include "World.h"
 #include "Canvas.h"
-#include "Grid.h"
-#include "Player.h"
+
+
 
 namespace rc {
 
@@ -39,7 +40,7 @@ namespace rc {
 
 		It's harder than this. Consult the project reference material.
 		*/
-		void project_walls(const Grid& grid, const Player& player, Canvas &c) const;
+		void project_objects(const World& grid, Canvas &c) const;
 
 		const uint16_t columns;
 		const uint16_t x_center;

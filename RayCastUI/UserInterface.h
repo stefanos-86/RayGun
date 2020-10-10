@@ -7,8 +7,7 @@
 #include <SDL.h>
 
 #include "Canvas.h"
-#include "Grid.h"
-#include "Player.h"
+#include "World.h"
 
 namespace rc {
 
@@ -47,7 +46,7 @@ namespace rc {
 		~UserInterface();
 
 		void openWindow();
-		void game_loop(const Grid& world, Player& player);
+		void game_loop(World& world);
 		void set_wall_texture(const std::string& file_path);
 		void set_enemy_texture(const std::string& file_path);
 
