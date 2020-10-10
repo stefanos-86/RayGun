@@ -51,7 +51,7 @@ namespace rc {
 			}
 
 
-			for (const Sprite& testSprite : world.enemies.sprites) {
+			for (const Sprite& testSprite : world.enemies.sprites) {  //TODO: use an intersection method at collection level to account for z-order.
 				RayHit enemy_hit = testSprite.intersection(r);
 				if (!enemy_hit.cell.outside_world() &&
 					enemy_hit.distance < hit.distance) // Not behind the wall

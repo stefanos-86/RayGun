@@ -17,28 +17,11 @@ namespace rc {
 		Image(const std::string& file_path, SDL_Renderer* renderer);
 		~Image();
 
-		/** Must be there to allow use in STD collections.
-		TODO: test and bring in cpp file.*/
-		Image(Image&& other) noexcept :
-			surface(other.surface),
-			texture(other.texture)
-		{
-			other.surface = nullptr;
-			other.texture = nullptr;
-		} ;
+		/** Required to allow creation via SDL containers emplace methods. */
+		Image(Image&& other) noexcept;
 
-		/** Must be there to allow use in STD collections.
-			TODO: test and bring in cpp file.*/
-		Image& operator=(Image&& other) noexcept { 
-
-			this->surface = other.surface;
-			this->texture = other.texture;
-
-			other.surface = nullptr;
-			other.texture = nullptr;
-
-			return *this; 
-		} ;
+		/** Required to allow creation via SDL containers emplace methods. */
+		Image& operator=(Image&& other) noexcept;
 
 		SDL_Surface* surface;
 		SDL_Texture* texture;

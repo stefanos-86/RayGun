@@ -27,10 +27,31 @@ namespace rc {
 
 	Image::~Image()
 	{
-		// TODO: handle null in case of move? Can SDL do it?
-		SDL_DestroyTexture(texture);
-		SDL_FreeSurface(surface);
+		// SDL can handle the nullptrs, but the docs says it would set an error message.
+		// Do it by hand and leave it clean.
+		if (texture) SDL_DestroyTexture(texture);
+		if (surface) SDL_FreeSurface(surface);
 	}
+
+	Image::Image(Image&& other) noexcept:
+		surface(other.surface),
+		texture(other.texture)
+	{
+		other.surface = nullptr;
+		other.texture = nullptr;
+	}
+
+	Image& Image::operator=(Image&& other) noexcept
+	{
+
+		this->surface = other.surface;
+		this->texture = other.texture;
+
+		other.surface = nullptr;
+		other.texture = nullptr;
+
+		return *this;
+	};
 
 	UserInterface::UserInterface() :
 		main_window(nullptr),
