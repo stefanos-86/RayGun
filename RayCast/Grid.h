@@ -61,8 +61,7 @@ namespace rc {
 
 		/** Dual of no_hit(). The data describes the ray-object intersection. */
 		bool really_hit() const noexcept;
-
-		GridCoordinate cell;
+		
 		float x;
 		float z;
 		float distance;

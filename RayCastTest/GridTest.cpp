@@ -94,10 +94,6 @@ namespace rc {
         RayHit hit = g.cast_ray(r);
 
         ASSERT_TRUE(hit.really_hit());
-
-        ASSERT_EQ(1, hit.cell.x);
-        ASSERT_EQ(0, hit.cell.z);
-
         ASSERT_FLOAT_EQ(64, hit.x);
         ASSERT_FLOAT_EQ(32, hit.z);
     }
@@ -109,9 +105,6 @@ namespace rc {
         Ray r(32 + 64, 32, PI);
 
         RayHit hit = g.cast_ray(r);
-
-        ASSERT_EQ(0, hit.cell.x);
-        ASSERT_EQ(0, hit.cell.z);
 
         ASSERT_FLOAT_EQ(64, hit.x);
         ASSERT_FLOAT_EQ(32, hit.z);
@@ -125,9 +118,6 @@ namespace rc {
 
         RayHit hit = g.cast_ray(r);
 
-        ASSERT_EQ(0, hit.cell.x);
-        ASSERT_EQ(1, hit.cell.z);
-
         ASSERT_FLOAT_EQ(32, hit.x);
         ASSERT_FLOAT_EQ(64, hit.z);
     }
@@ -138,9 +128,6 @@ namespace rc {
         Ray r(32, 32, PI / 2);
 
         RayHit hit = g.cast_ray(r);
-
-        ASSERT_EQ(0, hit.cell.x);
-        ASSERT_EQ(2, hit.cell.z);
 
         ASSERT_FLOAT_EQ(32, hit.x);
         ASSERT_FLOAT_EQ(128, hit.z);
@@ -153,9 +140,6 @@ namespace rc {
 
         RayHit hit = g.cast_ray(r);
 
-        ASSERT_EQ(0, hit.cell.x);
-        ASSERT_EQ(0, hit.cell.z);
-
         ASSERT_FLOAT_EQ(32, hit.x);
         ASSERT_FLOAT_EQ(64, hit.z);
     }
@@ -167,9 +151,6 @@ namespace rc {
 
         RayHit hit_from_above = g.cast_ray(from_above);
         RayHit hit_from_below = g.cast_ray(from_below);
-
-        ASSERT_EQ(2, hit_from_above.cell.z);
-        ASSERT_EQ(2, hit_from_below.cell.z);
 
         ASSERT_FLOAT_EQ(128, hit_from_below.z);
         ASSERT_FLOAT_EQ(192, hit_from_above.z);
@@ -195,9 +176,6 @@ namespace rc {
 
         RayHit hit = g.cast_ray(r);
 
-        ASSERT_EQ(2, hit.cell.x);
-        ASSERT_EQ(2, hit.cell.z);
-
         ASSERT_FLOAT_EQ(128, hit.x);
         ASSERT_FLOAT_EQ(128, hit.z);
     }
@@ -209,9 +187,6 @@ namespace rc {
         Ray r(32, 32, PI / 4);
 
         RayHit hit = g.cast_ray(r);
-
-        ASSERT_EQ(1, hit.cell.x);
-        ASSERT_EQ(1, hit.cell.z);
 
         ASSERT_FLOAT_EQ(64, hit.x);
         ASSERT_FLOAT_EQ(64, hit.z);
@@ -226,9 +201,6 @@ namespace rc {
 
         RayHit hit = g.cast_ray(r);
 
-        ASSERT_EQ(0, hit.cell.x);
-        ASSERT_EQ(0, hit.cell.z);
-
         ASSERT_FLOAT_EQ(63.000038f, hit.x); //TODO! What happened to the precision?
         ASSERT_FLOAT_EQ(64, hit.z);
     }
@@ -240,9 +212,6 @@ namespace rc {
         Ray r(32 + 64, 32 + 64, PI + PI / 4);
 
         RayHit hit = g.cast_ray(r);
-
-        ASSERT_EQ(0, hit.cell.x);
-        ASSERT_EQ(0, hit.cell.z);
 
         ASSERT_FLOAT_EQ(63.000011f, hit.x); //TODO! What happened to the precision?
         ASSERT_FLOAT_EQ(64, hit.z);

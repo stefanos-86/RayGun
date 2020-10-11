@@ -86,9 +86,9 @@ RayHit Grid::cast_ray(const Ray& r) const
 	// A trick could be to assume that the ray will always hit (e. g. by adding wall
 	// in the external perimenter of every level). No more need to test if hit is outside the world.
 	RayHit candidate = horizontal_hit;
-	if (horizontal_hit.cell.outside_world())
+	if (horizontal_hit.no_hit())
 		candidate = vertical_hit;
-	else if (vertical_hit.cell.outside_world())
+	else if (vertical_hit.no_hit())
 		return candidate; // Both out, failure.
 	else if (vertical_hit.distance < horizontal_hit.distance)
 		candidate = vertical_hit;
@@ -177,7 +177,6 @@ RayHit Grid::walk_along_ray(const Ray& r,
 		if (wall_at(candidate_point_cell.x, candidate_point_cell.z)) {
 			result.x = candidate_point_x;
 			result.z = candidate_point_z;
-			result.cell = candidate_point_cell;
 			result.distance = distance(candidate_point_x, candidate_point_z, r.x, r.z);
 			return result;
 		}

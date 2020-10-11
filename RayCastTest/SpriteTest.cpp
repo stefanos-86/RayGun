@@ -41,7 +41,7 @@ namespace rc {
 
         const RayHit hit = s.intersection(goingLeft);
 
-        ASSERT_TRUE(hit.cell.outside_world());
+        ASSERT_TRUE(hit.no_hit());
     }
     
 
@@ -61,7 +61,7 @@ namespace rc {
 
         const RayHit hit = s.intersection(goUp);
 
-        ASSERT_TRUE(hit.cell.outside_world());
+        ASSERT_TRUE(hit.no_hit());
     }
 
     TEST(Sprite, rayIntersection_down_above) {
@@ -70,7 +70,7 @@ namespace rc {
 
         const RayHit hit = s.intersection(goDown);
 
-        ASSERT_TRUE(hit.cell.outside_world());
+        ASSERT_TRUE(hit.no_hit());
     }
 
     TEST(Sprite, rayIntersection_down_below) {
