@@ -158,6 +158,7 @@
     <ClInclude Include="PI.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ProjectionPlane.h" />
+    <ClInclude Include="Ray.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
@@ -171,6 +172,7 @@
     </ClCompile>
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ProjectionPlane.cpp" />
+    <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Sprite.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

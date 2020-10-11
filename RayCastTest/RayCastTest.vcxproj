@@ -45,6 +45,7 @@
     </ClCompile>
     <ClCompile Include="PlayerTest.cpp" />
     <ClCompile Include="ProjectionPlaneTest.cpp" />
+    <ClCompile Include="RayTest.cpp" />
     <ClCompile Include="SpriteTest.cpp" />
   </ItemGroup>
   <ItemGroup>

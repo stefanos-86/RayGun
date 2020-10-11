@@ -2,7 +2,7 @@
 
 #include "Sprite.h"
 
-#include "Grid.h" // TODO: bring out the Ray and RayHit class.
+#include "Ray.h"
 #include "PI.h"
 
 namespace rc {
