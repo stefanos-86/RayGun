@@ -43,7 +43,7 @@ bool Grid::wall_at(uint8_t x, uint8_t z) const noexcept
 
 GridCoordinate Grid::grid_coordinate(const float x, const float z) const noexcept
 {
-	GridCoordinate result{GridCoordinate::OUTSIDE, GridCoordinate::OUTSIDE };
+	GridCoordinate result;
 	
 	if (x >= 0 && x < max_x)
 		result.x = (uint8_t)std::floor(x / cell_size);
@@ -155,9 +155,7 @@ RayHit Grid::walk_along_ray(const Ray& r,
 									 const float horizontal_step,
 	                                 const float vertical_step) const
 {
-	RayHit result;
-	result.cell.x = GridCoordinate::OUTSIDE;
-	result.cell.z = GridCoordinate::OUTSIDE;
+	RayHit result;  // This is a no hit, by default.
 
 	GridCoordinate candidate_point_cell = grid_coordinate(candidate_point_x, candidate_point_z);
 	while (! candidate_point_cell.outside_world())
@@ -191,7 +189,7 @@ bool Grid::facing_right(const Ray& r) const
 }
 
 
-/** Pithagora's theorem style. */
+/** Pithagora's theorem style. TODO: also used for sprite hit. Bring in some header (with PI?)*/
 float Grid::distance(const float x1, const float z1, const float x2, const float z2) const
 {
 	const float side1 = x1 - x2;
@@ -200,6 +198,12 @@ float Grid::distance(const float x1, const float z1, const float x2, const float
 	return std::sqrt(side1 * side1 + side2 * side2);  // To micro optimize, use squared distance, do the sqrt only on the closest point. But would it make a difference?
 }
 
+
+GridCoordinate::GridCoordinate() :
+	x(GridCoordinate::OUTSIDE),
+	z(GridCoordinate::OUTSIDE)
+{
+}
 
 bool GridCoordinate::outside_world() const noexcept
 {

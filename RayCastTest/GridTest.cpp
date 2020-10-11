@@ -32,8 +32,7 @@ namespace rc {
 
         GridCoordinate gc = g.grid_coordinate(-0.1f, 65.1f);
 
-        ASSERT_EQ(GridCoordinate::OUTSIDE, gc.x);
-        ASSERT_EQ(GridCoordinate::OUTSIDE, gc.z);
+        ASSERT_TRUE(gc.outside_world());
     }
 
     TEST(Grid, grid_coordinate__inside) {
@@ -68,8 +67,7 @@ namespace rc {
 
         RayHit hit = g.cast_ray(r);
 
-        ASSERT_EQ(GridCoordinate::OUTSIDE, hit.cell.x);
-        ASSERT_EQ(GridCoordinate::OUTSIDE, hit.cell.z);
+        ASSERT_TRUE(hit.no_hit());
     }
 
     TEST(Grid, cast_ray__horizontal_ray) {
@@ -79,6 +77,8 @@ namespace rc {
         Ray r(32, 32, 0);
 
         RayHit hit = g.cast_ray(r);
+
+        ASSERT_NE(RayHit::NO_HIT, hit.distance);
 
         ASSERT_EQ(1, hit.cell.x);
         ASSERT_EQ(0, hit.cell.z);
@@ -168,8 +168,7 @@ namespace rc {
 
         RayHit hit = g.cast_ray(r);
 
-        ASSERT_EQ(GridCoordinate::OUTSIDE, hit.cell.z);
-        ASSERT_EQ(GridCoordinate::OUTSIDE, hit.cell.z);
+        ASSERT_TRUE(hit.no_hit());
     }
 
 

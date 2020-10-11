@@ -13,12 +13,16 @@ namespace rc {
 	I am not sure it was a good idea to use Z instead of Y (like the rest of the world would
 	probably do).
 	*/
-	struct GridCoordinate {
+	class GridCoordinate {
+	public:
+		/** Defaults to a not-in-the grid cell. */
+		GridCoordinate();
+		bool outside_world() const noexcept;
+
 		uint8_t x;
 		uint8_t z;
-
+	private:
 		static constexpr uint8_t OUTSIDE = std::numeric_limits<uint8_t>::max();   /// NO DEFENSE in case the grid is big enough to require this value.
-		bool outside_world() const noexcept;
 	};
 
 
@@ -51,6 +55,13 @@ namespace rc {
 		float z;
 		float distance;
 		uint8_t offset;
+
+		// TODO: bring in cpp file. Make class, not struct.
+		RayHit() : x(0), z(0), distance(RayHit::NO_HIT), offset(0) {};
+		bool really_hit() const { return ! no_hit(); };
+		bool no_hit() const { return distance == NO_HIT; };
+
+		static constexpr float NO_HIT = -1;
 	};
 
 	/** Representation of the world.

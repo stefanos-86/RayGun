@@ -12,7 +12,6 @@ namespace rc {
 
         const RayHit hit = s.intersection(goingRight);
 
-        ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_EQ(hit.distance, 10);
         ASSERT_EQ(hit.offset, 32);
     }
@@ -23,7 +22,7 @@ namespace rc {
 
         const RayHit hit = s.intersection(goingRight);
 
-        ASSERT_TRUE(hit.cell.outside_world());
+        ASSERT_TRUE(hit.no_hit());
     }
 
     TEST(Sprite, rayIntersection_onTheLeft_inFront) {
@@ -32,7 +31,6 @@ namespace rc {
 
         const RayHit hit = s.intersection(goingLeft);
 
-        ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_EQ(hit.distance, 10);
         ASSERT_EQ(hit.offset, 32);
     }
@@ -53,7 +51,6 @@ namespace rc {
 
         const RayHit hit = s.intersection(goUp);
 
-        ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_EQ(hit.distance, 10);
         ASSERT_EQ(hit.offset, 32);
     }
@@ -82,7 +79,6 @@ namespace rc {
 
         const RayHit hit = s.intersection(goDown);
 
-        ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_EQ(hit.distance, 10);
         ASSERT_EQ(hit.offset, 32);
     }
@@ -94,7 +90,6 @@ namespace rc {
 
         const RayHit hit = s.intersection(diagonal);
 
-        ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_FLOAT_EQ(hit.distance, 14.14213562373095);
         ASSERT_EQ(hit.offset, 32);
     }
@@ -105,7 +100,6 @@ namespace rc {
 
         const RayHit hit = s.intersection(diagonal);
 
-        ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_FLOAT_EQ(hit.distance, 14.14213562373095);
         ASSERT_EQ(hit.offset, 32);
     }
@@ -116,7 +110,6 @@ namespace rc {
 
         const RayHit hit = s.intersection(diagonal);
 
-        ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_FLOAT_EQ(hit.distance, 14.14213562373095);
         ASSERT_EQ(hit.offset, 32);
     }
@@ -127,7 +120,6 @@ namespace rc {
 
         const RayHit hit = s.intersection(diagonal);
 
-        ASSERT_FALSE(hit.cell.outside_world());
         ASSERT_FLOAT_EQ(hit.distance, 14.14213562373095);
         ASSERT_EQ(hit.offset, 32);
     }
@@ -138,6 +130,6 @@ namespace rc {
 
         const RayHit hit = s.intersection(goRight);
 
-        ASSERT_TRUE(hit.cell.outside_world());
+        ASSERT_TRUE(hit.no_hit());
     }
 }

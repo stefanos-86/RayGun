@@ -40,7 +40,7 @@ namespace rc {
 			r.alpha_rad = normalize_0_2pi(r.alpha_rad);
 			RayHit hit = grid.cast_ray(r);
 
-			if (! hit.cell.outside_world()) {
+			if (hit.really_hit()) {
 
 				// Fishbowl correction.
 				const float beta = original_ray_orientation - r.alpha_rad;
@@ -53,8 +53,8 @@ namespace rc {
 
 			for (const Sprite& testSprite : world.enemies.sprites) {  //TODO: use an intersection method at collection level to account for z-order.
 				RayHit enemy_hit = testSprite.intersection(r);
-				if (!enemy_hit.cell.outside_world() &&
-					enemy_hit.distance < hit.distance) // Not behind the wall
+				if (hit.really_hit() &&
+					enemy_hit.distance < hit.distance) // Not behind the wall TODO: BIG BUG. If the wall was not hit, distance has a nonsensical value.
 				{
 					// Fishbowl correction AGAIN! Well, it does not seem so evident...
 					//const float beta = original_ray_orientation - r.alpha_rad;

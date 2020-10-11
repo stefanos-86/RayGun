@@ -58,30 +58,27 @@ RayHit Sprite::intersection(const Ray& ray) const
 	float center_distance = distance * std::sin(gamma);
 
 	const float half_span = size / 2;
-	RayHit result{};
+	RayHit result;
+
 	if ((origin_distance * horizontal_difference) < 0 ||  // Behind the ray. Discovered by trial and error.
 		(std::abs(center_distance) > half_span)) // Ouside the segment "covered" by the texture. Half-size each side of the center.
-	{
-		result.cell.z = GridCoordinate::OUTSIDE;  // TODO: massive abuse here. The hit struct is too specialized for the grid algoritm.
-		result.cell.x = GridCoordinate::OUTSIDE;
-	}
-
-	if (! result.cell.outside_world()) {
-		result.distance = std::abs(origin_distance);
+		return result;
 	
-		// For reasons that I won't even pretend to understand, the texture would be inverted
-		// under those conditions. Probably something to do to where the atan changes sign or when
-		// it rolls around from -PI/2 to PI/2.
-		// This mirrors the texture again. TODO: attempt to figure out the math here.
-		if (horizontal_difference < 0)
-			center_distance = -center_distance;
+	// Did actually hit, fit all the data.
+	result.distance = std::abs(origin_distance);
+	
+	// For reasons that I won't even pretend to understand, the texture would be inverted
+	// under those conditions. Probably something to do to where the atan changes sign or when
+	// it rolls around from -PI/2 to PI/2.
+	// This mirrors the texture again. TODO: attempt to figure out the math here.
+	if (horizontal_difference < 0)
+		center_distance = -center_distance;
 
-		// Texture offsets are non-negative, but the computation uses the sprite center,
-		// so re-center the offset to have 0 offset on the side of the texture.
-		result.offset = center_distance + half_span;
+	// Texture offsets are non-negative, but the computation uses the sprite center,
+	// so re-center the offset to have 0 offset on the side of the texture.
+	result.offset = center_distance + half_span;
 
-		// We will never use the exact coordinate (TODO: until you can shoot the sprites, probably).
-	}
+	// We will never use the exact coordinate (TODO: until you can shoot the sprites, probably).
 	
 	return result;
 }
