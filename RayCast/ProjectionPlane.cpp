@@ -40,11 +40,10 @@ namespace rc {
 			r.alpha_rad = normalize_0_2pi(r.alpha_rad);
 			RayHit hit = grid.cast_ray(r);
 
-			if (hit.really_hit()) {
+			const float fishbowl = std::cos(original_ray_orientation - r.alpha_rad);
 
-				// Fishbowl correction.
-				const float beta = original_ray_orientation - r.alpha_rad;
-				hit.distance *= std::cos(beta);
+			if (hit.really_hit()) {
+				hit.distance *= fishbowl;
 				
 				const WallSliceProjection wall_projection = project_wall_slice(hit.distance, grid.cell_size);
 				c.draw_slice(scan_column, wall_projection.top_row, wall_projection.height, hit.offset, TextureIndex::WALL);
@@ -53,14 +52,12 @@ namespace rc {
 
 			for (const Sprite& testSprite : world.enemies.sprites) {  //TODO: use an intersection method at collection level to account for z-order.
 				RayHit enemy_hit = testSprite.intersection(r);
-				if (hit.really_hit() &&
-					enemy_hit.distance < hit.distance) // Not behind the wall TODO: BIG BUG. If the wall was not hit, distance has a nonsensical value.
+				if (enemy_hit.really_hit() &&  // Don't bother if there's not it.
+   				   (hit.no_hit() || enemy_hit.distance < hit.distance))  // Depth test: either no wall, either in front of it.
 				{
-					// Fishbowl correction AGAIN! Well, it does not seem so evident...
-					//const float beta = original_ray_orientation - r.alpha_rad;
-					//enemy_hit.distance *= std::cos(beta);
+					enemy_hit.distance *= fishbowl;
 
-					// Try to see if the same projection works... at least until sprite and cell are the same size.
+					// TODO Try to see if the same projection works... at least until sprite and cell are the same size.
 					const WallSliceProjection enemy_projection = project_wall_slice(enemy_hit.distance, testSprite.size);
 					c.draw_slice(scan_column, enemy_projection.top_row, enemy_projection.height, enemy_hit.offset, TextureIndex::ENEMY);
 
