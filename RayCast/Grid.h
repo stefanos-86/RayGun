@@ -49,19 +49,27 @@ namespace rc {
 	It remembers the cell where the wall is, the exact coordinates of the hit, the distance
 	from the ray origin and the offset along the cell side of the hit (useful for texturing).
 	*/
-	struct RayHit {
+	class RayHit {
+	public:
+		/** Defaults to a ray that did not hit anything.*/
+		RayHit();
+
+		/** Returns true if this is the result of a ray cast that did not find
+		    any intersection. All the variables may be set to random values. 
+			Once the distance is set, the RayHit becomes valid.*/
+		bool no_hit() const noexcept;
+
+		/** Dual of no_hit(). The data describes the ray-object intersection. */
+		bool really_hit() const noexcept;
+
 		GridCoordinate cell;
 		float x;
 		float z;
 		float distance;
 		uint8_t offset;
 
-		// TODO: bring in cpp file. Make class, not struct.
-		RayHit() : x(0), z(0), distance(RayHit::NO_HIT), offset(0) {};
-		bool really_hit() const { return ! no_hit(); };
-		bool no_hit() const { return distance == NO_HIT; };
-
-		static constexpr float NO_HIT = -1;
+	private:
+		static constexpr float NO_HIT = -1;  // This is an impossible value for the distance.
 	};
 
 	/** Representation of the world.

@@ -61,6 +61,21 @@ namespace rc {
         ASSERT_EQ(3, r.alpha_rad);
     }
 
+    TEST(RayHit, construction) {
+        RayHit rh;
+
+        ASSERT_TRUE(rh.no_hit());
+        ASSERT_FALSE(rh.really_hit());
+    }
+
+    TEST(RayHit, record_hit) {
+        RayHit rh;
+        rh.distance = 5;
+
+        ASSERT_FALSE(rh.no_hit());
+        ASSERT_TRUE(rh.really_hit());
+    }
+
     TEST(Grid, cast_ray__none) {
         Grid g(1, 1, 64);
         Ray r(32, 32, 0);
@@ -78,7 +93,7 @@ namespace rc {
 
         RayHit hit = g.cast_ray(r);
 
-        ASSERT_NE(RayHit::NO_HIT, hit.distance);
+        ASSERT_TRUE(hit.really_hit());
 
         ASSERT_EQ(1, hit.cell.x);
         ASSERT_EQ(0, hit.cell.z);
