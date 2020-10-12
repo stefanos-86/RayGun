@@ -11,7 +11,7 @@ rc::Grid fake_load_level() {
 	rc::Grid g(10, 15, 64);
 
 	// Make a border of walls.
-/*	for (uint8_t i = 0; i < g.x_size; ++i) {
+	for (uint8_t i = 0; i < g.x_size; ++i) {
 		g.build_wall(i, 0);  // Bottom row.
 		g.build_wall(i, g.z_size -1);  // Top row.
 	}
@@ -19,7 +19,7 @@ rc::Grid fake_load_level() {
 	for (uint8_t j = 0; j < g.z_size; ++j) {
 		g.build_wall(0, j);  // Left row.
 		g.build_wall(g.x_size - 1, j); // Right row.
-	}*/
+	}
 
 	// "Spine" in the middle of the 1st room.
 	for (uint8_t i = 3; i < 6; ++i) {

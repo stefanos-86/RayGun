@@ -17,9 +17,9 @@ namespace rc {
 	{
 	}
 
-	WallSliceProjection ProjectionPlane::project_wall_slice(const float hit_distance, const uint16_t cell_size) const
+	SliceProjection ProjectionPlane::project_slice(const float hit_distance, const uint16_t cell_size) const
 	{
-		WallSliceProjection projected_slice;
+		SliceProjection projected_slice;
 		projected_slice.height = (uint16_t) (cell_size / hit_distance * distance_to_POV);
 		projected_slice.top_row = y_center - projected_slice.height / 2;
 
@@ -45,7 +45,7 @@ namespace rc {
 			if (hit.really_hit()) {
 				hit.distance *= fishbowl;
 				
-				const WallSliceProjection wall_projection = project_wall_slice(hit.distance, grid.cell_size);
+				const SliceProjection wall_projection = project_slice(hit.distance, grid.cell_size);
 				c.draw_slice(scan_column, wall_projection.top_row, wall_projection.height, hit.offset, TextureIndex::WALL);
 			}
 
@@ -58,7 +58,7 @@ namespace rc {
 					enemy_hit.distance *= fishbowl;
 
 					// TODO Try to see if the same projection works... at least until sprite and cell are the same size.
-					const WallSliceProjection enemy_projection = project_wall_slice(enemy_hit.distance, testSprite.size);
+					const SliceProjection enemy_projection = project_slice(enemy_hit.distance, testSprite.size);
 					c.draw_slice(scan_column, enemy_projection.top_row, enemy_projection.height, enemy_hit.offset, TextureIndex::ENEMY);
 
 				}

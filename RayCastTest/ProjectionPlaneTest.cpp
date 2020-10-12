@@ -34,16 +34,16 @@ namespace rc {
         ASSERT_FLOAT_EQ(0.0032724924f, p.scan_step_radians);
     }
 
-    TEST(ProjectionPlane, project_wall_slice) {
+    TEST(ProjectionPlane, project_slice__wall_slice) {
         ProjectionPlane p(320, 200, 60);
-        const WallSliceProjection result = p.project_wall_slice(277, 64);
+        const SliceProjection result = p.project_slice(277, 64);
 
         ASSERT_EQ(64, result.height);
         ASSERT_EQ(68, result.top_row);
     }
 
 
-    TEST(ProjectionPlane, project_walls__no_walls) {
+    TEST(ProjectionPlane, project_slice__walls__no_walls) {
         ProjectionPlane plane(320, 200, 60);
         Grid g(10, 10, 64);
         Player p{ 32, 32, 0.5 };
@@ -57,7 +57,7 @@ namespace rc {
     }
 
 
-    TEST(ProjectionPlane, project_walls__two_calls__takes_all_view) {
+    TEST(ProjectionPlane, project_slice__walls__two_calls__takes_all_view) {
         ProjectionPlane plane(2, 200, 1);
         Grid g(2, 1, 64);
         g.build_wall(1, 0);
@@ -68,7 +68,7 @@ namespace rc {
         plane.project_objects(w, mc);
 
         ASSERT_EQ(2, mc.column_calls.size());
-        ASSERT_EQ(61988, mc.top_row_calls.at(0));  // Severe underflow?
+        ASSERT_EQ(61988, mc.top_row_calls.at(0));  // TODO: Severe underflow?
         ASSERT_EQ(7296, mc.height_calls.at(0));
     }
 

@@ -9,8 +9,8 @@
 
 namespace rc {
 
-	/** Results of projecting a piece of wall. */
-	struct WallSliceProjection {
+	/** Results of projecting a piece of some object. */
+	struct SliceProjection{
 		uint16_t height;  
 		int16_t top_row; /// Can be negative if you are really close to the wall and the slice it taller than the screen.
 	};
@@ -31,7 +31,7 @@ namespace rc {
 
 		/** "Semi-private" function. It is not used outside the class, but I felt I had to test it 
 		to ensure correctness. */
-		WallSliceProjection project_wall_slice(const float hit_distance, const uint16_t cell_size) const;
+		SliceProjection project_slice(const float hit_distance, const uint16_t cell_size) const;
 
 		/** Entry point of the exercise. Does the ray casting scan.
 		
