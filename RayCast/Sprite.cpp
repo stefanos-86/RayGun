@@ -1,10 +1,13 @@
 #include "pch.h"
 #include "Sprite.h"
 
+#include <algorithm>
 #include <cmath>
 #include <float.h>
 
 #include "PI.h"
+
+#include <iostream>
 
 namespace rc {
 		
@@ -78,9 +81,36 @@ RayHit Sprite::intersection(const Ray& ray) const
 	// so re-center the offset to have 0 offset on the side of the texture.
 	result.offset = distance_CI + half_span;
 
-	// We will never use the exact coordinate (TODO: until you can shoot the sprites, probably).
+	// We will never use the exact coordinate (
+	// TODO: until you can shoot the sprites, probably).
 	
 	return result;
+}
+
+std::vector<RayHit> Enemies::all_intersections(const Ray& ray, const RayHit& cutoff) const noexcept
+{
+	std::vector<RayHit> valid_hits;  // Do not reserve. There are few interesction at the same time, not worth it.
+	
+	for (const Sprite& sprite : sprites) {
+		const RayHit candidate_hit = sprite.intersection(ray);
+
+		
+
+		if (candidate_hit.really_hit() &&
+			cutoff.really_hit() &&
+			candidate_hit.distance < cutoff.distance)
+		{
+			valid_hits.push_back(candidate_hit);
+		}
+	}
+
+	std::sort(valid_hits.begin(), valid_hits.end(),
+		[](const RayHit& h1, const RayHit& h2) {
+			return h2.distance < h1.distance;  // Notice the reverse order!
+		}
+	);
+
+	return valid_hits;
 }
 
 }

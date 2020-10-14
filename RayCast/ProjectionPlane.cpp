@@ -6,6 +6,8 @@
 #include "PI.h"
 #include "Sprite.h"
 
+#include <iostream>
+
 namespace rc {
 
 	ProjectionPlane::ProjectionPlane(uint16_t h_resolution, uint16_t v_resolution, float FOV_degrees) :
@@ -38,10 +40,10 @@ namespace rc {
 		
 		for (uint16_t scan_column = 0; scan_column < columns; ++scan_column) {
 			r.alpha_rad = normalize_0_2pi(r.alpha_rad);
-			RayHit wall_hit = grid.cast_ray(r);
 
 			const float fishbowl = std::cos(original_ray_orientation - r.alpha_rad);
 
+			RayHit wall_hit = grid.cast_ray(r);
 			if (wall_hit.really_hit()) {
 				wall_hit.distance *= fishbowl;
 				
@@ -49,18 +51,13 @@ namespace rc {
 				c.draw_slice(scan_column, wall_projection.top_row, wall_projection.height, wall_hit.offset, TextureIndex::WALL);
 			}
 
+			const std::vector<RayHit> enemies_hit = world.enemies.all_intersections(r, wall_hit);
+			for (const RayHit& enemy_hit : enemies_hit)
+			{
+				const float corrected_distance = enemy_hit.distance * fishbowl;
 
-			for (const Sprite& testSprite : world.enemies.sprites) {  //TODO: use an intersection method at collection level to account for z-order.
-				RayHit enemy_hit = testSprite.intersection(r);
-				if (enemy_hit.really_hit() &&  // Don't bother if there's not it.
-   				   (wall_hit.no_hit() || enemy_hit.distance < wall_hit.distance))  // Depth test: either no wall, either in front of it.
-				{
-					enemy_hit.distance *= fishbowl;
-
-					const SliceProjection enemy_projection = project_slice(enemy_hit.distance, testSprite.size);
-					c.draw_slice(scan_column, enemy_projection.top_row, enemy_projection.height, enemy_hit.offset, TextureIndex::ENEMY);
-
-				}
+				const SliceProjection enemy_projection = project_slice(corrected_distance, 64); // Size of the sprite! TODO: avoid hardcode.
+				c.draw_slice(scan_column, enemy_projection.top_row, enemy_projection.height, enemy_hit.offset, TextureIndex::ENEMY);
 			}
 
 			r.alpha_rad += scan_step_radians;

@@ -35,5 +35,17 @@ namespace rc {
 	class Enemies {
 	public:
 		std::vector<Sprite> sprites;
+
+		/** Returns all the hists from the intersection between the ray and any of the sprites.
+		    Hits further from the ray than the cutoff distance (the distance of the cutoff hit) are discarded.
+			Hits are sorted by distance in reverse (the more distant first) to help over-paint them.
+
+			No broad-phase in the ray-sprite collision detection.
+			TODO: find a way to avoid testing every sprite.
+
+			There is also room to improve the memory managment, probably (e. g. do not return a new vector every time).
+		*/
+		std::vector <RayHit> all_intersections(const Ray& ray, const RayHit& cutoff) const noexcept;
+
 	};
 }

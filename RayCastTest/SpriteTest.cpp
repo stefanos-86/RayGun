@@ -132,4 +132,6 @@ namespace rc {
 
         ASSERT_TRUE(hit.no_hit());
     }
+
+    // TODO: test the multi-sprite intersection.
 }

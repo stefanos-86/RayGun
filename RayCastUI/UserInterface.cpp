@@ -150,8 +150,7 @@ namespace rc {
 				return;
 
 			if (pause_game_loop) {
-				continue; // Keep looping to poll input and unpause
-			
+				continue; // Keep looping to poll input and unpause.
 			}
 
 			draw_background();
