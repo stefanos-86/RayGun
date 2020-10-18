@@ -18,40 +18,15 @@ namespace rc {
 		const float future_position_x = x_position + x_step;
 		const float future_position_z = z_position + z_step;
 
-		const GridCoordinate future_cell = map.grid_coordinate(future_position_x, future_position_z);
 
-		if (map.wall_at(future_cell.x, future_cell.z))
-			return; // Went inside wall.
-
-		const float forbidden_left = future_cell.x * map.cell_size;
-		const float forbidden_right = forbidden_left + map.cell_size;
-		const float forbidden_bottom = future_cell.z * map.cell_size;
-		const float forbidden_top = forbidden_bottom + map.cell_size;
-
-		constexpr float forbidden_strip_size = 2;
-
-		const bool in_left_strip = std::abs(future_position_x - forbidden_left) < forbidden_strip_size;
-		const bool in_right_strip = std::abs(future_position_x - forbidden_right) < forbidden_strip_size;
-		const bool in_top_strip = std::abs(future_position_z - forbidden_top) < forbidden_strip_size;
-		const bool in_bottom_strip = std::abs(future_position_z - forbidden_bottom) < forbidden_strip_size;
-
-		if (in_left_strip && map.wall_at(future_position_x - 1, future_position_z))
+		// Just a ray cast is not enough to see if the movement hits a wall.
+		// I want to keep the player at a given distance from the walls. TODO: see if the projection can be improved.
+		// (so that the texture distorsion at short distance is not evident).
+		// I would have to cast 8 rays - it seem cheaper and simpler to just test the cells near the
+		// arrival position.
+		const float minimum_wall_distance = map.cell_size / 16;
+		if (map.close_to_walls(future_position_x, future_position_z, minimum_wall_distance))
 			return;
-		if (in_right_strip && map.wall_at(future_position_x + 1, future_position_z))
-			return;
-		if (in_bottom_strip && map.wall_at(future_position_x, future_position_z - 1))
-			return;
-		if (in_top_strip && map.wall_at(future_position_x, future_position_z + 1))
-			return;
-		if (in_left_strip && in_bottom_strip && map.wall_at(future_position_x - 1, future_position_z - 1))
-			return;
-		if (in_left_strip && in_top_strip && map.wall_at(future_position_x - 1, future_position_z + 1))
-			return;
-		if (in_right_strip && in_bottom_strip && map.wall_at(future_position_x + 1, future_position_z - 1))
-			return;
-		if (in_right_strip && in_top_strip && map.wall_at(future_position_x + 1, future_position_z + 1))
-			return;
-
 
 		z_position = future_position_z;
 		x_position = future_position_x;
@@ -59,7 +34,7 @@ namespace rc {
 
 	void Player::turn(const float axis) noexcept
 	{
-		constexpr float turn_speed = 0.025f;   /// Circa 0.25 degrees per key frame.
+		constexpr float turn_speed = 0.045f;   /// Circa degrees per key frame.
 
 		orientation += turn_speed * axis;
 

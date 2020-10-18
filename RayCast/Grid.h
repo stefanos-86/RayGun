@@ -46,6 +46,7 @@ namespace rc {
 
 		GridCoordinate grid_coordinate(const float x, const float z) const noexcept;
 		RayHit cast_ray(const Ray& r) const;
+		bool close_to_walls(const float x, const float z, const float distance) const noexcept;
 
 		const uint8_t x_size;
 		const uint8_t z_size;

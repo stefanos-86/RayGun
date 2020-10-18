@@ -80,4 +80,6 @@ namespace rc {
 		p.turn(-1);
 		ASSERT_FLOAT_EQ(6.2831855f, p.orientation);
 	}
+
+	// TODO: test movement that hits walls.
 }

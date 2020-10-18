@@ -77,6 +77,39 @@ RayHit Grid::cast_ray(const Ray& r) const
 	return candidate;
 }
 
+bool Grid::close_to_walls(const float x, const float z, const float minimum_distance) const noexcept
+{
+	const GridCoordinate cell = grid_coordinate(x, z);
+
+	if (wall_at(cell.x, cell.z))
+		return true; // Inside wall: certainly too close.
+
+	// Have to see if there are walls in the cells nearby.
+	// Find the "strips" around the grid border that separates from the surrounding cells.
+	// If the abutting cells have a wall and the point is in the strip, then it is too close
+	// (either inside the abutting cells, or in "this" cell, but too close).
+	const float forbidden_left = cell.x * cell_size;
+	const float forbidden_right = forbidden_left + cell_size;
+	const float forbidden_bottom = cell.z * cell_size;
+	const float forbidden_top = forbidden_bottom + cell_size;
+
+	const bool in_left_strip = std::abs(x - forbidden_left) < minimum_distance;
+	const bool in_right_strip = std::abs(x - forbidden_right) < minimum_distance;
+	const bool in_top_strip = std::abs(z - forbidden_top) < minimum_distance;
+	const bool in_bottom_strip = std::abs(z - forbidden_bottom) < minimum_distance;
+
+	return
+           in_left_strip   && wall_at(cell.x - 1, cell.z)
+		|| in_right_strip  && wall_at(cell.x + 1, cell.z)
+		|| in_bottom_strip && wall_at(cell.x    , cell.z - 1)
+		|| in_top_strip    && wall_at(cell.x    , cell.z + 1)
+		|| in_left_strip  && in_bottom_strip && wall_at(cell.x - 1, cell.z - 1)
+		|| in_left_strip  && in_top_strip    && wall_at(cell.x - 1, cell.z + 1)
+		|| in_right_strip && in_bottom_strip && wall_at(cell.x + 1, cell.z - 1)
+		|| in_right_strip && in_top_strip    && wall_at(cell.x + 1, cell.z + 1)
+		;
+}
+
 RayHit Grid::cast_ray_horizontal(const Ray& r, const float tangent) const
 {
 	const GridCoordinate starting_cell = grid_coordinate(r.x, r.z);
