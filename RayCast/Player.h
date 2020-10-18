@@ -2,6 +2,8 @@
 
 #include<cstdint>
 
+#include "Grid.h"
+
 namespace rc {
 
 	/** Simplifed-to-the-bone class to represent the player character. Position and movement.
@@ -22,7 +24,7 @@ namespace rc {
 	class Player
 	{
 	public:
-		void advance(const float axis) noexcept;
+		void advance(const float axis, const Grid& map) noexcept;
 		void turn(const float axis) noexcept;
 
 		float x_position;

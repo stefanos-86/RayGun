@@ -70,7 +70,7 @@ namespace rc {
 		UserInterface(const UserInterface&) = delete;
 		void operator=(const UserInterface&) = delete;
 
-		void poll_input(Player& player);
+		void poll_input(World& world);
 
 		/** Cleans the frame buffer, draws the ceiling.
 		Striclty speaking, this class should only offer primitives to do so, and let the 

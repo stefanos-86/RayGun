@@ -89,8 +89,11 @@ namespace rc {
 		sdl_null_check(renderer);
 	}
 	
-	void UserInterface::poll_input(Player& player)
+	void UserInterface::poll_input(World& world)
 	{
+		Player& player = world.player;
+		const Grid& map = world.map;
+
 		SDL_Event user_input;
 		while (SDL_PollEvent(&user_input) != 0)
 			if (user_input.type == SDL_QUIT)
@@ -105,9 +108,9 @@ namespace rc {
 		// Intentionally ignore nonsensical key combos.
 		const Uint8* key_states = SDL_GetKeyboardState(nullptr);
 		if (key_states[SDL_SCANCODE_UP])
-			player.advance(1);
+			player.advance(1, map);
 		else if (key_states[SDL_SCANCODE_DOWN])
-			player.advance(-1);
+			player.advance(-1, map);
 		
 		if (key_states[SDL_SCANCODE_LEFT])
 			player.turn(-1);
@@ -144,7 +147,7 @@ namespace rc {
 
 		halt_game_loop = false;
 		while (! halt_game_loop) {
-			poll_input(world.player);
+			poll_input(world);
 
 			if (halt_game_loop)
 				return;
