@@ -71,7 +71,7 @@ namespace rc {
 		Player p{ 0, 0, 0 };
 
 		p.turn(1);
-		ASSERT_FLOAT_EQ(0.025f, p.orientation);
+		ASSERT_FLOAT_EQ(0.045000002f, p.orientation);
 	}
 
 	TEST(Player, turn__right) {

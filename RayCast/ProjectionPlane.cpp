@@ -92,7 +92,7 @@ namespace rc {
 
 	float ProjectionPlane::normalize_0_2pi(float radians) const
 	{
-		while (radians < 0) // TODO: there's got to be a formula...
+		while (radians < 0) // TODO: there's got to be a formula... Also, adding 4PI at a time (to do half the loops) causes distortions.
 			radians += 2 * PI;
 
 		return radians - std::floor(radians / (2 * PI)) * radians;
