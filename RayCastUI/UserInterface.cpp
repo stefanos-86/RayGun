@@ -51,7 +51,43 @@ namespace rc {
 		other.texture = nullptr;
 
 		return *this;
-	};
+	}
+
+
+	/** Implementation stolen from https://stackoverflow.com/questions/53033971/how-to-get-the-color-of-a-specific-pixel-from-sdl-surface. */
+	bool Image::transparent_pixel(const uint8_t x, const uint8_t y) const noexcept
+	{
+		const Uint8 bpp = surface->format->BytesPerPixel;
+		const Uint8* pixel = (Uint8*) surface->pixels + y * surface->pitch + x * bpp;
+
+		Uint32 pixel_value = 0;
+		switch (bpp)
+		{
+		case 1:
+			pixel_value = *pixel;
+			break;
+		case 2:
+			pixel_value = *(Uint16*) pixel;
+			break;
+		case 3:
+			pixel_value = (SDL_BYTEORDER == SDL_BIG_ENDIAN) ?
+					pixel[0] << 16 | pixel[1] << 8 | pixel[2] :
+					pixel[0] | pixel[1] << 8 | pixel[2] << 16;
+			break;
+		case 4:
+			pixel_value = *(Uint32*) pixel;
+			break;
+		default:
+			throw std::runtime_error("Impossible bit per pixel.");
+		}
+
+		uint8_t r, g, b;
+		uint8_t alpha;
+		SDL_GetRGBA(pixel_value, surface->format, &r, &g, &b, &alpha);
+
+		return alpha < 128;
+	}
+	
 
 	UserInterface::UserInterface() :
 		main_window(nullptr),
@@ -101,9 +137,10 @@ namespace rc {
 			else if (user_input.type == SDL_KEYDOWN && user_input.key.keysym.scancode == SDL_SCANCODE_P)
 				pause_game_loop = !pause_game_loop;
 
-		if (pause_game_loop)
+		if (pause_game_loop) 
 			return;
 			// Ignore any other input.
+		
 
 		// Intentionally ignore nonsensical key combos.
 		const Uint8* key_states = SDL_GetKeyboardState(nullptr);

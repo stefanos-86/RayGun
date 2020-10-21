@@ -23,6 +23,9 @@ namespace rc {
 		/** Required to allow creation via SDL containers emplace methods. */
 		Image& operator=(Image&& other) noexcept;
 
+		/** Returns true if the pixel at the given coordinates has a small alpha. */
+		bool transparent_pixel(const uint8_t x, const uint8_t y) const noexcept;
+
 		SDL_Surface* surface;
 		SDL_Texture* texture;
 	
