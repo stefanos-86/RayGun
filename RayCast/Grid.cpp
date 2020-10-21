@@ -113,8 +113,8 @@ bool Grid::close_to_walls(const float x, const float z, const float minimum_dist
 RayHit Grid::cast_ray_horizontal(const Ray& r, const float tangent) const
 {
 	const GridCoordinate starting_cell = grid_coordinate(r.x, r.z);
-	const bool ray_goes_up = facing_up(r);
-	const bool ray_goes_right = facing_right(r);
+	const bool ray_goes_up = r.facing_up();
+	const bool ray_goes_right = r.facing_right();
 	float push_into_previous_row = ray_goes_up ? 0 : -1.0f;
 
 	float first_point_z = ray_goes_up ?
@@ -142,8 +142,8 @@ RayHit Grid::cast_ray_horizontal(const Ray& r, const float tangent) const
 RayHit Grid::cast_ray_vertical(const Ray& r, const float tangent) const
 {
 	const GridCoordinate starting_cell = grid_coordinate(r.x, r.z);
-	const bool ray_goes_up = facing_up(r);
-	const bool ray_goes_right = facing_right(r); 
+	const bool ray_goes_up = r.facing_up();
+	const bool ray_goes_right = r.facing_right(); 
 	float push_into_previous_column = ray_goes_right ? 0 : -1.0f;
 
 	float first_point_x = ray_goes_right ?
@@ -201,17 +201,6 @@ RayHit Grid::walk_along_ray(const Ray& r,
 	}
 
 	return result; // Outside.
-}
-
-bool Grid::facing_up(const Ray& r) const
-{
-	return (0 <= r.alpha_rad && r.alpha_rad < PI);
-}
-
-bool Grid::facing_right(const Ray& r) const
-{
-	// This expression makes me wonder if it would be better to normalize angles between -PI and +PI.
-	return (0 <= r.alpha_rad && r.alpha_rad < PI / 2) || (3 * PI / 2 <= r.alpha_rad && r.alpha_rad < 2 * PI);
 }
 
 

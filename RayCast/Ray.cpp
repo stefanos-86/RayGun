@@ -1,4 +1,6 @@
 #include "pch.h"
+
+#include "PI.h"
 #include "Ray.h"
 
 namespace rc {
@@ -7,6 +9,17 @@ namespace rc {
 		z(z),
 		alpha_rad(alpha_rad)
 	{}
+
+	bool Ray::facing_up() const noexcept
+	{
+		return (0 <= alpha_rad && alpha_rad < PI);
+	}
+
+	bool Ray::facing_right() const noexcept
+	{
+		// This expression makes me wonder if it would be better to normalize angles between -PI and +PI.
+		return (0 <= alpha_rad && alpha_rad < PI / 2) || (3 * PI / 2 <= alpha_rad && alpha_rad < 2 * PI);
+	}
 
 	RayHit::RayHit() :
 		x(0),
@@ -22,4 +35,6 @@ namespace rc {
 	bool RayHit::really_hit() const noexcept {
 		return !no_hit();
 	}
+
+
 }

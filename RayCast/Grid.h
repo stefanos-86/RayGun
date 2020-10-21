@@ -69,9 +69,6 @@ namespace rc {
 									   const float horizontal_step,
 									   const float vertical_step) const; 
 
-		bool facing_up(const Ray& r) const;
-		bool facing_right(const Ray& r) const;
-
 		float distance(const float x1, const float z1, const float x2, const float z2) const;
 	};
 }

@@ -16,11 +16,16 @@ namespace rc{
    |
 	---------------> X
 */
-	struct Ray {
+	class Ray {
+	public:
 		Ray(const float x, const float z, const float alpha_rad);
 		float x;
 		float z;
 		float alpha_rad;
+
+		bool facing_up() const noexcept;  // TODO: test.
+		bool facing_right() const noexcept;  // TODO: test.
+
 	};
 
 
