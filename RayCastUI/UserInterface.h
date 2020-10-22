@@ -17,14 +17,14 @@ namespace rc {
 		Image(const std::string& file_path, SDL_Renderer* renderer);
 		~Image();
 
-		/** Required to allow creation via SDL containers emplace methods. */
+		/** Required to allow creation via STL containers emplace methods. */
 		Image(Image&& other) noexcept;
 
-		/** Required to allow creation via SDL containers emplace methods. */
+		/** Required to allow creation via STL containers emplace methods. */
 		Image& operator=(Image&& other) noexcept;
 
 		/** Returns true if the pixel at the given coordinates has a small alpha. */
-		bool transparent_pixel(const uint8_t x, const uint8_t y) const noexcept;
+		bool transparent_pixel(const uint8_t x, const uint8_t y) const;
 
 		SDL_Surface* surface;
 		SDL_Texture* texture;
@@ -59,6 +59,8 @@ namespace rc {
 		void set_texture(const TextureIndex name, const std::string& file_path);
 
 		void draw_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset, const TextureIndex what_to_draw) final;
+
+		bool transparent_pixel(const uint8_t x, const uint8_t y, const TextureIndex image) const final;
 
 	private:
 		SDL_Window* main_window;

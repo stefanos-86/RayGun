@@ -2,7 +2,9 @@
 
 #include<cstdint>
 
+#include "Canvas.h"
 #include "Grid.h"
+#include "Sprite.h"
 
 namespace rc {
 
@@ -26,6 +28,7 @@ namespace rc {
 	public:
 		void advance(const float axis, const Grid& map) noexcept;
 		void turn(const float axis) noexcept;
+		void shoot(const Grid& map, Enemies& targets, const Canvas& image_tester) noexcept;
 
 		float x_position;
 		float z_position;

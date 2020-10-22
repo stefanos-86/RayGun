@@ -11,10 +11,12 @@
 
 namespace rc {
 		
-Sprite::Sprite(const float x_position, const float z_position, const uint8_t size) :
+Sprite::Sprite(const float x_position, const float z_position, const uint8_t size, const uint8_t id) :
 	x(x_position),
 	z(z_position),
-	size(size)
+	size(size),
+	id(id),
+	active(true)
 {
 }
 
@@ -68,6 +70,7 @@ RayHit Sprite::intersection(const Ray& ray) const
 
 	const float half_span = size / 2;
 	RayHit result;
+	result.hit_object_id = id;
 
 	if ((distance_OI * horizontal_difference) < 0 ||  // Behind the ray. Discovered by trial and error.
 		(std::abs(distance_CI) > half_span)) // Ouside the segment "covered" by the texture. Half-size each side of the center.
@@ -92,9 +95,10 @@ std::vector<RayHit> Enemies::all_intersections(const Ray& ray, const RayHit& cut
 	std::vector<RayHit> valid_hits;  // Do not reserve. There are few interesction at the same time, not worth it.
 	
 	for (const Sprite& sprite : sprites) {
-		const RayHit candidate_hit = sprite.intersection(ray);
+		if (!sprite.active)
+			continue;
 
-		
+		const RayHit candidate_hit = sprite.intersection(ray);
 
 		if (candidate_hit.really_hit() &&
 			cutoff.really_hit() &&
@@ -112,5 +116,19 @@ std::vector<RayHit> Enemies::all_intersections(const Ray& ray, const RayHit& cut
 
 	return valid_hits;
 }
+
+void Enemies::deactivate(const uint8_t sprite_id)
+{
+	const auto to_be_shut_off = std::find_if(sprites.begin(), sprites.end(),
+		[sprite_id](const Sprite& s) {
+			return s.id == sprite_id;
+		}
+	);
+	// TODO: assert id is valid, something was found.
+	to_be_shut_off->active = false;
+}
+
+
+
 
 }

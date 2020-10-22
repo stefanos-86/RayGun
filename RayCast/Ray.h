@@ -50,6 +50,7 @@ namespace rc{
 		float z;
 		float distance;
 		uint8_t offset;
+		uint8_t hit_object_id; /// May not be always set. TODO: smell...
 
 	private:
 		static constexpr float NO_HIT = -1;  // This is an impossible value for the distance.

@@ -15,7 +15,8 @@ namespace rc {
 	public:
 		/** Create a sprite "size" wide centered in the given position.
 			The size should match the texture size. */
-		Sprite(const float x_position, const float z_position, const uint8_t size);
+		// TODO: auto-assign the ID.
+		Sprite(const float x_position, const float z_position, const uint8_t size, const uint8_t id);
 
 		/** Returns a hit that tells if the ray falls inside the sprite. 
 		    Uses a simplified intersection formula because we can assume that the sprite is 
@@ -24,10 +25,17 @@ namespace rc {
 
 		/** Must be public to know how to scale the projection. */
 		const uint8_t size;
+
+		const uint8_t id;  /// Needed to handle hit-scan collisions.
+
+		/** At a certain point, the sprites can be shot and have to be removed from the
+		    game. But then I have to make the member non const or somehow allow the vector to
+			erase them. I take the coward's shortcut. */ 
+		bool active;
+
 	private:
 		const float x;
 		const float z;
-
 	};
 
 
@@ -47,5 +55,6 @@ namespace rc {
 		*/
 		std::vector <RayHit> all_intersections(const Ray& ray, const RayHit& cutoff) const noexcept;
 
+		void deactivate(const uint8_t sprite_id);
 	};
 }

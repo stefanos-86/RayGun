@@ -55,7 +55,7 @@ namespace rc {
 
 
 	/** Implementation stolen from https://stackoverflow.com/questions/53033971/how-to-get-the-color-of-a-specific-pixel-from-sdl-surface. */
-	bool Image::transparent_pixel(const uint8_t x, const uint8_t y) const noexcept
+	bool Image::transparent_pixel(const uint8_t x, const uint8_t y) const
 	{
 		const Uint8 bpp = surface->format->BytesPerPixel;
 		const Uint8* pixel = (Uint8*) surface->pixels + y * surface->pitch + x * bpp;
@@ -153,6 +153,9 @@ namespace rc {
 			player.turn(-1);
 		else if (key_states[SDL_SCANCODE_RIGHT])
 			player.turn(+1);
+
+		if (key_states[SDL_SCANCODE_SPACE])
+			player.shoot(map, world.enemies, *this);
 	}
 
 	void UserInterface::draw_background() {
@@ -195,6 +198,11 @@ namespace rc {
 
 			draw_background();
 			projection.project_objects(world, *this);
+
+			// Approx. crosshair to debug. TODO: keep it? It has that "laser dot like in the movies" feeling.
+			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+			SDL_RenderDrawPoint(renderer, UserInterface::SCREEN_WIDTH / 2, UserInterface::SCREEN_HEIGHT / 2);
+			
 			SDL_RenderPresent(renderer);
 		}
 	}
@@ -221,8 +229,15 @@ namespace rc {
 		dest_slice.w = 1;
 		dest_slice.h = height;
 
-		const int rc = SDL_RenderCopy(renderer, texture.texture, &source_slice, &dest_slice);
+		const int rc = SDL_RenderCopy(renderer, texture.texture, &source_slice, &dest_slice);  // TODO Or maybe I have to use SDL_BlitSurface?
 		sdl_return_check(rc);
+	}
+
+
+	// TODO: can I avoid this indirection? "Link" the image into the sprites?
+	bool UserInterface::transparent_pixel(const uint8_t x, const uint8_t y, const TextureIndex image) const
+	{
+		return textures.at(image).transparent_pixel(x, y);
 	}
 
 }
