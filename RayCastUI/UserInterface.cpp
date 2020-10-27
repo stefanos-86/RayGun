@@ -181,6 +181,11 @@ namespace rc {
 		sdl_return_check(rc);
 	}
 
+	void UserInterface::draw_debug_crosshair() {
+		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+		SDL_RenderDrawPoint(renderer, UserInterface::SCREEN_WIDTH / 2, UserInterface::SCREEN_HEIGHT / 2);
+	}
+
 	void UserInterface::game_loop(World& world)
 	{
 		ProjectionPlane projection(UserInterface::SCREEN_WIDTH, UserInterface::SCREEN_HEIGHT, 60);
@@ -198,11 +203,8 @@ namespace rc {
 
 			draw_background();
 			projection.project_objects(world, *this);
+			draw_debug_crosshair();
 
-			// Approx. crosshair to debug. TODO: keep it? It has that "laser dot like in the movies" feeling.
-			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-			SDL_RenderDrawPoint(renderer, UserInterface::SCREEN_WIDTH / 2, UserInterface::SCREEN_HEIGHT / 2);
-			
 			SDL_RenderPresent(renderer);
 		}
 	}

@@ -83,7 +83,10 @@ namespace rc {
 		do it and the visual effect is nice, I break the single responsibility principle
 		and "dump" this little bit of graphics here. */
 		void draw_background();
+
+		/** Color in red the pixel in the middle of the screen.
+		    This is meant as a debug aid, to see what the player is pointing at. */
+		void draw_debug_crosshair();
 	};
 
 }
-
