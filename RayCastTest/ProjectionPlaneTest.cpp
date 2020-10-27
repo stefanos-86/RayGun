@@ -19,6 +19,10 @@ namespace rc {
             height_calls.push_back(height);
         }
 
+        bool transparent_pixel(const uint8_t x, const uint8_t y, const TextureIndex image) const final {
+            return false;
+        }
+
         std::vector<uint16_t> column_calls;
         std::vector<uint16_t> top_row_calls;
         std::vector<uint16_t> height_calls;

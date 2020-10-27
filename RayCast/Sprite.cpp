@@ -84,8 +84,7 @@ RayHit Sprite::intersection(const Ray& ray) const
 	// so re-center the offset to have 0 offset on the side of the texture.
 	result.offset = distance_CI + half_span;
 
-	// We will never use the exact coordinate (
-	// TODO: until you can shoot the sprites, probably).
+	// We will never use the exact coordinate: not set on purpose.
 	
 	return result;
 }
@@ -124,7 +123,10 @@ void Enemies::deactivate(const uint8_t sprite_id)
 			return s.id == sprite_id;
 		}
 	);
-	// TODO: assert id is valid, something was found.
+
+	if (to_be_shut_off == sprites.end())
+		throw std::runtime_error("Attempting to deactivate a sprite that is not there.");
+
 	to_be_shut_off->active = false;
 }
 

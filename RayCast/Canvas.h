@@ -33,7 +33,11 @@ namespace rc {
 		*/
 		virtual void draw_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset, const TextureIndex what_to_draw) = 0;
 	
-		virtual bool transparent_pixel(const uint8_t x, const uint8_t y, const TextureIndex image) const { return false; /* TODO: pure virtual */ };
+		/** Returns true if the given pixel of the matching image has a low alpha (less than 128, half-way in the scale).
+		* 
+		*  Such pixels are invisible to the user and should not be taken into account for collision detection, shooting...
+		*/
+		virtual bool transparent_pixel(const uint8_t x, const uint8_t y, const TextureIndex image) const = 0;
 	
 	};
 }
