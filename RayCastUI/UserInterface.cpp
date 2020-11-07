@@ -210,6 +210,7 @@ namespace rc {
 
 			draw_text("THE QUICK BROWN FOX JUMPED OVER THE LAZY", 0, 0, 16);
 			draw_text("DOG 0123456789 !", 20, 0, 16);
+			draw_text("GAME OVER!", 120, 0, 64);
 
 			SDL_RenderPresent(renderer);
 		}
