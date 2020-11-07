@@ -212,6 +212,13 @@ namespace rc {
 			draw_text("DOG 0123456789 !", 20, 0, 16);
 			draw_text("GAME OVER!", 120, 0, 64);
 
+			draw_text("XXX", 232, 0, 16);
+			draw_text("X X", 248, 0, 16);
+			draw_text("XXX", 264, 0, 16);
+
+			draw_text("AMMO 56", 264, 0, 40);
+			draw_text("TIME 16:56", 310, 120, 40);
+
 			SDL_RenderPresent(renderer);
 		}
 	}
@@ -251,7 +258,7 @@ namespace rc {
 
 
 	/** Assumes a 64*64 bitmap with the letters, 8*8 pixels each.
-	    Numbers 0 to 9, then uppercase letters, then ! then... stop. I don't need anything else. */
+	    Numbers 0 to 9, then uppercase letters, then ! and : and then... stop. I don't need anything else. */
 	void UserInterface::draw_text(const std::string& text, uint16_t row, const int16_t column, const uint8_t font_size) const
 	{
 		constexpr uint8_t source_letter_side = 8;
@@ -267,10 +274,12 @@ namespace rc {
 				c -= '0';
 			else if (c == '!')
 				c = 36; // I know where this is on the bitmap...
+			else if (c == ':')
+				c = 37; // TODO rework the bitmap -> This happen to be just after 9.
 			else //Space or unsupported char, wich default to the space.
 				c = 63;
 
-
+			// Compute pixel positions in the bitmap.
 			const uint8_t font_row = c / source_letter_side * source_letter_side;
 			const uint8_t font_column = c % source_letter_side * source_letter_side;
 
