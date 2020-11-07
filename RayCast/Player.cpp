@@ -34,7 +34,7 @@ namespace rc {
 
 	void Player::turn(const float axis) noexcept
 	{
-		constexpr float turn_speed = 0.045f;   /// Circa degrees per key frame.
+		constexpr float turn_speed = 0.045f;   /// Circa degrees per frame.
 
 		orientation += turn_speed * axis;
 
@@ -51,8 +51,6 @@ namespace rc {
 
 	void Player::shoot(const Grid& map, Enemies& targets, const Canvas& image_tester) noexcept
 	{
-		// TODO: ammunition count.
-
 		const Ray gun_ray(x_position, z_position, orientation);
 		const RayHit max_range = map.cast_ray(gun_ray);
 
