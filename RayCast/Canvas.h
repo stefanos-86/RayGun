@@ -6,7 +6,8 @@ namespace rc {
 
 	enum class TextureIndex {
 		WALL,
-		ENEMY
+		ENEMY,
+		FONT
 	};
 
 

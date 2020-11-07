@@ -62,6 +62,10 @@ namespace rc {
 
 		bool transparent_pixel(const uint8_t x, const uint8_t y, const TextureIndex image) const final;
 
+		/** I am well aware of http://www.libsdl.org/projects/SDL_ttf/, but I am trying to link in as
+		* little as possible. */
+		void draw_text(const std::string& text, uint16_t row, const int16_t column, const uint8_t font_size) const;
+
 	private:
 		SDL_Window* main_window;
 		SDL_Surface* main_window_surface;
