@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Grid.h"
+#include "Hud.h"
 #include "Player.h"
 #include "Sprite.h"
 
@@ -11,6 +12,7 @@ namespace rc {
 		Grid map;
 		Player player;
 		Enemies enemies;
+		Hud hud;
 	};
 
 }

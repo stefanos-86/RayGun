@@ -155,7 +155,7 @@ namespace rc {
 		else if (key_states[SDL_SCANCODE_RIGHT])
 			player.turn(+1);
 
-		if (key_states[SDL_SCANCODE_SPACE])
+		if (key_states[SDL_SCANCODE_SPACE])  // TODO: fires too fast! One round per frame!
 			player.shoot(map, world.enemies, *this);
 
 		if (key_states[SDL_SCANCODE_ESCAPE])
@@ -208,6 +208,7 @@ namespace rc {
 			draw_background();
 			projection.project_objects(world, *this);
 			draw_debug_crosshair();
+			world.hud.display(world.player, *this);
 
 			SDL_RenderPresent(renderer);
 		}
@@ -252,7 +253,7 @@ namespace rc {
 
 		I am aware of http://www.libsdl.org/projects/SDL_ttf/, but I am trying to link in as
 		little extra libraries as possible. */
-	void UserInterface::draw_text(const std::string& text, uint16_t row, const int16_t column, const uint8_t font_size) const
+	void UserInterface::draw_text(const std::string& text, uint16_t row, const int16_t column, const uint8_t font_size)
 	{
 		constexpr uint8_t source_letter_side = 8;
 		constexpr uint8_t last_char_bitmap = 64;

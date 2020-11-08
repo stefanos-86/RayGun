@@ -3,6 +3,7 @@
 #include "Player.h"
 
 #include "Grid.h"
+#include "MockCanvas.h"
 #include "PI.h"
 
 namespace rc {
@@ -82,4 +83,16 @@ namespace rc {
 	}
 
 	// TODO: test movement that hits walls.
+
+	TEST(Player, shoot_decrease_munition_count) {
+		Player p{ 0, 0, 0};
+		p.bullets_left = 1;
+
+		Enemies no_one;
+		MockCanvas always_hit;
+		p.shoot(empty_map, no_one, always_hit);
+		ASSERT_EQ(0, p.bullets_left);
+	}
+
+	// TODO: test bullets do not underflow, test it hits things, test it won't shoot without bullets...
 }

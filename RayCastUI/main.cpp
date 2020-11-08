@@ -49,7 +49,7 @@ int main(int argc, char* args[])
 
 		rc::World world{
 			fake_load_level(),
-			{335, 862, 4.7f},  // "Fake load player", hardcode it to a "nice" position in the world.
+			{335, 862, 4.7f, 30},  // "Fake load player", hardcode it to a "nice" position in the world.
 			{ { {320.0f, 512.0f, 64, 0}, {200.0f, 512.0f, 64, 1}, {192.0f, 192.0f, 64, 2} } } // Here are the enemies.
 		};
 

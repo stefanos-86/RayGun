@@ -16,12 +16,14 @@ namespace rc {
             return false;
         }
 
-        void draw_text(const std::string& text, uint16_t row, const int16_t column, const uint8_t font_size) const final {
-            // Never used.
+        void draw_text(const std::string& text, uint16_t row, const int16_t column, const uint8_t font_size) final {
+            last_drawn_string = text;
         }
 
         std::vector<uint16_t> column_calls;
         std::vector<uint16_t> top_row_calls;
         std::vector<uint16_t> height_calls;
+
+        std::string last_drawn_string;
     };
 }

@@ -62,7 +62,7 @@ namespace rc {
 
 		bool transparent_pixel(const uint8_t x, const uint8_t y, const TextureIndex image) const final;
 
-		void draw_text(const std::string& text, uint16_t row, const int16_t column, const uint8_t font_size) const final;
+		void draw_text(const std::string& text, uint16_t row, const int16_t column, const uint8_t font_size) final;
 
 	private:
 		SDL_Window* main_window;

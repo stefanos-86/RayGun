@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="GridTest.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="PlayerTest.cpp" />
+    <ClCompile Include="ProjectionPlaneTest.cpp" />
+    <ClCompile Include="RayTest.cpp" />
+    <ClCompile Include="SpriteTest.cpp" />
+    <ClCompile Include="HudTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>

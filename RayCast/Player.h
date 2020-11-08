@@ -33,6 +33,8 @@ namespace rc {
 		float x_position;
 		float z_position;
 		float orientation;
+
+		uint8_t bullets_left;
 	};
 
 }
