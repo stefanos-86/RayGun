@@ -1,6 +1,7 @@
 #pragma once
 
-#include<cstdint>
+#include <cstdint>
+#include <string>
 
 namespace rc {
 
@@ -40,5 +41,10 @@ namespace rc {
 		*/
 		virtual bool transparent_pixel(const uint8_t x, const uint8_t y, const TextureIndex image) const = 0;
 	
+		/** Print the text string starting at the (row, column) pixel. The letters should be square, are assumed to 
+		be 8x8 pixels in a bitmap (refer to the file itself to see where the letters go). Scales the letters so that
+		they are font_size wide (and tall) pixels on the screen.*/
+		virtual void draw_text(const std::string& text, uint16_t row, const int16_t column, const uint8_t font_size) const = 0;
+
 	};
 }

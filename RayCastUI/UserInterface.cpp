@@ -140,6 +140,7 @@ namespace rc {
 		if (pause_game_loop) 
 			return;
 			// Ignore any other input.
+		    // TODO: this causes a CPU usage spike! Probably it is furiously polling the input.
 		
 
 		// Intentionally ignore nonsensical key combos (e. g. up and down at the same time).
@@ -208,17 +209,6 @@ namespace rc {
 			projection.project_objects(world, *this);
 			draw_debug_crosshair();
 
-			draw_text("THE QUICK BROWN FOX JUMPED OVER THE LAZY", 0, 0, 16);
-			draw_text("DOG 0123456789 !", 20, 0, 16);
-			draw_text("GAME OVER!", 120, 0, 64);
-
-			draw_text("XXX", 232, 0, 16);
-			draw_text("X X", 248, 0, 16);
-			draw_text("XXX", 264, 0, 16);
-
-			draw_text("AMMO 56", 264, 0, 40);
-			draw_text("TIME 16:56", 310, 120, 40);
-
 			SDL_RenderPresent(renderer);
 		}
 	}
@@ -258,47 +248,49 @@ namespace rc {
 
 
 	/** Assumes a 64*64 bitmap with the letters, 8*8 pixels each.
-	    Numbers 0 to 9, then uppercase letters, then ! and : and then... stop. I don't need anything else. */
+	    Numbers 0 to 9, then uppercase letters, then ! and : and then... stop. I don't need anything else. 
+
+		I am aware of http://www.libsdl.org/projects/SDL_ttf/, but I am trying to link in as
+		little extra libraries as possible. */
 	void UserInterface::draw_text(const std::string& text, uint16_t row, const int16_t column, const uint8_t font_size) const
 	{
 		constexpr uint8_t source_letter_side = 8;
+		constexpr uint8_t last_char_bitmap = 64;
 
 		const Image& texture = textures.at(TextureIndex::FONT);
 		uint16_t cursor = column;
 
-		// Remap the ASCII code to the bitmap position (TODO: extract function).
+		// Remap the ASCII code to the bitmap position.
 		for (char c : text) {
 			if ('A' <= c && c <= 'Z')
-				c = c - 'A' + 10;  // Letters starts after digits (+10) and 'A' is the letter  in the bitmap.
-			else if ('0' <= c && c <= '9')
+				c = c - 'A' + 18;  // Letters starts after digits and some spave and 'A' is the 1st letter in the bitmap.
+			else if ('0' <= c && c <= ':')  // The ':' is just after '9' in ASCII.
 				c -= '0';
 			else if (c == '!')
-				c = 36; // I know where this is on the bitmap...
-			else if (c == ':')
-				c = 37; // TODO rework the bitmap -> This happen to be just after 9.
-			else //Space or unsupported char, wich default to the space.
-				c = 63;
+				c = 44; // I know where this is on the bitmap...
+			else //Space or unsupported char, skip and leave a space.
+				c = last_char_bitmap + 1;
 
-			// Compute pixel positions in the bitmap.
-			const uint8_t font_row = c / source_letter_side * source_letter_side;
-			const uint8_t font_column = c % source_letter_side * source_letter_side;
+			if (c < last_char_bitmap) {
+				// Compute char position in terms of pixels in the bitmap.
+				const uint8_t font_row = c / source_letter_side * source_letter_side;
+				const uint8_t font_column = c % source_letter_side * source_letter_side;
 
-			// TODO: common with draw_slice. Make a "copy_rect" function... with 9 parameters?
-			SDL_Rect source_slice;
-			source_slice.x = font_column;
-			source_slice.y = font_row;
-			source_slice.w = source_letter_side;
-			source_slice.h = source_letter_side;
+				SDL_Rect source_slice;
+				source_slice.x = font_column;
+				source_slice.y = font_row;
+				source_slice.w = source_letter_side;
+				source_slice.h = source_letter_side;
 
-			SDL_Rect dest_slice;
-			dest_slice.x = cursor;
-			dest_slice.y = row;
-			dest_slice.w = font_size;
-			dest_slice.h = font_size;
+				SDL_Rect dest_slice;
+				dest_slice.x = cursor;
+				dest_slice.y = row;
+				dest_slice.w = font_size;
+				dest_slice.h = font_size;
 
-			const int rc = SDL_RenderCopy(renderer, texture.texture, &source_slice, &dest_slice);  // TODO Or maybe I have to use SDL_BlitSurface?
-			sdl_return_check(rc);
-
+				const int rc = SDL_RenderCopy(renderer, texture.texture, &source_slice, &dest_slice);  // TODO Or maybe I have to use SDL_BlitSurface?
+				sdl_return_check(rc);
+			}
 			cursor += font_size;
 		}
 	}

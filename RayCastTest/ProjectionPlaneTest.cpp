@@ -23,6 +23,10 @@ namespace rc {
             return false;
         }
 
+        void draw_text(const std::string& text, uint16_t row, const int16_t column, const uint8_t font_size) const final {
+            // Never used.
+        }
+
         std::vector<uint16_t> column_calls;
         std::vector<uint16_t> top_row_calls;
         std::vector<uint16_t> height_calls;
