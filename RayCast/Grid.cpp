@@ -2,13 +2,63 @@
 #include "Grid.h"
 
 #include <cmath>
+#include <istream>
 #include <limits>
+#include <sstream>
+#include <stdexcept>
 
 #include "PI.h"
 
 namespace rc {
+	Grid Grid::load(std::istream& serialized_grid)
+	{
+		if (!serialized_grid.good())
+			throw std::runtime_error("Bad before beginning. Empty?");
 
-Grid::Grid(uint8_t x_size, uint8_t z_size, uint8_t cell_size):
+
+		std::string field;
+		int x, z;  // uint8_8 would be seen as ASCII char when reading.
+
+		serialized_grid >> field >> x;
+		if (field != "x" || x <= 0 || x > 255)
+			throw std::runtime_error("No x size or incorrect?");
+
+		serialized_grid >> field >> z;
+		if (field != "z" || z <= 0 || z > 255)
+			throw std::runtime_error("No z size or incorrect?");
+		
+		Grid g(x, z, 64);  // TODO: do I make the cell size a parameter?? I don't think the rest of the code is ready for this.
+	
+		char cell;
+		if (!serialized_grid.get(cell)) // Skip the \n after the z.
+			throw std::runtime_error("No grid data");
+
+		uint8_t column_x = 0;
+		uint8_t row_z = 0;
+		while (serialized_grid.get(cell)) {
+			switch (cell)
+			{
+			case '#':
+				g.build_wall(column_x, row_z); 
+				[[fallthrough]];
+			case '.':
+				++column_x;
+				break;
+			case '\n':
+				column_x = 0;
+				++row_z;
+				break;
+			default:
+				std::stringstream error;
+				error << "Invalid char [" << cell << "] at " << column_x << ", " << row_z;
+				throw std::runtime_error(error.str());
+			}
+		}
+		return g;
+	}
+
+
+	Grid::Grid(uint8_t x_size, uint8_t z_size, uint8_t cell_size):
 	x_size(x_size),
 	z_size(z_size),
 	cell_size(cell_size),

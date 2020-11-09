@@ -2,6 +2,7 @@
 
 #include "Grid.h"
 
+#include <sstream>
 #include "PI.h"
 
 namespace rc {
@@ -193,4 +194,121 @@ namespace rc {
         ASSERT_FLOAT_EQ(63.000011f, hit.x); //TODO! What happened to the precision?
         ASSERT_FLOAT_EQ(64, hit.z);
     }
+
+
+    TEST(Grid, load__no_data) {
+        std::stringstream nothing;
+        ASSERT_ANY_THROW(Grid::load(nothing));
+    }
+
+    TEST(Grid, load__minimal_grid) {
+        std::stringstream grid_text;
+        grid_text <<
+            "x 1\n"
+            "z 1\n"
+            ".\n";
+        
+        const Grid g = Grid::load(grid_text);
+
+        ASSERT_EQ(1, (int) g.x_size);
+        ASSERT_EQ(1, (int) g.z_size);
+        ASSERT_FALSE(g.wall_at(0, 0));
+    }
+
+    TEST(Grid, load__minimal_wall) {
+        std::stringstream grid_text;
+        grid_text <<
+            "x 1\n"
+            "z 1\n"
+            "#\n";
+
+        const Grid g = Grid::load(grid_text);
+
+        ASSERT_TRUE(g.wall_at(0, 0));
+    }
+
+    TEST(Grid, load__bad_size_z) {
+        std::stringstream grid_text;
+        grid_text <<
+            "x 1\n"
+            "z -1\n"
+            ".\n";
+
+        ASSERT_ANY_THROW(Grid::load(grid_text));
+    }
+
+    TEST(Grid, load__bad_size_x) {
+        std::stringstream grid_text;
+        grid_text <<
+            "x 257\n"
+            "z 1\n"
+            ".\n";
+
+        ASSERT_ANY_THROW(Grid::load(grid_text));
+    }
+
+    TEST(Grid, load__invalid_char) {
+        std::stringstream grid_text;
+        grid_text <<
+            "x 257\n"
+            "z 1\n"
+            "P\n";
+
+        ASSERT_ANY_THROW(Grid::load(grid_text));
+    }
+
+    TEST(Grid, load__row) {
+        std::stringstream grid_text;
+        grid_text <<
+            "x 3\n"
+            "z 1\n"
+            "#.#\n";
+
+        const Grid g = Grid::load(grid_text);
+
+        ASSERT_EQ(3, (int)g.x_size);
+        ASSERT_EQ(1, (int)g.z_size);
+
+        ASSERT_TRUE(g.wall_at(0, 0));
+        ASSERT_FALSE(g.wall_at(1, 0));
+        ASSERT_TRUE(g.wall_at(2, 0));
+    }
+
+    TEST(Grid, load__column) {
+        std::stringstream grid_text;
+        grid_text <<
+            "x 1\n"
+            "z 3\n"
+            "#\n"
+            ".\n"
+            "#\n";
+
+        const Grid g = Grid::load(grid_text);
+
+        ASSERT_EQ(1, (int)g.x_size);
+        ASSERT_EQ(3, (int)g.z_size);
+
+        ASSERT_TRUE(g.wall_at(0, 0));
+        ASSERT_FALSE(g.wall_at(0, 1));
+        ASSERT_TRUE(g.wall_at(0, 2));
+    }
+
+    TEST(Grid, load__square) {
+        std::stringstream grid_text;
+        grid_text <<
+            "x 4\n"
+            "z 4\n"
+            "####\n"
+            "#..#\n"
+            "#..#\n"
+            "####\n";
+
+        const Grid g = Grid::load(grid_text);
+
+        // "Light" checks. Just the corners.
+        ASSERT_TRUE(g.wall_at(0, 0));
+        ASSERT_TRUE(g.wall_at(3, 3));
+    }
+
+    // TODO: test what happens if grid test goes outside grid size.
 }
