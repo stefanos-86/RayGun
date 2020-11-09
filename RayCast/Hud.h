@@ -8,6 +8,7 @@ namespace rc {
 	{
 	public:
 		void display(const Player& player, Canvas& c) const;
+		void alert_pause(Canvas& c) const;
 	};
 }
 

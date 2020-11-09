@@ -143,7 +143,7 @@ namespace rc {
 					player.shoot(map, world.enemies, *this);
 			}
 
-		if (pause_game_loop) 
+		if (pause_game_loop)
 			return;
 			// Ignore any other input.
 		    // TODO: this causes a CPU usage spike! Probably it is furiously polling the input.
@@ -205,13 +205,15 @@ namespace rc {
 				return;
 
 			if (pause_game_loop) {
-				continue; // Keep looping to poll input and unpause.
+				world.hud.alert_pause(*this);
 			}
-
-			draw_background();
-			projection.project_objects(world, *this);
-			draw_debug_crosshair();
-			world.hud.display(world.player, *this);
+			else
+			{
+				draw_background();
+				projection.project_objects(world, *this);
+				draw_debug_crosshair();
+				world.hud.display(world.player, *this);
+			}
 
 			SDL_RenderPresent(renderer);
 		}
@@ -256,7 +258,7 @@ namespace rc {
 
 		I am aware of http://www.libsdl.org/projects/SDL_ttf/, but I am trying to link in as
 		little extra libraries as possible. */
-	void UserInterface::draw_text(const std::string& text, uint16_t row, const int16_t column, const uint8_t font_size)
+	void UserInterface::draw_text(const std::string& text, uint16_t column, const uint16_t row, const uint8_t font_size)
 	{
 		constexpr uint8_t source_letter_side = 8;
 		constexpr uint8_t last_char_bitmap = 64;
