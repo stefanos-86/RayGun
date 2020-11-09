@@ -35,6 +35,7 @@ namespace rc {
 		float orientation;
 
 		uint8_t bullets_left;
+		uint8_t kills; // TODO: this should start at 0. I have to create a constructor, sooner or later.
 	};
 
 }

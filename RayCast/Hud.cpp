@@ -11,7 +11,8 @@ namespace rc {
 	{
 		std::stringstream onscreen_message;
 
-		onscreen_message << "AMMO:" << std::setfill(' ') << std::setw(2) << (int) player.bullets_left;
+		onscreen_message << "AMMO:" << std::setfill('0') << std::setw(2) << (int) player.bullets_left;
+		onscreen_message << "  KILLS:" << std::setw(3) << (int)player.kills;
 
 		c.draw_text(onscreen_message.str(), 10, 10, 16); // TODO: position/size should depend on screen size, not be hardcoded.
 	}

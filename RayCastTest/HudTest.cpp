@@ -7,25 +7,25 @@
 
 namespace rc {
 
-    TEST(Hud, display__ammo) {
+    TEST(Hud, display__ammo_kills) {
         Hud h;
 
         MockCanvas c;
-        Player p{0, 0, 0, 25};
+        Player p{0, 0, 0, 25, 123};
 
         h.display(p, c);
 
-        ASSERT_EQ("AMMO:25", c.last_drawn_string);
+        ASSERT_EQ("AMMO:25  KILLS:123", c.last_drawn_string);
     }
 
-    TEST(Hud, display__ammo_single_digit) {
+    TEST(Hud, display__ammo_kills_single_digit) {
         Hud h;
 
         MockCanvas c;
-        Player p{ 0, 0, 0, 1};
+        Player p{ 0, 0, 0, 1, 0};
 
         h.display(p, c);
 
-        ASSERT_EQ("AMMO: 1", c.last_drawn_string);
+        ASSERT_EQ("AMMO:01  KILLS:000", c.last_drawn_string);
     }
 }
