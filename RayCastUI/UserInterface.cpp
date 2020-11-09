@@ -134,8 +134,14 @@ namespace rc {
 		while (SDL_PollEvent(&user_input) != 0)
 			if (user_input.type == SDL_QUIT)
 				halt_game_loop = true;
-			else if (user_input.type == SDL_KEYDOWN && user_input.key.keysym.scancode == SDL_SCANCODE_P)
-				pause_game_loop = !pause_game_loop;
+			else if (user_input.type == SDL_KEYDOWN) {
+				if (user_input.key.keysym.scancode == SDL_SCANCODE_P)
+					pause_game_loop = !pause_game_loop;
+				else if (user_input.key.keysym.scancode == SDL_SCANCODE_SPACE && !pause_game_loop)
+					// Cheap way out to avoid a cooldown timer on the shoot key. Using the key state
+					// would cause a shot per frame (too fast).
+					player.shoot(map, world.enemies, *this);
+			}
 
 		if (pause_game_loop) 
 			return;
@@ -154,9 +160,6 @@ namespace rc {
 			player.turn(-1);
 		else if (key_states[SDL_SCANCODE_RIGHT])
 			player.turn(+1);
-
-		if (key_states[SDL_SCANCODE_SPACE])  // TODO: fires too fast! One round per frame!
-			player.shoot(map, world.enemies, *this);
 
 		if (key_states[SDL_SCANCODE_ESCAPE])
 			halt_game_loop = true;
