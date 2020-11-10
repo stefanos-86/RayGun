@@ -176,6 +176,7 @@
     <ClCompile Include="ProjectionPlane.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

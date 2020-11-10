@@ -13,6 +13,8 @@ namespace rc {
 		Player player;
 		Enemies enemies;
 		Hud hud;
+
+		static World load(std::istream& serialized_world);
 	};
 
 }

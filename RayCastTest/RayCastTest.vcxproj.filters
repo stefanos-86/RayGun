@@ -8,9 +8,11 @@
     <ClCompile Include="RayTest.cpp" />
     <ClCompile Include="SpriteTest.cpp" />
     <ClCompile Include="HudTest.cpp" />
+    <ClCompile Include="WorldTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="MockCanvas.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

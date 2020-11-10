@@ -38,7 +38,7 @@ namespace rc {
 	class Grid
 	{
 	public:
-		static Grid load(std::istream& serialized_grid);
+		
 
 		/**Y is the vertical axis. The grid is on the floor, covers X and Z. */
 		Grid(uint8_t x_size, uint8_t z_size, uint8_t cell_size);
