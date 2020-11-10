@@ -310,5 +310,5 @@ namespace rc {
         ASSERT_TRUE(g.wall_at(3, 3));
     }
 
-    // TODO: test what happens if grid test goes outside grid size.
+    // TODO: test what happens if grid test goes outside grid size. Or if the grid is missing, has holes (\n\n) etc.
 }

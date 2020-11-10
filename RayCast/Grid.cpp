@@ -10,7 +10,7 @@
 #include "PI.h"
 
 namespace rc {
-	Grid Grid::load(std::istream& serialized_grid)
+	Grid Grid::load(std::istream& serialized_grid)  // TODO: leave there? How do I load the enemies? And the player? This belongs to world!
 	{
 		if (!serialized_grid.good())
 			throw std::runtime_error("Bad before beginning. Empty?");
