@@ -1,44 +1,44 @@
 #include "UserInterface.h"
 
 #include <iostream>
+#include <sstream>
 
 #include "Grid.h"
 #include "UserInterface.h"
 
+// TODO Audio?
+// https://github.com/jakebesworth/Simple-SDL2-Audio/tree/master/src
+// https://gist.github.com/armornick/3447121
+
+
 /** I am not going to implement code to load the world from a file. 
     This simple hardcode will do. */
-rc::Grid fake_load_level() {
-	rc::Grid g(10, 15, 64);
+std::stringstream fake_file_load() {
+	std::stringstream level;
+	level << 
+		"x 10\n"
+		"z 15\n"
+		"##########\n"  //!!! Row 0 is here.
+		"#........#\n"
+		"#........#\n"
+		"#........#\n"
+		"####..####\n"
+		"#........#\n"
+		"#........#\n"
+		"#..#.....#\n"
+		"#....E.#.#\n"
+		"#........#\n"
+		"#..####..#\n"
+		"#....E...#\n"
+		"#....E...#\n"
+		"#....E...#\n"
+		"##########\n"
+		"player_start_x 335\n"
+		"player_start_z 80\n"
+		"player_start_orientation_rad 1.57\n"
+		"player_ammo 30\n";
 
-	// Make a border of walls.
-	for (uint8_t i = 0; i < g.x_size; ++i) {
-		g.build_wall(i, 0);  // Bottom row.
-		g.build_wall(i, g.z_size -1);  // Top row.
-	}
-
-	for (uint8_t j = 0; j < g.z_size; ++j) {
-		g.build_wall(0, j);  // Left row.
-		g.build_wall(g.x_size - 1, j); // Right row.
-	}
-
-	// "Spine" in the middle of the 1st room.
-	for (uint8_t i = 3; i < 6; ++i) {
-		g.build_wall(i, 4);
-		g.build_wall(i, 5);
-	}
-
-	// Couple of cubes "alone" in the 1st room.
-	g.build_wall(3, 7);
-	g.build_wall(7, 5);
-
-	// Wall between rooms, skipping a door.
-	const uint8_t door_break = g.x_size / 2 - 1;
-	for (uint8_t i = 0; i < door_break; ++i)
-		g.build_wall(i, 10);
-	for (uint8_t i = door_break + 2; i < g.x_size; ++i)
-		g.build_wall(i, 10);
-
-	return g;
+	return level;
 }
 
 int main(int argc, char* args[])
@@ -47,11 +47,8 @@ int main(int argc, char* args[])
 		// Used only to find where the image files are supposed to go. #include <filesystem> to reuse.
 		//std::cout << "Current path is " << std::filesystem::current_path() << std::endl;
 
-		rc::World world{
-			fake_load_level(),
-			{335, 862, 4.7f, 30},  // "Fake load player", hardcode it to a "nice" position in the world.
-			{ { {320.0f, 512.0f, 64, 0}, {200.0f, 512.0f, 64, 1}, {192.0f, 192.0f, 64, 2} } } // Here are the enemies.
-		};
+		std::stringstream level_file = fake_file_load();
+		rc::World world = rc::World::load(level_file);
 
 		rc::UserInterface ui;
 		ui.openWindow();

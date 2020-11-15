@@ -150,6 +150,21 @@ namespace rc {
         ASSERT_EQ(30, p.bullets_left);
     }
 
+
+    TEST(World, load__enemies_just_one) {
+        std::stringstream world_text;
+        world_text <<
+            "x 1\n"
+            "z 1\n"
+            "E\n"
+            PLAYER_NOT_IMPORTANT;
+
+        const Enemies e = World::load(world_text).enemies;
+
+        ASSERT_EQ(1, e.sprites.size());
+        // Sprite x and z are private. I would have to test via the intersection, but that is complicated...
+    }
+    
     // TODO: test what happens if grid test goes outside grid size. Or if the grid is missing, has holes (\n\n) etc.
     // TODO: try to comment in the stream. Use ; as a separator (saves # for the walls and it is the assembler convention).
 }

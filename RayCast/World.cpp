@@ -49,14 +49,18 @@ namespace rc {
 		const uint8_t x = read_token<uint8_t>("x", serialized_world);
 		const uint8_t z = read_token<uint8_t>("z", serialized_world);
 
-		Grid g(x, z, 64);  // TODO: do I make the cell size a parameter?? I don't think the rest of the code is ready for this.
-
 		char cell;
 		if (!serialized_world.get(cell)) // Skip the \n after the z.
 			throw std::runtime_error("No grid data");
 
+
+		Grid g(x, z, 64);  // TODO: do I make the cell size a parameter?? I don't think the rest of the code is ready for this.
+		Enemies e;
+		uint8_t sprite_id = 0;
+
 		uint8_t column_x = 0;
 		uint8_t row_z = 0;
+		const uint8_t half_cell = g.cell_size / 2;  // TODO: move in the grid (center_of(cell)?).
 		while (row_z < g.z_size && serialized_world.get(cell)) {
 			switch (cell)
 			{
@@ -66,25 +70,29 @@ namespace rc {
 			case '.':
 				++column_x;
 				break;
+			case 'E':
+				e.sprites.emplace_back(g.cell_size * column_x + half_cell, g.cell_size * row_z + half_cell, 64, sprite_id++);  // TODO Again the damn size hardcode. And the id computed outside the Sprite class.
+				++column_x;
+				break;
 			case '\n':
 				column_x = 0;
 				++row_z;
 				break;
 			default:
 				std::stringstream error;
-				error << "Invalid char [" << cell << "] at " << column_x << ", " << row_z;
+				error << "Invalid char [" << cell << "] at " << (int) column_x << ", " << (int) row_z;
 				throw std::runtime_error(error.str());
 			}
 		}
 
-		const float player_x = read_token<float>("player_start_x", serialized_world);
+		const float player_x = read_token<float>("player_start_x", serialized_world);  // TODO this is silly, the player start could be on the map.
 		const float player_z = read_token<float>("player_start_z", serialized_world);
 		const float player_orientation = read_token<float>("player_start_orientation_rad", serialized_world);
 		const uint8_t ammo = read_token<uint8_t>("player_ammo", serialized_world);
 
 		Player p{player_x, player_z, player_orientation, ammo};  // Not set: the kills, that begin at 0.
 		
-		return World{g, p};
+		return World{g, p, e};
 	}
 
 }
