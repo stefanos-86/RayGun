@@ -6,8 +6,6 @@
 #include <sstream>
 #include <stdexcept>
 
-#include <iostream>
-
 namespace rc {
 	template <typename READ_TYPE>
 	static READ_TYPE read_token(const std::string& expected_token, std::istream& serialized_world) {
@@ -18,8 +16,6 @@ namespace rc {
 			throw std::runtime_error("Bad stream.");
 
 		serialized_world >> name >> value;
-
-		std::cout << "-" << name << "-" << value << std::endl;
 
 		if (name != expected_token) {
 			std::stringstream error_message;

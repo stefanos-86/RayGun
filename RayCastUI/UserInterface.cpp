@@ -301,4 +301,26 @@ namespace rc {
 		}
 	}
 
+	void UserInterface::draw_image(uint16_t column_x, const uint16_t row_y, const TextureIndex what_to_draw)
+	{
+		const Image& texture = textures.at(what_to_draw);
+
+		SDL_Rect source_slice;
+		source_slice.x = 0;
+		source_slice.y = 0;
+		source_slice.w = texture.surface->w;
+		source_slice.h = texture.surface->h;
+
+
+		// TODO: scale with the screen...
+		SDL_Rect dest_slice;
+		dest_slice.x = column_x;
+		dest_slice.y = row_y;
+		dest_slice.w = texture.surface->w;
+		dest_slice.h = texture.surface->h;
+
+		const int rc = SDL_RenderCopy(renderer, texture.texture, &source_slice, &dest_slice);  // TODO Or maybe I have to use SDL_BlitSurface?
+		sdl_return_check(rc);
+	}
+
 }

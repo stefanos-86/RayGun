@@ -64,6 +64,8 @@ namespace rc {
 
 		void draw_text(const std::string& text, uint16_t column, const uint16_t row, const uint8_t font_size) final;
 
+		void draw_image(uint16_t column_x, const uint16_t row_y, const TextureIndex what_to_draw) final;
+
 	private:
 		SDL_Window* main_window;
 		SDL_Surface* main_window_surface;
