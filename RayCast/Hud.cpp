@@ -11,14 +11,22 @@ namespace rc {
 	{
 		std::stringstream onscreen_message;
 
+		// TODO: sprintf may be simpler...
 		onscreen_message << "AMMO:" << std::setfill('0') << std::setw(2) << (int) player.bullets_left;
 		onscreen_message << "  KILLS:" << std::setw(3) << (int)player.kills;
 
 		c.draw_image((640-64)/2, 480 - 64, TextureIndex::HUD);  // TODO Some kind of "automatically to bottom/center" functionality needed.
 		c.draw_text(onscreen_message.str(), 10, 10, 16); // TODO: position/size should depend on screen size, not be hardcoded.
 	}
+
 	void Hud::alert_pause(Canvas& c) const
 	{
 		c.draw_text("PAUSED", 50, 200, 96);  // TODO: again hardcodes...
+	}
+
+	void Hud::alert_endgame(Canvas& c) const
+	{
+		c.draw_text("ESCAPED!", 10, 200, 80);  // TODO: again hardcodes...
+		// TODO: semi invisible... need to give a white edge to the letters, to increase contrast when on dark backgrounds.
 	}
 }

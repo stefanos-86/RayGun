@@ -33,7 +33,6 @@ namespace rc {
 			erase them. I take the coward's shortcut. */ 
 		bool active;
 
-	private:
 		const float x;
 		const float z;
 	};

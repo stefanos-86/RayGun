@@ -95,4 +95,16 @@ namespace rc {
 		return World{g, p, objects};
 	}
 
+
+	bool World::endgame() const {
+		for (const auto& exit_sprite : sprites.landmarks) {
+			const auto player_cell = map.grid_coordinate(player.x_position, player.z_position);
+			const auto exit_cell = map.grid_coordinate(exit_sprite.x, exit_sprite.z);
+
+			if (player_cell.x == exit_cell.x && player_cell.z == exit_cell.z)  // TODO GridCoordinates needs operator==
+				return true;
+		}
+
+		return false;
+	}
 }

@@ -73,6 +73,7 @@ namespace rc {
 
 		bool halt_game_loop;
 		bool pause_game_loop;
+		bool endgame;
 
 		std::unordered_map<TextureIndex, Image> textures;
 

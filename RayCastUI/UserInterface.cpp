@@ -94,7 +94,8 @@ namespace rc {
 		main_window_surface(nullptr),
 		renderer(nullptr),
 		halt_game_loop(true),  // Safe default.
-		pause_game_loop(false)
+		pause_game_loop(false),
+		endgame(false)
 	{
 	}
 
@@ -135,15 +136,17 @@ namespace rc {
 			if (user_input.type == SDL_QUIT)
 				halt_game_loop = true;
 			else if (user_input.type == SDL_KEYDOWN) {
-				if (user_input.key.keysym.scancode == SDL_SCANCODE_P)
+				if (user_input.key.keysym.scancode == SDL_SCANCODE_P && ! endgame)
 					pause_game_loop = !pause_game_loop;
+				else if (user_input.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+					halt_game_loop = true;
 				else if (user_input.key.keysym.scancode == SDL_SCANCODE_SPACE && !pause_game_loop)
 					// Cheap way out to avoid a cooldown timer on the shoot key. Using the key state
 					// would cause a shot per frame (too fast).
 					player.shoot(map, world.sprites, *this);
 			}
 
-		if (pause_game_loop)
+		if (pause_game_loop || endgame)
 			return;
 			// Ignore any other input.
 		    // TODO: this causes a CPU usage spike! Probably it is furiously polling the input.
@@ -160,9 +163,6 @@ namespace rc {
 			player.turn(-1);
 		else if (key_states[SDL_SCANCODE_RIGHT])
 			player.turn(+1);
-
-		if (key_states[SDL_SCANCODE_ESCAPE])
-			halt_game_loop = true;
 	}
 
 	void UserInterface::draw_background() {
@@ -206,6 +206,10 @@ namespace rc {
 
 			if (pause_game_loop) {
 				world.hud.alert_pause(*this);
+			}
+			else if (world.endgame()) {
+				world.hud.alert_endgame(*this);
+				endgame = true;
 			}
 			else
 			{

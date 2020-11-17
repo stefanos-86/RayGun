@@ -15,6 +15,8 @@ namespace rc {
 		Hud hud;
 
 		static World load(std::istream& serialized_world);
+
+		bool endgame() const;  // TODO test
 	};
 
 }
