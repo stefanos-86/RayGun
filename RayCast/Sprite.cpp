@@ -4,10 +4,11 @@
 #include <algorithm>
 #include <cmath>
 #include <float.h>
+#include <stdexcept>
 
+#include "Canvas.h"
 #include "PI.h"
 
-#include <iostream>
 
 namespace rc {
 		
@@ -89,23 +90,41 @@ RayHit Sprite::intersection(const Ray& ray) const
 	return result;
 }
 
-std::vector<RayHit> Enemies::all_intersections(const Ray& ray, const RayHit& cutoff) const noexcept
+std::vector<RayHit> Objects::all_intersections(const Ray& ray, const RayHit& cutoff, const int enumerated_kinds) const noexcept
 {
 	std::vector<RayHit> valid_hits;  // Do not reserve. There are few interesction at the same time, not worth it.
 	
-	for (const Sprite& sprite : sprites) {
-		if (!sprite.active)
-			continue;
+	if (enumerated_kinds & KIND::ENEMIES)
+		for (const Sprite& sprite : enemies) {
+			if (!sprite.active)
+				continue;
 
-		const RayHit candidate_hit = sprite.intersection(ray);
+			RayHit candidate_hit = sprite.intersection(ray);
 
-		if (candidate_hit.really_hit() &&
-			cutoff.really_hit() &&
-			candidate_hit.distance < cutoff.distance)
-		{
-			valid_hits.push_back(candidate_hit);
+			if (candidate_hit.really_hit() &&
+				cutoff.really_hit() &&
+				candidate_hit.distance < cutoff.distance)
+			{
+				candidate_hit.type = TextureIndex::ENEMY;  // Why is this not in the sprite??? TODO!
+				valid_hits.push_back(candidate_hit);
+			}
 		}
-	}
+
+	if (enumerated_kinds & KIND::LANDMARKS)  // TODO! Tons of duplication!
+		for (const Sprite& sprite : landmarks) {
+			if (!sprite.active)  // ALSO todo: can't deactivate landmarks
+				continue;
+
+			RayHit candidate_hit = sprite.intersection(ray);
+
+			if (candidate_hit.really_hit() &&
+				cutoff.really_hit() &&
+				candidate_hit.distance < cutoff.distance)
+			{
+				candidate_hit.type = TextureIndex::EXIT;  // TODO: works until there is only one landmark...
+				valid_hits.push_back(candidate_hit);
+			}
+		}
 
 	std::sort(valid_hits.begin(), valid_hits.end(),
 		[](const RayHit& h1, const RayHit& h2) {
@@ -116,15 +135,15 @@ std::vector<RayHit> Enemies::all_intersections(const Ray& ray, const RayHit& cut
 	return valid_hits;
 }
 
-void Enemies::deactivate(const uint8_t sprite_id)
+void Objects::deactivate(const uint8_t sprite_id)  // TODO! Mark that this is only for enemies!!!
 {
-	const auto to_be_shut_off = std::find_if(sprites.begin(), sprites.end(),
+	const auto to_be_shut_off = std::find_if(enemies.begin(), enemies.end(),
 		[sprite_id](const Sprite& s) {
 			return s.id == sprite_id;
 		}
 	);
 
-	if (to_be_shut_off == sprites.end())
+	if (to_be_shut_off == enemies.end())
 		throw std::runtime_error("Attempting to deactivate a sprite that is not there.");
 
 	to_be_shut_off->active = false;

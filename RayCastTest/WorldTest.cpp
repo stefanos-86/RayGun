@@ -159,9 +159,9 @@ namespace rc {
             "E\n"
             PLAYER_NOT_IMPORTANT;
 
-        const Enemies e = World::load(world_text).enemies;
+        const Objects e = World::load(world_text).sprites;
 
-        ASSERT_EQ(1, e.sprites.size());
+        ASSERT_EQ(1, e.enemies.size());
         // Sprite x and z are private. I would have to test via the intersection, but that is complicated...
     }
     

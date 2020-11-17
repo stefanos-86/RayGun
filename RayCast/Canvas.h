@@ -9,7 +9,8 @@ namespace rc {
 		WALL,
 		ENEMY,
 		FONT,
-		HUD
+		HUD,
+		EXIT
 	};
 
 

@@ -51,13 +51,13 @@ namespace rc {
 				c.draw_slice(scan_column, wall_projection.top_row, wall_projection.height, wall_hit.offset, TextureIndex::WALL);
 			}
 
-			const std::vector<RayHit> enemies_hit = world.enemies.all_intersections(r, wall_hit);
+			const std::vector<RayHit> enemies_hit = world.sprites.all_intersections(r, wall_hit, Objects::KIND::ENEMIES | Objects::KIND::LANDMARKS);
 			for (const RayHit& enemy_hit : enemies_hit)
 			{
 				const float corrected_distance = enemy_hit.distance * fishbowl;
 
 				const SliceProjection enemy_projection = project_slice(corrected_distance, 64); // Size of the sprite! TODO: avoid hardcode.
-				c.draw_slice(scan_column, enemy_projection.top_row, enemy_projection.height, enemy_hit.offset, TextureIndex::ENEMY);
+				c.draw_slice(scan_column, enemy_projection.top_row, enemy_projection.height, enemy_hit.offset, enemy_hit.type);
 			}
 
 			r.alpha_rad += scan_step_radians;

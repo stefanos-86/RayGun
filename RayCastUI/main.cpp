@@ -31,7 +31,7 @@ std::stringstream fake_file_load() {
 		"#..####..#\n"
 		"#....E...#\n"
 		"#....E...#\n"
-		"#....E...#\n"
+		"#X...E...#\n"
 		"##########\n"
 		"player_start_x 335\n"
 		"player_start_z 80\n"
@@ -57,6 +57,7 @@ int main(int argc, char* args[])
 		ui.set_texture(rc::TextureIndex::ENEMY, "bad_guy.bmp");
 		ui.set_texture(rc::TextureIndex::FONT, "font.bmp");
 		ui.set_texture(rc::TextureIndex::HUD, "gunFromBehind.bmp");
+		ui.set_texture(rc::TextureIndex::EXIT, "exit.bmp");
 
 		ui.game_loop(world);
 	}

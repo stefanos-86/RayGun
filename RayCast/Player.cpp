@@ -49,7 +49,7 @@ namespace rc {
 			orientation = 0;
 	}
 
-	void Player::shoot(const Grid& map, Enemies& targets, const Canvas& image_tester) noexcept
+	void Player::shoot(const Grid& map, Objects& targets, const Canvas& image_tester) noexcept
 	{
 		if (bullets_left == 0)
 			return;
@@ -57,7 +57,7 @@ namespace rc {
 		const Ray gun_ray(x_position, z_position, orientation);
 		const RayHit max_range = map.cast_ray(gun_ray);
 
-		const std::vector<RayHit> hits_targets = targets.all_intersections(gun_ray, max_range);
+		const std::vector<RayHit> hits_targets = targets.all_intersections(gun_ray, max_range, Objects::KIND::ENEMIES);
 
 		for (const RayHit& hit : hits_targets) {
 			if (!image_tester.transparent_pixel(hit.offset, 32, TextureIndex::ENEMY)) {  // TODO: remove gun height hardcode. Also, is this "in tune" with the projection? Do I have to do something like WC -> local coordinates change? And what if I introduce different enemies?

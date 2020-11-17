@@ -39,10 +39,17 @@ namespace rc {
 	};
 
 
-	/** Just a collection to keep track of all the enemies. */
-	class Enemies {
+	/** Just a collection to keep track of all the objects that can be seen onscreen. */
+	class Objects {
 	public:
-		std::vector<Sprite> sprites;
+		std::vector<Sprite> enemies;
+		std::vector<Sprite> landmarks;
+
+		enum KIND
+		{
+			ENEMIES = 0x1,
+			LANDMARKS = 0x10
+		};
 
 		/** Returns all the hists from the intersection between the ray and any of the sprites.
 		    Hits further from the ray than the cutoff distance (the distance of the cutoff hit) are discarded.
@@ -53,7 +60,7 @@ namespace rc {
 
 			There is also room to improve the memory managment, probably (e. g. do not return a new vector every time).
 		*/
-		std::vector <RayHit> all_intersections(const Ray& ray, const RayHit& cutoff) const noexcept;
+		std::vector <RayHit> all_intersections(const Ray& ray, const RayHit& cutoff, const int enumerated_kinds) const noexcept;
 
 		void deactivate(const uint8_t sprite_id);
 	};

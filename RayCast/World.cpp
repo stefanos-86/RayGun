@@ -51,7 +51,7 @@ namespace rc {
 
 
 		Grid g(x, z, 64);  // TODO: do I make the cell size a parameter?? I don't think the rest of the code is ready for this.
-		Enemies e;
+		Objects objects;
 		uint8_t sprite_id = 0;
 
 		uint8_t column_x = 0;
@@ -67,7 +67,11 @@ namespace rc {
 				++column_x;
 				break;
 			case 'E':
-				e.sprites.emplace_back(g.cell_size * column_x + half_cell, g.cell_size * row_z + half_cell, 64, sprite_id++);  // TODO Again the damn size hardcode. And the id computed outside the Sprite class.
+				objects.enemies.emplace_back(g.cell_size * column_x + half_cell, g.cell_size * row_z + half_cell, 64, sprite_id++);  // TODO Again the damn size hardcode. And the id computed outside the Sprite class.
+				++column_x;
+				break;
+			case 'X':  // TODO: duplication!
+				objects.landmarks.emplace_back(g.cell_size * column_x + half_cell, g.cell_size * row_z + half_cell, 64, sprite_id++);  // TODO Again the damn size hardcode. And the id computed outside the Sprite class.
 				++column_x;
 				break;
 			case '\n':
@@ -88,7 +92,7 @@ namespace rc {
 
 		Player p{player_x, player_z, player_orientation, ammo};  // Not set: the kills, that begin at 0.
 		
-		return World{g, p, e};
+		return World{g, p, objects};
 	}
 
 }

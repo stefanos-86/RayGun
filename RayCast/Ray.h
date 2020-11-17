@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "Canvas.h" // TODO this really should not be there!!!
+
 /** Structures to describe the generic ray, to support all the ray-casting variants. */
 
 namespace rc{
@@ -51,6 +53,7 @@ namespace rc{
 		float distance;
 		uint8_t offset;
 		uint8_t hit_object_id; /// May not be always set. TODO: smell...
+		TextureIndex type; // May not be set. Also TODO even more smell.
 
 	private:
 		static constexpr float NO_HIT = -1;  // This is an impossible value for the distance.

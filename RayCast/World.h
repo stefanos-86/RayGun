@@ -11,7 +11,7 @@ namespace rc {
 	struct World {
 		Grid map;
 		Player player;
-		Enemies enemies;
+		Objects sprites;
 		Hud hud;
 
 		static World load(std::istream& serialized_world);

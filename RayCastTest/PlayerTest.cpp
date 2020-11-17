@@ -88,7 +88,7 @@ namespace rc {
 		Player p{ 0, 0, 0};
 		p.bullets_left = 1;
 
-		Enemies no_one;
+		Objects no_one;
 		MockCanvas always_hit;
 		p.shoot(empty_map, no_one, always_hit);
 		ASSERT_EQ(0, p.bullets_left);

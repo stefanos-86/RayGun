@@ -140,7 +140,7 @@ namespace rc {
 				else if (user_input.key.keysym.scancode == SDL_SCANCODE_SPACE && !pause_game_loop)
 					// Cheap way out to avoid a cooldown timer on the shoot key. Using the key state
 					// would cause a shot per frame (too fast).
-					player.shoot(map, world.enemies, *this);
+					player.shoot(map, world.sprites, *this);
 			}
 
 		if (pause_game_loop)
