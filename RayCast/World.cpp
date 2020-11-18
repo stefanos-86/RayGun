@@ -60,7 +60,6 @@ namespace rc {
 
 		uint8_t column_x = 0;
 		uint8_t row_z = 0;
-		const uint8_t half_cell = g.cell_size / 2;  // TODO: move in the grid (center_of(cell)?).
 		while (row_z < g.z_size && serialized_world.get(cell)) {
 			switch (cell)
 			{
