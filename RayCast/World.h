@@ -16,6 +16,7 @@ namespace rc {
 
 		static World load(std::istream& serialized_world);
 
+		/** Tells if the game is complete. True when the player is in the same cell as an exit. */
 		bool endgame() const;  // TODO test
 	};
 

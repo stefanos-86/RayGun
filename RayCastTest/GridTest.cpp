@@ -7,6 +7,28 @@
 
 namespace rc {
 
+    TEST(GridCoordinate, Equality_same) {
+        GridCoordinate a, b;
+        a.x = 10;
+        a.z = 34;
+        b.x = a.x;
+        b.z = a.z;
+
+        ASSERT_EQ(a, b);
+        ASSERT_FALSE(a != b);
+    }
+
+    TEST(GridCoordinate, Equality_different) {
+        GridCoordinate a, b;
+        a.x = 10;
+        a.z = 34;
+        b.x = a.x;
+        b.z = a.z + 1;
+
+        ASSERT_NE(a, b);
+        ASSERT_FALSE(a == b);
+    }
+
     TEST(Grid, Creation) {
         Grid g(10, 11, 64);
 

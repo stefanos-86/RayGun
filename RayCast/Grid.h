@@ -27,6 +27,11 @@ namespace rc {
 		static constexpr uint8_t OUTSIDE = std::numeric_limits<uint8_t>::max();   /// NO DEFENSE in case the grid is big enough to require this value.
 	};
 
+	/** Equality of grid coordinates takes into account the value of the coordinates.
+	    No special provision for outside world conditions. Both the coordinates have to match. */
+	bool operator==(const GridCoordinate& lhs, const GridCoordinate& rhs) noexcept;
+	bool operator!=(const GridCoordinate& lhs, const GridCoordinate& rhs) noexcept;  // Remove with C++20.
+
 	struct WorldCoordinate {
 		float x;
 		float z;

@@ -116,7 +116,7 @@ namespace rc {
 			const auto player_cell = map.cell_of(player.x_position, player.z_position);
 			const auto exit_cell = map.cell_of(exit_sprite.x, exit_sprite.z);
 
-			if (player_cell.x == exit_cell.x && player_cell.z == exit_cell.z)  // TODO GridCoordinates needs operator==
+			if (player_cell == exit_cell)
 				return true;
 		}
 

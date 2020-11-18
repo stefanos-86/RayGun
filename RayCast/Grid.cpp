@@ -236,4 +236,14 @@ bool GridCoordinate::outside_world() const noexcept
 	return (x == GridCoordinate::OUTSIDE || z == GridCoordinate::OUTSIDE);
 }
 
+bool operator==(const GridCoordinate& lhs, const GridCoordinate& rhs) noexcept
+{
+	return lhs.x == rhs.x && lhs.z == rhs.z;
+}
+
+bool operator!=(const GridCoordinate& lhs, const GridCoordinate& rhs) noexcept
+{
+	return ! (lhs == rhs);
+}
+
 }
