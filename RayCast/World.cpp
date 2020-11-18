@@ -6,6 +6,7 @@
 #include <sstream>
 #include <stdexcept>
 
+
 namespace rc {
 	template <typename READ_TYPE>
 	static READ_TYPE read_token(const std::string& expected_token, std::istream& serialized_world) {
@@ -54,6 +55,10 @@ namespace rc {
 		Objects objects;
 		uint8_t sprite_id = 0;
 
+		float player_x = 0;
+		float player_z = 0;
+		bool player_position_loaded = false;
+
 		uint8_t column_x = 0;
 		uint8_t row_z = 0;
 		const uint8_t half_cell = g.cell_size / 2;  // TODO: move in the grid (center_of(cell)?).
@@ -74,6 +79,15 @@ namespace rc {
 				objects.landmarks.emplace_back(g.cell_size * column_x + half_cell, g.cell_size * row_z + half_cell, 64, sprite_id++);  // TODO Again the damn size hardcode. And the id computed outside the Sprite class.
 				++column_x;
 				break;
+			case 'P':
+				if (player_position_loaded)
+					throw std::runtime_error("More than one player in the map.");
+
+				player_x = g.cell_size * column_x + half_cell;  // TODO! grid.center_of...
+				player_z = g.cell_size * row_z + half_cell; 
+				player_position_loaded = true;
+				++column_x;
+				break;
 			case '\n':
 				column_x = 0;
 				++row_z;
@@ -84,9 +98,10 @@ namespace rc {
 				throw std::runtime_error(error.str());
 			}
 		}
-
-		const float player_x = read_token<float>("player_start_x", serialized_world);  // TODO this is silly, the player start could be on the map.
-		const float player_z = read_token<float>("player_start_z", serialized_world);
+		
+		if (!player_position_loaded)
+			throw std::runtime_error("No player on the map.");
+		
 		const float player_orientation = read_token<float>("player_start_orientation_rad", serialized_world);
 		const uint8_t ammo = read_token<uint8_t>("player_ammo", serialized_world);
 

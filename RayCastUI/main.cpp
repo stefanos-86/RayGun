@@ -19,7 +19,7 @@ std::stringstream fake_file_load() {
 		"x 10\n"
 		"z 15\n"
 		"##########\n"  //!!! Row 0 is here.
-		"#........#\n"
+		"#....P...#\n"
 		"#........#\n"
 		"#........#\n"
 		"####..####\n"
@@ -33,8 +33,6 @@ std::stringstream fake_file_load() {
 		"#....E...#\n"
 		"#X...E...#\n"
 		"##########\n"
-		"player_start_x 335\n"
-		"player_start_z 80\n"
 		"player_start_orientation_rad 1.57\n"
 		"player_ammo 30\n";
 

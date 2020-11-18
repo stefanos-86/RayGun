@@ -5,7 +5,7 @@
 #include <sstream>
 
 // TODO: not sure I can get the same effect of "piece of a multi-literal string" with a constexpr.
-#define PLAYER_NOT_IMPORTANT "player_start_x 0 player_start_z 0 player_start_orientation_rad 0 player_ammo 0\n"
+#define PLAYER_DETAILS_NOT_IMPORTANT "player_start_orientation_rad 0 player_ammo 0\n"
 
 namespace rc {
 
@@ -19,8 +19,8 @@ namespace rc {
         world_text <<
             "x 1\n"
             "z 1\n"
-            ".\n"
-            PLAYER_NOT_IMPORTANT;
+            "P\n"
+            PLAYER_DETAILS_NOT_IMPORTANT;
 
         const Grid g = World::load(world_text).map;
 
@@ -32,10 +32,10 @@ namespace rc {
     TEST(World, load__map_minimal_wall) {
         std::stringstream world_text;
         world_text <<
-            "x 1\n"
+            "x 2\n"
             "z 1\n"
-            "#\n"
-            PLAYER_NOT_IMPORTANT;
+            "#P\n"
+            PLAYER_DETAILS_NOT_IMPORTANT;
 
         const Grid g = World::load(world_text).map;
 
@@ -48,7 +48,7 @@ namespace rc {
             "x 1\n"
             "z -1\n"
             ".\n"
-            PLAYER_NOT_IMPORTANT;
+            PLAYER_DETAILS_NOT_IMPORTANT;
 
         ASSERT_ANY_THROW(World::load(world_text));
     }
@@ -59,7 +59,7 @@ namespace rc {
             "x 257\n"
             "z 1\n"
             ".\n"
-            PLAYER_NOT_IMPORTANT;
+            PLAYER_DETAILS_NOT_IMPORTANT;
 
         ASSERT_ANY_THROW(World::load(world_text));
     }
@@ -70,7 +70,7 @@ namespace rc {
             "x 257\n"
             "z 1\n"
             "P\n"
-            PLAYER_NOT_IMPORTANT;  // Not ever reached, but must give correct input in this part.
+            PLAYER_DETAILS_NOT_IMPORTANT;  // Not ever reached, but must give correct input in this part.
 
         ASSERT_ANY_THROW(World::load(world_text));
     }
@@ -80,8 +80,8 @@ namespace rc {
         world_text <<
             "x 3\n"
             "z 1\n"
-            "#.#\n"
-            PLAYER_NOT_IMPORTANT;
+            "#P#\n"
+            PLAYER_DETAILS_NOT_IMPORTANT;
 
         const Grid g = World::load(world_text).map;
 
@@ -99,9 +99,9 @@ namespace rc {
             "x 1\n"
             "z 3\n"
             "#\n"
-            ".\n"
+            "P\n"
             "#\n"
-            PLAYER_NOT_IMPORTANT;
+            PLAYER_DETAILS_NOT_IMPORTANT;
 
         const Grid g = World::load(world_text).map;
 
@@ -119,10 +119,10 @@ namespace rc {
             "x 4\n"
             "z 4\n"
             "####\n"
-            "#..#\n"
+            "#P.#\n"
             "#..#\n"
             "####\n"
-            PLAYER_NOT_IMPORTANT;
+            PLAYER_DETAILS_NOT_IMPORTANT;
 
         const Grid g = World::load(world_text).map;
 
@@ -134,18 +134,17 @@ namespace rc {
     TEST(World, load__player) {
         std::stringstream world_text;
         world_text <<
-            "x 1\n"
-            "z 1\n"
-            ".\n"
-            "player_start_x 31.5\n"
-            "player_start_z 32\n"
+            "x 2\n"
+            "z 2\n"
+            "..\n"
+            "P.\n"
             "player_start_orientation_rad 12.5\n"
             "player_ammo 30\n";  // TODO: what happens if I put a float here? Or a letter? Or nothing at all?
 
         const Player p = World::load(world_text).player;
 
-        ASSERT_EQ(31.5, p.x_position);
-        ASSERT_EQ(32, p.z_position);
+        ASSERT_EQ(32, p.x_position);
+        ASSERT_EQ(96, p.z_position);
         ASSERT_EQ(12.5, p.orientation);
         ASSERT_EQ(30, p.bullets_left);
     }
@@ -154,10 +153,10 @@ namespace rc {
     TEST(World, load__enemies_just_one) {
         std::stringstream world_text;
         world_text <<
-            "x 1\n"
+            "x 2\n"
             "z 1\n"
-            "E\n"
-            PLAYER_NOT_IMPORTANT;
+            "EP\n"
+            PLAYER_DETAILS_NOT_IMPORTANT;
 
         const Objects e = World::load(world_text).sprites;
 

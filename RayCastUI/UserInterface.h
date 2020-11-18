@@ -75,7 +75,7 @@ namespace rc {
 		bool pause_game_loop;
 		bool endgame;
 
-		std::unordered_map<TextureIndex, Image> textures;
+		std::unordered_map<TextureIndex, Image> textures;  //TODO: overkill. Textures are known at compile time -> use direct addressing array with TextureIndexes... as indexes. Also keep the image pointer in the sprites to avoid a lookup (but not a shared one, ownership is with the array...?)
 
 		UserInterface(const UserInterface&) = delete;
 		void operator=(const UserInterface&) = delete;
