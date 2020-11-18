@@ -55,8 +55,7 @@ namespace rc {
 		Objects objects;
 		uint8_t sprite_id = 0;
 
-		float player_x = 0;
-		float player_z = 0;
+		WorldCoordinate player_start_position;
 		bool player_position_loaded = false;
 
 		uint8_t column_x = 0;
@@ -67,25 +66,28 @@ namespace rc {
 			{
 			case '#':
 				g.build_wall(column_x, row_z);
-				[[fallthrough]];
+				++column_x;
+				break;
 			case '.':
 				++column_x;
 				break;
 			case 'E':
-				objects.enemies.emplace_back(g.cell_size * column_x + half_cell, g.cell_size * row_z + half_cell, 64, sprite_id++);  // TODO Again the damn size hardcode. And the id computed outside the Sprite class.
+				const WorldCoordinate enemy_wc = g.center_of(column_x, row_z);
+				objects.enemies.emplace_back(enemy_wc.x, enemy_wc.z, 64, sprite_id++);  // TODO Again the damn size hardcode. And the id computed outside the Sprite class.
 				++column_x;
 				break;
-			case 'X':  // TODO: duplication!
-				objects.landmarks.emplace_back(g.cell_size * column_x + half_cell, g.cell_size * row_z + half_cell, 64, sprite_id++);  // TODO Again the damn size hardcode. And the id computed outside the Sprite class.
+			case 'X':
+				const WorldCoordinate exit_wc = g.center_of(column_x, row_z);
+				objects.landmarks.emplace_back(exit_wc.x, exit_wc.z, 64, sprite_id++);  // TODO Again the damn size hardcode. And the id computed outside the Sprite class.
 				++column_x;
 				break;
 			case 'P':
 				if (player_position_loaded)
 					throw std::runtime_error("More than one player in the map.");
 
-				player_x = g.cell_size * column_x + half_cell;  // TODO! grid.center_of...
-				player_z = g.cell_size * row_z + half_cell; 
+				player_start_position = g.center_of(column_x, row_z);
 				player_position_loaded = true;
+				
 				++column_x;
 				break;
 			case '\n':
@@ -105,7 +107,7 @@ namespace rc {
 		const float player_orientation = read_token<float>("player_start_orientation_rad", serialized_world);
 		const uint8_t ammo = read_token<uint8_t>("player_ammo", serialized_world);
 
-		Player p{player_x, player_z, player_orientation, ammo};  // Not set: the kills, that begin at 0.
+		Player p{player_start_position.x, player_start_position.z, player_orientation, ammo};  // Not set: the kills, that begin at 0.
 		
 		return World{g, p, objects};
 	}
@@ -113,8 +115,8 @@ namespace rc {
 
 	bool World::endgame() const {
 		for (const auto& exit_sprite : sprites.landmarks) {
-			const auto player_cell = map.grid_coordinate(player.x_position, player.z_position);
-			const auto exit_cell = map.grid_coordinate(exit_sprite.x, exit_sprite.z);
+			const auto player_cell = map.cell_of(player.x_position, player.z_position);
+			const auto exit_cell = map.cell_of(exit_sprite.x, exit_sprite.z);
 
 			if (player_cell.x == exit_cell.x && player_cell.z == exit_cell.z)  // TODO GridCoordinates needs operator==
 				return true;

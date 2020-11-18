@@ -27,6 +27,11 @@ namespace rc {
 		static constexpr uint8_t OUTSIDE = std::numeric_limits<uint8_t>::max();   /// NO DEFENSE in case the grid is big enough to require this value.
 	};
 
+	struct WorldCoordinate {
+		float x;
+		float z;
+	};
+
 	/** Representation of the world.
 	A checkerboard whose cells can be empty or be filled by a wall.
 	
@@ -38,7 +43,6 @@ namespace rc {
 	class Grid
 	{
 	public:
-		
 
 		/**Y is the vertical axis. The grid is on the floor, covers X and Z. */
 		Grid(uint8_t x_size, uint8_t z_size, uint8_t cell_size);
@@ -46,7 +50,8 @@ namespace rc {
 		void build_wall(uint8_t x, uint8_t z) noexcept;
 		bool wall_at(uint8_t x, uint8_t z) const noexcept;
 
-		GridCoordinate grid_coordinate(const float x, const float z) const noexcept;
+		GridCoordinate cell_of(const float x, const float z) const noexcept;
+		WorldCoordinate center_of(uint8_t x, uint8_t z) const noexcept;
 		RayHit cast_ray(const Ray& r) const;
 		bool close_to_walls(const float x, const float z, const float distance) const noexcept;
 

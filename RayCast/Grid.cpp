@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Grid.h"
 
+#include <cassert>
 #include <cmath>
 #include <limits>
 
@@ -35,7 +36,7 @@ bool Grid::wall_at(uint8_t x, uint8_t z) const noexcept
 	return cell->second;
 }
 
-GridCoordinate Grid::grid_coordinate(const float x, const float z) const noexcept
+GridCoordinate Grid::cell_of(const float x, const float z) const noexcept
 {
 	GridCoordinate result;
 	
@@ -46,6 +47,16 @@ GridCoordinate Grid::grid_coordinate(const float x, const float z) const noexcep
 		result.z = (uint8_t)std::floor(z / cell_size);
 
 	return result;
+}
+
+WorldCoordinate Grid::center_of(uint8_t x, uint8_t z) const noexcept
+{
+	// It makes sense to give coordinates outside the grid, but it should never happen in practice.
+	assert(x < x_size);
+	assert(z < z_size);
+
+	const float half_cell = (float) cell_size / 2;
+	return WorldCoordinate{ x * cell_size + half_cell, z * cell_size + half_cell};
 }
 
 
@@ -79,7 +90,7 @@ RayHit Grid::cast_ray(const Ray& r) const
 
 bool Grid::close_to_walls(const float x, const float z, const float minimum_distance) const noexcept
 {
-	const GridCoordinate cell = grid_coordinate(x, z);
+	const GridCoordinate cell = cell_of(x, z);
 
 	if (wall_at(cell.x, cell.z))
 		return true; // Inside wall: certainly too close.
@@ -112,7 +123,7 @@ bool Grid::close_to_walls(const float x, const float z, const float minimum_dist
 
 RayHit Grid::cast_ray_horizontal(const Ray& r, const float tangent) const
 {
-	const GridCoordinate starting_cell = grid_coordinate(r.x, r.z);
+	const GridCoordinate starting_cell = cell_of(r.x, r.z);
 	const bool ray_goes_up = r.facing_up();
 	const bool ray_goes_right = r.facing_right();
 	float push_into_previous_row = ray_goes_up ? 0 : -1.0f;
@@ -141,7 +152,7 @@ RayHit Grid::cast_ray_horizontal(const Ray& r, const float tangent) const
 
 RayHit Grid::cast_ray_vertical(const Ray& r, const float tangent) const
 {
-	const GridCoordinate starting_cell = grid_coordinate(r.x, r.z);
+	const GridCoordinate starting_cell = cell_of(r.x, r.z);
 	const bool ray_goes_up = r.facing_up();
 	const bool ray_goes_right = r.facing_right(); 
 	float push_into_previous_column = ray_goes_right ? 0 : -1.0f;
@@ -184,7 +195,7 @@ RayHit Grid::walk_along_ray(const Ray& r,
 {
 	RayHit result;  // This is a no hit, by default.
 
-	GridCoordinate candidate_point_cell = grid_coordinate(candidate_point_x, candidate_point_z);
+	GridCoordinate candidate_point_cell = cell_of(candidate_point_x, candidate_point_z);
 	while (! candidate_point_cell.outside_world())
 	{
 		if (wall_at(candidate_point_cell.x, candidate_point_cell.z)) {
@@ -197,7 +208,7 @@ RayHit Grid::walk_along_ray(const Ray& r,
 		candidate_point_x += horizontal_step;
 		candidate_point_z += vertical_step;
 
-		candidate_point_cell = grid_coordinate(candidate_point_x, candidate_point_z);
+		candidate_point_cell = cell_of(candidate_point_x, candidate_point_z);
 	}
 
 	return result; // Outside.

@@ -28,30 +28,57 @@ namespace rc {
         ASSERT_TRUE(g.wall_at(0, 0));
     }
 
-    TEST(Grid, grid_coordinate__outside) {
+    TEST(Grid, cell_of__outside) {
         Grid g(1, 1, 64);
 
-        GridCoordinate gc = g.grid_coordinate(-0.1f, 65.1f);
+        GridCoordinate gc = g.cell_of(-0.1f, 65.1f);
 
         ASSERT_TRUE(gc.outside_world());
     }
 
-    TEST(Grid, grid_coordinate__inside) {
+    TEST(Grid, cell_of__inside) {
         Grid g(1, 1, 64);
 
-        GridCoordinate gc = g.grid_coordinate(32.0f, 32.0f);
+        GridCoordinate gc = g.cell_of(32.0f, 32.0f);
 
         ASSERT_EQ(0, gc.x);
         ASSERT_EQ(0, gc.z);
     }
 
-    TEST(Grid, grid_coordinate__inside_one_cell_away_from_origin) {
+    TEST(Grid, cell_of__inside_one_cell_away_from_origin) {
         Grid g(2, 2, 64);
 
-        GridCoordinate gc = g.grid_coordinate(65.0f, 65.0f);
+        GridCoordinate gc = g.cell_of(65.0f, 65.0f);
 
         ASSERT_EQ(1, gc.x);
         ASSERT_EQ(1, gc.z);
+    }
+
+    TEST(Grid, center_of__origin) {
+        Grid g(1, 1, 64);
+
+        WorldCoordinate wc = g.center_of(0, 0);
+
+        ASSERT_EQ(32, wc.x);
+        ASSERT_EQ(32, wc.z);
+    }
+
+    TEST(Grid, center_of__odd_sized_cells) {
+        Grid g(1, 1, 5);
+
+        WorldCoordinate wc = g.center_of(0, 0);
+
+        ASSERT_EQ(2.5, wc.x);
+        ASSERT_EQ(2.5, wc.z);
+    }
+
+    TEST(Grid, center_of) {
+        Grid g(1, 2, 16);
+
+        WorldCoordinate wc = g.center_of(0, 1);
+
+        ASSERT_EQ(8, wc.x);
+        ASSERT_EQ(24, wc.z);
     }
 
     TEST(Grid, cast_ray__none) {
