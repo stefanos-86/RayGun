@@ -6,6 +6,7 @@
 
 // TODO: not sure I can get the same effect of "piece of a multi-literal string" with a constexpr.
 #define PLAYER_DETAILS_NOT_IMPORTANT "player_start_orientation_rad 0 player_ammo 0\n"
+#define CELL_SIZE_NOT_IMPORTANT "cell_size 64\n"
 
 namespace rc {
 
@@ -19,6 +20,7 @@ namespace rc {
         world_text <<
             "x 1\n"
             "z 1\n"
+            "cell_size 12\n"
             "P\n"
             PLAYER_DETAILS_NOT_IMPORTANT;
 
@@ -26,6 +28,7 @@ namespace rc {
 
         ASSERT_EQ(1, (int)g.x_size);
         ASSERT_EQ(1, (int)g.z_size);
+        ASSERT_EQ(12,(int)g.cell_size);
         ASSERT_FALSE(g.wall_at(0, 0));
     }
 
@@ -34,6 +37,7 @@ namespace rc {
         world_text <<
             "x 2\n"
             "z 1\n"
+            CELL_SIZE_NOT_IMPORTANT
             "#P\n"
             PLAYER_DETAILS_NOT_IMPORTANT;
 
@@ -80,6 +84,7 @@ namespace rc {
         world_text <<
             "x 3\n"
             "z 1\n"
+            CELL_SIZE_NOT_IMPORTANT
             "#P#\n"
             PLAYER_DETAILS_NOT_IMPORTANT;
 
@@ -98,6 +103,7 @@ namespace rc {
         world_text <<
             "x 1\n"
             "z 3\n"
+            CELL_SIZE_NOT_IMPORTANT
             "#\n"
             "P\n"
             "#\n"
@@ -118,6 +124,7 @@ namespace rc {
         world_text <<
             "x 4\n"
             "z 4\n"
+            CELL_SIZE_NOT_IMPORTANT
             "####\n"
             "#P.#\n"
             "#..#\n"
@@ -136,6 +143,7 @@ namespace rc {
         world_text <<
             "x 2\n"
             "z 2\n"
+            CELL_SIZE_NOT_IMPORTANT
             "..\n"
             "P.\n"
             "player_start_orientation_rad 12.5\n"
@@ -155,6 +163,7 @@ namespace rc {
         world_text <<
             "x 2\n"
             "z 1\n"
+            CELL_SIZE_NOT_IMPORTANT
             "EP\n"
             PLAYER_DETAILS_NOT_IMPORTANT;
 

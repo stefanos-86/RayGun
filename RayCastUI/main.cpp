@@ -18,6 +18,7 @@ std::stringstream fake_file_load() {
 	level << 
 		"x 10\n"
 		"z 15\n"
+		"cell_size 64\n"
 		"##########\n"  //!!! Row 0 is here.
 		"#....P...#\n"
 		"#........#\n"

@@ -45,16 +45,15 @@ namespace rc {
 
 		const uint8_t x = read_token<uint8_t>("x", serialized_world);
 		const uint8_t z = read_token<uint8_t>("z", serialized_world);
+		const uint8_t size = read_token<uint8_t>("cell_size", serialized_world);
 
 		char cell;
 		if (!serialized_world.get(cell)) // Skip the \n after the z.
 			throw std::runtime_error("No grid data");
 
-
-		Grid g(x, z, 64);  // TODO: do I make the cell size a parameter?? I don't think the rest of the code is ready for this.
+		Grid g(x, z, size);
 		Objects objects;
 		uint8_t sprite_id = 0;
-
 		WorldCoordinate player_start_position;
 		bool player_position_loaded = false;
 
