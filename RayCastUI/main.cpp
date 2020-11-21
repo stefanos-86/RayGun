@@ -63,9 +63,9 @@ int main(int argc, char* args[])
 	catch (std::runtime_error& x) {
 		std::cerr << x.what() << std::endl;
 	}
-	catch (...) {
+	/*catch (...) {
 		// This block should probably do something more intelligent than this.
 		std::cerr << "Unfathomable error." << std::endl;
-	}
+	}*/
 	return 0;
 }

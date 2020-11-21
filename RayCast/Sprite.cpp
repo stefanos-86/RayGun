@@ -12,11 +12,12 @@
 
 namespace rc {
 		
-Sprite::Sprite(const float x_position, const float z_position, const uint8_t size, const uint8_t id) :
+Sprite::Sprite(const float x_position, const float z_position, const uint8_t size, const uint8_t id, const TextureIndex kind) :
 	x(x_position),
 	z(z_position),
 	size(size),
 	id(id),
+	kind(kind),
 	active(true)
 {
 }
@@ -72,6 +73,7 @@ RayHit Sprite::intersection(const Ray& ray) const
 	const float half_span = size / 2;
 	RayHit result;
 	result.hit_object_id = id;
+	result.type = kind;
 
 	if ((distance_OI * horizontal_difference) < 0 ||  // Behind the ray. Discovered by trial and error.
 		(std::abs(distance_CI) > half_span)) // Ouside the segment "covered" by the texture. Half-size each side of the center.
@@ -90,41 +92,19 @@ RayHit Sprite::intersection(const Ray& ray) const
 	return result;
 }
 
-std::vector<RayHit> Objects::all_intersections(const Ray& ray, const RayHit& cutoff, const int enumerated_kinds) const noexcept
+std::vector<RayHit> Objects::all_intersections(const Ray& ray, const RayHit& cutoff, const uint8_t enumerated_kinds) const noexcept
 {
 	std::vector<RayHit> valid_hits;  // Do not reserve. There are few interesction at the same time, not worth it.
 	
-	if (enumerated_kinds & KIND::ENEMIES)
-		for (const Sprite& sprite : enemies) {
-			if (!sprite.active)
-				continue;
+	if (enumerated_kinds & (uint8_t) TextureIndex::ENEMY) {
+		const std::vector<RayHit> hits = intersections(ray, cutoff, enemies);
+		valid_hits.insert(valid_hits.end(), hits.begin(), hits.end());
+	}
 
-			RayHit candidate_hit = sprite.intersection(ray);
-
-			if (candidate_hit.really_hit() &&
-				cutoff.really_hit() &&
-				candidate_hit.distance < cutoff.distance)
-			{
-				candidate_hit.type = TextureIndex::ENEMY;  // Why is this not in the sprite??? TODO!
-				valid_hits.push_back(candidate_hit);
-			}
-		}
-
-	if (enumerated_kinds & KIND::LANDMARKS)  // TODO! Tons of duplication!
-		for (const Sprite& sprite : landmarks) {
-			if (!sprite.active)  // ALSO todo: can't deactivate landmarks
-				continue;
-
-			RayHit candidate_hit = sprite.intersection(ray);
-
-			if (candidate_hit.really_hit() &&
-				cutoff.really_hit() &&
-				candidate_hit.distance < cutoff.distance)
-			{
-				candidate_hit.type = TextureIndex::EXIT;  // TODO: works until there is only one landmark...
-				valid_hits.push_back(candidate_hit);
-			}
-		}
+	if (enumerated_kinds & (uint8_t)TextureIndex::EXIT) {
+		const std::vector<RayHit> hits = intersections(ray, cutoff, exits);
+		valid_hits.insert(valid_hits.end(), hits.begin(), hits.end());
+	}
 
 	std::sort(valid_hits.begin(), valid_hits.end(),
 		[](const RayHit& h1, const RayHit& h2) {
@@ -147,6 +127,25 @@ void Objects::deactivate(const uint8_t sprite_id)  // TODO! Mark that this is on
 		throw std::runtime_error("Attempting to deactivate a sprite that is not there.");
 
 	to_be_shut_off->active = false;
+}
+
+std::vector<RayHit> Objects::intersections(const Ray& ray, const RayHit& cutoff, std::vector<Sprite> objects) const
+{
+	std::vector<RayHit> hits;
+	for (const Sprite& sprite : objects) {
+		if (!sprite.active)  // ALSO todo: can't deactivate landmarks... can I hide the exits?
+			continue;
+
+		RayHit candidate_hit = sprite.intersection(ray);
+
+		if (candidate_hit.really_hit() &&
+			cutoff.really_hit() &&  // TODO: may be improper. Should I assume that a no hit cut off means "draw nothing"? It should be "draw everything".
+			candidate_hit.distance < cutoff.distance)
+		{
+			hits.push_back(candidate_hit);
+		}
+	}
+	return hits;
 }
 
 

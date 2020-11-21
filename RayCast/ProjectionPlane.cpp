@@ -51,8 +51,8 @@ namespace rc {
 				c.draw_slice(scan_column, wall_projection.top_row, wall_projection.height, wall_hit.offset, TextureIndex::WALL);
 			}
 
-			const std::vector<RayHit> enemies_hit = world.sprites.all_intersections(r, wall_hit, Objects::KIND::ENEMIES | Objects::KIND::LANDMARKS);
-			for (const RayHit& enemy_hit : enemies_hit)
+			const std::vector<RayHit> object_hits = world.sprites.all_intersections(r, wall_hit, (uint8_t)TextureIndex::ENEMY | (uint8_t)TextureIndex::EXIT);
+			for (const RayHit& enemy_hit : object_hits)
 			{
 				const float corrected_distance = enemy_hit.distance * fishbowl;
 

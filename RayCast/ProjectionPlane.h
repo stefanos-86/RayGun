@@ -42,6 +42,7 @@ namespace rc {
 		*/
 		void project_objects(const World& grid, Canvas &c) const;
 
+		// Some of those are public for testing purposes.
 		const uint16_t columns;
 		const uint16_t x_center;
 		const uint16_t y_center;

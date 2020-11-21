@@ -5,12 +5,14 @@
 
 namespace rc {
 
-	enum class TextureIndex {
-		WALL,
-		ENEMY,
-		FONT,
-		HUD,
-		EXIT
+	/** The strange binary values are to OR the data when filtering.*/
+	// TODO: typedef the uint8_t underlying type, to avoid troubles if changing it.
+	enum class TextureIndex : uint8_t {
+		WALL =  0b00000001,
+		ENEMY = 0b00000010,
+		FONT =  0b00000100,
+		HUD =   0b00001000,
+		EXIT =  0b00010000
 	};
 
 

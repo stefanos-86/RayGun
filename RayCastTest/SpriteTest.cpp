@@ -6,8 +6,10 @@
 #include "PI.h"
 
 namespace rc {
+
+    constexpr TextureIndex WhateverTexture = TextureIndex::ENEMY;
     TEST(Sprite, rayIntersection_onTheRight_inFront) {
-        const Sprite s(10, 0, 64, 0);
+        const Sprite s(10, 0, 64, 0, WhateverTexture);
         const Ray goingRight(0, 0, 0);
 
         const RayHit hit = s.intersection(goingRight);
@@ -17,7 +19,7 @@ namespace rc {
     }
 
     TEST(Sprite, rayIntersection_onTheRight_behind) {
-        const Sprite s(-10, 0, 64, 0);
+        const Sprite s(-10, 0, 64, 0, WhateverTexture);
         const Ray goingRight(0, 0, 0);
 
         const RayHit hit = s.intersection(goingRight);
@@ -26,7 +28,7 @@ namespace rc {
     }
 
     TEST(Sprite, rayIntersection_onTheLeft_inFront) {
-        const Sprite s(-10, 0, 64, 0);
+        const Sprite s(-10, 0, 64, 0, WhateverTexture);
         const Ray goingLeft(0, 0, PI);
 
         const RayHit hit = s.intersection(goingLeft);
@@ -36,7 +38,7 @@ namespace rc {
     }
 
     TEST(Sprite, rayIntersection_onTheLeft_behind) {
-        const Sprite s(10, 0, 64, 0);
+        const Sprite s(10, 0, 64, 0, WhateverTexture);
         const Ray goingLeft(0, 0, PI);
 
         const RayHit hit = s.intersection(goingLeft);
@@ -46,7 +48,7 @@ namespace rc {
     
 
     TEST(Sprite, rayIntersection_up_above) {
-        const Sprite s(0, 10, 64, 0);
+        const Sprite s(0, 10, 64, 0, WhateverTexture);
         const Ray goUp(0, 0, PI / 2);
 
         const RayHit hit = s.intersection(goUp);
@@ -56,7 +58,7 @@ namespace rc {
     }
 
     TEST(Sprite, rayIntersection_up_below) {
-        const Sprite s(0, -10, 64, 0);
+        const Sprite s(0, -10, 64, 0, WhateverTexture);
         const Ray goUp(0, 0, PI / 2);
 
         const RayHit hit = s.intersection(goUp);
@@ -65,7 +67,7 @@ namespace rc {
     }
 
     TEST(Sprite, rayIntersection_down_above) {
-        const Sprite s(0, 10, 64, 0);
+        const Sprite s(0, 10, 64, 0, WhateverTexture);
         const Ray goDown(0, 0, - PI / 2);
 
         const RayHit hit = s.intersection(goDown);
@@ -74,7 +76,7 @@ namespace rc {
     }
 
     TEST(Sprite, rayIntersection_down_below) {
-        const Sprite s(0, -10, 64, 0);
+        const Sprite s(0, -10, 64, 0, WhateverTexture);
         const Ray goDown(0, 0, - PI / 2);
 
         const RayHit hit = s.intersection(goDown);
@@ -84,8 +86,8 @@ namespace rc {
     }
 
 
-    TEST(Sprite, rayIntersection_1tQuadrant) {
-        const Sprite s(10, 10, 64, 0);
+    TEST(Sprite, rayIntersection_1stQuadrant) {
+        const Sprite s(10, 10, 64, 0, WhateverTexture);
         const Ray diagonal(0, 0, PI / 4);
 
         const RayHit hit = s.intersection(diagonal);
@@ -95,7 +97,7 @@ namespace rc {
     }
 
     TEST(Sprite, rayIntersection_2ndQuadrant) {
-        const Sprite s(-10, 10, 64, 0);
+        const Sprite s(-10, 10, 64, 0, WhateverTexture);
         const Ray diagonal(0, 0, 3 * PI / 4);
 
         const RayHit hit = s.intersection(diagonal);
@@ -105,7 +107,7 @@ namespace rc {
     }
 
     TEST(Sprite, rayIntersection_3rdQuadrant) {
-        const Sprite s(-10, -10, 64, 0);
+        const Sprite s(-10, -10, 64, 0, WhateverTexture);
         const Ray diagonal(0, 0, 5 * PI / 4);
 
         const RayHit hit = s.intersection(diagonal);
@@ -115,7 +117,7 @@ namespace rc {
     }
 
     TEST(Sprite, rayIntersection_4thQuadrant) {
-        const Sprite s(10, -10, 64, 0);
+        const Sprite s(10, -10, 64, 0, WhateverTexture);
         const Ray diagonal(0, 0, 7 * PI / 4);
 
         const RayHit hit = s.intersection(diagonal);
@@ -125,7 +127,7 @@ namespace rc {
     }
 
     TEST(Sprite, rayIntersection_outside) {
-        const Sprite s(1, 33, 64, 0);
+        const Sprite s(1, 33, 64, 0, TextureIndex::ENEMY);
         const Ray goRight(0, 0, 0);
 
         const RayHit hit = s.intersection(goRight);

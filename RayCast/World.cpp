@@ -71,12 +71,12 @@ namespace rc {
 				break;
 			case 'E':
 				const WorldCoordinate enemy_wc = g.center_of(column_x, row_z);
-				objects.enemies.emplace_back(enemy_wc.x, enemy_wc.z, 64, sprite_id++);  // TODO Again the damn size hardcode. And the id computed outside the Sprite class.
+				objects.enemies.emplace_back(enemy_wc.x, enemy_wc.z, 64, sprite_id++, TextureIndex::ENEMY);  // TODO Again the damn size hardcode. And the id computed outside the Sprite class.
 				++column_x;
 				break;
 			case 'X':
 				const WorldCoordinate exit_wc = g.center_of(column_x, row_z);
-				objects.landmarks.emplace_back(exit_wc.x, exit_wc.z, 64, sprite_id++);  // TODO Again the damn size hardcode. And the id computed outside the Sprite class.
+				objects.exits.emplace_back(exit_wc.x, exit_wc.z, 64, sprite_id++, TextureIndex::EXIT);  // TODO Again the damn size hardcode. And the id computed outside the Sprite class.
 				++column_x;
 				break;
 			case 'P':
@@ -112,7 +112,7 @@ namespace rc {
 
 
 	bool World::endgame() const {
-		for (const auto& exit_sprite : sprites.landmarks) {
+		for (const auto& exit_sprite : sprites.exits) {
 			const auto player_cell = map.cell_of(player.x_position, player.z_position);
 			const auto exit_cell = map.cell_of(exit_sprite.x, exit_sprite.z);
 
