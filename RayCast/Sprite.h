@@ -53,8 +53,6 @@ namespace rc {
 	public:
 		std::vector<Sprite> enemies;
 		std::vector<Sprite> exits;  // TODO: do I want to keep multiple exits? Can I cache the cell they are into? 
-										// If you also think of the enemies status, I start to think I need game objects that contains a sprite, rather than just the sprite.
-		                                // What does it imply for the ray collisions?
 
 
 		/** Returns all the hists from the intersection between the ray and any of the sprites.
@@ -66,6 +64,9 @@ namespace rc {
 
 			TODO There is also room to improve the memory managment, probably (e. g. do not return a new vector every time).
 		*/
+
+//	http://www.pbr-book.org/3ed-2018/Primitives_and_Intersection_Acceleration/Kd-Tree_Accelerator.html ?
+
 		std::vector <RayHit> all_intersections(const Ray& ray, const RayHit& cutoff, const uint8_t enumerated_kinds) const noexcept;
 
 		void deactivate(const uint8_t sprite_id);

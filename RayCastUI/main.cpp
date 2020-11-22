@@ -10,12 +10,15 @@
 // https://github.com/jakebesworth/Simple-SDL2-Audio/tree/master/src
 // https://gist.github.com/armornick/3447121
 
+// Just for the records: in 256 bytes on C64. http://www.pouet.net/prod.php?which=61298, https://www.youtube.com/watch?v=JxS0_ckSwqk
+
 
 /** I am not going to implement code to load the world from a file. 
     This simple hardcode will do. */
 std::stringstream fake_file_load() {
 	std::stringstream level;
-	level << 
+	
+	/*level << 
 		"x 10\n"
 		"z 15\n"
 		"cell_size 64\n"
@@ -35,7 +38,27 @@ std::stringstream fake_file_load() {
 		"#X...E...#\n"
 		"##########\n"
 		"player_start_orientation_rad 1.57\n"
-		"player_ammo 30\n";
+		"player_ammo 30\n";*/
+
+	level << 
+		"x 34 "
+		"z 11 "
+		"cell_size 64 "
+		// This is way less readable than I imagined at the beginning.
+		"#############.########.##.###.###.\n"
+		"#...........##.......P#..#...#X..#\n"
+		"#.........#X#.....#####..#...#...#\n"
+		"#.#.#.#.#.##.......#..#..#E..#...#\n"
+		"#.........#...###...###.###.###.#.\n"
+		"#E............###................#\n"
+		"#.........#...#E#...###.###.###.#.\n"
+		"#.#.#.#.#.##.......#.#...#...#...#\n"
+		"#.........#.#E....#..#.E.#.E.#...#\n"
+		"#........E#..#...#...#...#...#...#\n"
+		".#########....###.....###.###.###.\n"  // TODO: the corners of the walls have cracks! There must be an off-by-one in the projection. Easy to workaround with a block in the corner.
+		"player_start_orientation_rad 3.14\n"
+		"player_ammo 30\n"; 
+
 
 	return level;
 }
