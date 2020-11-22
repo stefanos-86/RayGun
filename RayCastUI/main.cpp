@@ -78,7 +78,7 @@ int main(int argc, char* args[])
 		ui.set_texture(rc::TextureIndex::WALL, "stone_wall.bmp");
 		ui.set_texture(rc::TextureIndex::ENEMY, "bad_guy.bmp");
 		ui.set_texture(rc::TextureIndex::FONT, "font.bmp");
-		ui.set_texture(rc::TextureIndex::HUD, "gunFromBehind.bmp");
+		ui.set_texture(rc::TextureIndex::HUD, "gun.bmp");
 		ui.set_texture(rc::TextureIndex::EXIT, "exit.bmp");
 
 		ui.game_loop(world);
