@@ -39,7 +39,7 @@ std::stringstream fake_file_load() {
 		"##########\n"
 		"player_start_orientation_rad 1.57\n"
 		"player_ammo 30\n";*/
-
+	/*
 	level << 
 		"x 34 "
 		"z 11 "
@@ -58,7 +58,16 @@ std::stringstream fake_file_load() {
 		".#########....###.....###.###.###.\n"  // TODO: the corners of the walls have cracks! There must be an off-by-one in the projection. Easy to workaround with a block in the corner.
 		"player_start_orientation_rad 3.14\n"
 		"player_ammo 30\n"; 
+	*/
 
+	level <<
+		"x 2 "
+		"z 2 "
+		"cell_size 64 "
+		".#\n"
+		"#P\n"
+		"player_start_orientation_rad 3.925\n"
+		"player_ammo 30\n";
 
 	return level;
 }

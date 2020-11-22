@@ -232,6 +232,19 @@ namespace rc {
         ASSERT_FLOAT_EQ(64, hit.z);
     }
 
+    TEST(Grid, cast_ray__bottom_left_corner_surrounded) {
+        Grid g(3, 3, 64);
+        g.build_wall(1, 0);
+        g.build_wall(0, 1);
+
+        const Ray r(50 + 128, 50 + 128, PI + PI / 4);
+
+        const RayHit hit = g.cast_ray(r);
+
+        ASSERT_FLOAT_EQ(63.000038f, hit.x); //TODO! What happened to the precision?
+        ASSERT_FLOAT_EQ(64, hit.z);
+    }
+
     TEST(Grid, cast_ray__bottom_left_corner_on_first_point) {
         Grid g(2, 2, 64);
         g.build_wall(0, 0);

@@ -7,6 +7,8 @@
 
 #include "PI.h"
 
+#include <iostream>
+
 namespace rc {
 	
 	Grid::Grid(uint8_t x_size, uint8_t z_size, uint8_t cell_size):
@@ -60,33 +62,6 @@ WorldCoordinate Grid::center_of(uint8_t x, uint8_t z) const noexcept
 }
 
 
-RayHit Grid::cast_ray(const Ray& r) const
-{
-	const float tangent = std::abs(std::tan(r.alpha_rad));
-
-	RayHit horizontal_hit = cast_ray_horizontal(r, tangent);
-	RayHit vertical_hit = cast_ray_vertical(r, tangent);
-
-	// Texture mapping. The hit is defined in walk_along_ray, which does not know
-	// if it is looking for vertical or horizontal hits.
-	horizontal_hit.offset = (int) horizontal_hit.x % cell_size;  // This cast is a bit brutal, but works decently.
-	vertical_hit.offset = (int) vertical_hit.z % cell_size;
-
-	// Select the closest point.
-	// I assume that copying the RayHit is not too bad for performances.
-	// A trick could be to assume that the ray will always hit (e. g. by adding wall
-	// in the external perimenter of every level). No more need to test if hit is outside the world.
-	RayHit candidate = horizontal_hit;
-	if (horizontal_hit.no_hit())
-		candidate = vertical_hit;
-	else if (vertical_hit.no_hit())
-		return candidate; // Both out, failure.
-	else if (vertical_hit.distance < horizontal_hit.distance)
-		candidate = vertical_hit;
-	// Else, horizontal is closer (already set).
-
-	return candidate;
-}
 
 bool Grid::close_to_walls(const float x, const float z, const float minimum_distance) const noexcept
 {
@@ -110,15 +85,41 @@ bool Grid::close_to_walls(const float x, const float z, const float minimum_dist
 	const bool in_bottom_strip = std::abs(z - forbidden_bottom) < minimum_distance;
 
 	return
-           in_left_strip   && wall_at(cell.x - 1, cell.z)
-		|| in_right_strip  && wall_at(cell.x + 1, cell.z)
-		|| in_bottom_strip && wall_at(cell.x    , cell.z - 1)
-		|| in_top_strip    && wall_at(cell.x    , cell.z + 1)
-		|| in_left_strip  && in_bottom_strip && wall_at(cell.x - 1, cell.z - 1)
-		|| in_left_strip  && in_top_strip    && wall_at(cell.x - 1, cell.z + 1)
+		in_left_strip && wall_at(cell.x - 1, cell.z)
+		|| in_right_strip && wall_at(cell.x + 1, cell.z)
+		|| in_bottom_strip && wall_at(cell.x, cell.z - 1)
+		|| in_top_strip && wall_at(cell.x, cell.z + 1)
+		|| in_left_strip && in_bottom_strip && wall_at(cell.x - 1, cell.z - 1)
+		|| in_left_strip && in_top_strip && wall_at(cell.x - 1, cell.z + 1)
 		|| in_right_strip && in_bottom_strip && wall_at(cell.x + 1, cell.z - 1)
-		|| in_right_strip && in_top_strip    && wall_at(cell.x + 1, cell.z + 1)
+		|| in_right_strip && in_top_strip && wall_at(cell.x + 1, cell.z + 1)
 		;
+}
+
+RayHit Grid::cast_ray(const Ray& r) const
+{
+	const float tangent = std::abs(std::tan(r.alpha_rad));
+
+	RayHit horizontal_hit = cast_ray_horizontal(r, tangent);
+	RayHit vertical_hit = cast_ray_vertical(r, tangent);
+
+	// Texture mapping. The hit is defined in walk_along_ray, which does not know
+	// if it is looking for vertical or horizontal hits.
+	horizontal_hit.offset = (int) horizontal_hit.x % cell_size;  // This cast is a bit brutal, but works decently.
+	vertical_hit.offset = (int) vertical_hit.z % cell_size;
+
+	// Select the closest point.
+	// A trick could be to assume that the ray will always hit (e. g. by adding wall
+	// in the external perimenter of every level). No more need to test if hit is outside the world.
+	if (horizontal_hit.no_hit())
+		return vertical_hit;  // Either vertical hit, either they are both out and I can return any.
+	else
+	{
+		if (vertical_hit.no_hit())
+			return horizontal_hit;
+		else // Both hit, test distance.
+			return (vertical_hit.distance < horizontal_hit.distance ? vertical_hit : horizontal_hit);
+	}
 }
 
 RayHit Grid::cast_ray_horizontal(const Ray& r, const float tangent) const
