@@ -59,12 +59,14 @@ namespace rc {
 
 		const std::vector<RayHit> hits_targets = targets.all_intersections(gun_ray, max_range, (uint8_t)TextureIndex::ENEMY);
 
-		for (const RayHit& hit : hits_targets) {
-			if (!image_tester.transparent_pixel(hit.offset, 32, TextureIndex::ENEMY)) {  // TODO: remove gun height hardcode. Also, is this "in tune" with the projection? Do I have to do something like WC -> local coordinates change? And what if I introduce different enemies?
-				targets.deactivate(hit.hit_object_id);
+		// Reverse-iterate: the bullet shoud hit only the closest target.
+		for (auto hit = hits_targets.rbegin(); hit != hits_targets.rend(); ++hit)
+			if (!image_tester.transparent_pixel(hit->offset, 32, TextureIndex::ENEMY)) {  // TODO: remove gun height hardcode. Also, is this "in tune" with the projection? Do I have to do something like WC -> local coordinates change? And what if I introduce different enemies?
+				targets.deactivate(hit->hit_object_id);
 				++kills;  // Optimistically assume we never overflow, there are not that many targets.
+			
+				break;  // One hit per bullet. The ray casting does not halt on non-transparent pixels.
 			}
-		}
 
 		--bullets_left;
 	}

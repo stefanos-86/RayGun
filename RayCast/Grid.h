@@ -28,7 +28,7 @@ namespace rc {
 	};
 
 	/** Equality of grid coordinates takes into account the value of the coordinates.
-	    No special provision for outside world conditions. Both the coordinates have to match. */
+	    Nothing special when ouside world. Both the coordinates have to match. */
 	bool operator==(const GridCoordinate& lhs, const GridCoordinate& rhs) noexcept;
 	bool operator!=(const GridCoordinate& lhs, const GridCoordinate& rhs) noexcept;  // Remove with C++20.
 
