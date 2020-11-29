@@ -7,8 +7,6 @@
 
 #include "PI.h"
 
-#include <iostream>
-
 namespace rc {
 	
 	Grid::Grid(uint8_t x_size, uint8_t z_size, uint8_t cell_size):
@@ -127,11 +125,11 @@ RayHit Grid::cast_ray_horizontal(const Ray& r, const float tangent) const
 	const GridCoordinate starting_cell = cell_of(r.x, r.z);
 	const bool ray_goes_up = r.facing_up();
 	const bool ray_goes_right = r.facing_right();
-	float push_into_previous_row = ray_goes_up ? 0 : -1.0f;
+	float push_into_lower_row = ray_goes_up ? 0 : -0.0001f;  // TODO: ther's got to be a less kludgy way of doing this. When going towards the negative direction, we have to hit the wall in the cell "lower" coordinate. This fudges it by going into the "higher" of the previous cell...
 
 	float first_point_z = ray_goes_up ?
-		starting_cell.z * cell_size + cell_size :
-		starting_cell.z * cell_size + push_into_previous_row;
+		(starting_cell.z + 1) * cell_size : // +1 * cell size = top limit of starting cell/bottom of the row above.
+		starting_cell.z * cell_size + push_into_lower_row;  // Goes down to the bottom of the starting row.
 
 	const float distance_from_next_row = std::abs(r.z - first_point_z);
 	float horizontal_travel_between_rows = distance_from_next_row / tangent;
@@ -147,7 +145,7 @@ RayHit Grid::cast_ray_horizontal(const Ray& r, const float tangent) const
 
 	RayHit hit = walk_along_ray(r, first_point_x, first_point_z,
 		horizontal_step, vertical_step);
-	hit.z -= push_into_previous_row;
+	hit.z -= push_into_lower_row;
 	return hit;
 }
 
@@ -156,10 +154,10 @@ RayHit Grid::cast_ray_vertical(const Ray& r, const float tangent) const
 	const GridCoordinate starting_cell = cell_of(r.x, r.z);
 	const bool ray_goes_up = r.facing_up();
 	const bool ray_goes_right = r.facing_right(); 
-	float push_into_previous_column = ray_goes_right ? 0 : -1.0f;
+	float push_into_previous_column = ray_goes_right ? 0 : -0.0001f;
 
 	float first_point_x = ray_goes_right ?
-		starting_cell.x * cell_size + cell_size:
+		(starting_cell.x + 1) * cell_size :
 		starting_cell.x * cell_size + push_into_previous_column;
 
 	const float distance_from_next_column = std::abs(r.x - first_point_x);

@@ -228,20 +228,7 @@ namespace rc {
 
         RayHit hit = g.cast_ray(r);
 
-        ASSERT_FLOAT_EQ(63.000038f, hit.x); //TODO! What happened to the precision?
-        ASSERT_FLOAT_EQ(64, hit.z);
-    }
-
-    TEST(Grid, cast_ray__bottom_left_corner_surrounded) {
-        Grid g(3, 3, 64);
-        g.build_wall(1, 0);
-        g.build_wall(0, 1);
-
-        const Ray r(50 + 128, 50 + 128, PI + PI / 4);
-
-        const RayHit hit = g.cast_ray(r);
-
-        ASSERT_FLOAT_EQ(63.000038f, hit.x); //TODO! What happened to the precision?
+        ASSERT_FLOAT_EQ(63.999947f, hit.x);  // "Almost 64", due to the epsilon used to fudge the column/row.
         ASSERT_FLOAT_EQ(64, hit.z);
     }
 
@@ -253,7 +240,7 @@ namespace rc {
 
         RayHit hit = g.cast_ray(r);
 
-        ASSERT_FLOAT_EQ(63.000011f, hit.x); //TODO! What happened to the precision?
+        ASSERT_FLOAT_EQ(63.999912f, hit.x); // "Almost 64", due to the epsilon used to fudge the column/row.
         ASSERT_FLOAT_EQ(64, hit.z);
     }
 
