@@ -98,6 +98,7 @@ namespace rc {
 				throw std::runtime_error(error.str());
 			}
 		}
+
 		
 		if (!player_position_loaded)
 			throw std::runtime_error("No player on the map.");
@@ -107,7 +108,9 @@ namespace rc {
 
 		Player p{player_start_position.x, player_start_position.z, player_orientation, ammo};  // Not set: the kills, that begin at 0.
 		
-		return World{g, p, objects};
+		auto w= World{g, p, objects};
+		w.sprites.build_accelerators();  // TODO: moving objects into world changes the memory layout -> vectors get moved!
+		return w;
 	}
 
 

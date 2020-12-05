@@ -2,7 +2,9 @@
 
 #include <cstdint>
 
-#include "Grid.h"  // TODO: isolate Ray and RayHit in their own file.
+#include "Grid.h"
+#include "KdTree.h"
+#include "Ray.h"
  
 namespace rc {
 
@@ -51,9 +53,11 @@ namespace rc {
 	/** Just a collection to keep track of all the objects that can be seen onscreen. */
 	class Objects {
 	public:
+
+		void build_accelerators();
+
 		std::vector<Sprite> enemies;
 		std::vector<Sprite> exits;  // TODO: do I want to keep multiple exits? Can I cache the cell they are into? 
-
 
 		/** Returns all the hists from the intersection between the ray and any of the sprites.
 		    Hits further from the ray than the cutoff distance (the distance of the cutoff hit) are discarded.
@@ -73,5 +77,8 @@ namespace rc {
 
 	private:
 		std::vector <RayHit> intersections(const Ray& ray, const RayHit& cutoff, std::vector<Sprite> objects) const;
+		std::vector <RayHit> intersections(const Ray& ray, const RayHit& cutoff, std::vector<const Sprite*> objects) const;
+		std::shared_ptr<KdTree> enemies_accelerator;  //Shared allow easier copy of the including object.
+	
 	};
 }

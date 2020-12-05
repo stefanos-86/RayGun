@@ -56,13 +56,13 @@ std::stringstream fake_file_load() {
 		"#.#.#.#.#.##.......#.#...#...#...#\n"
 		"#.........#.#E....#..#.E.#.E.#...#\n"
 		"#........E#..#...#...#...#...#...#\n"
-		".#########....###.....###.###.###.\n"  // TODO: the corners of the walls have cracks! There must be an off-by-one in the projection. Easy to workaround with a block in the corner.
+		".#########....###.....###.###.###.\n"
 		"player_start_orientation_rad 3.14\n"
 		"player_ammo 30\n"; 
-
 		*/
+		
 	
-
+	
 	level <<
 		"x 34 "
 		"z 11 "
@@ -78,10 +78,22 @@ std::stringstream fake_file_load() {
 		"#E#E#E#E#E##EEEEEEE#E#EEE#EEE#EEE#\n"
 		"#EEEEEEEEE#E#EEEEE#EE#EEE#EEE#EEE#\n"
 		"#EEEEEEEEE#EE#EEE#EEE#EEE#EEE#EEE#\n"
-		"E#########EEEE###EEEEE###E###E###E\n"  // TODO: the corners of the walls have cracks! There must be an off-by-one in the projection. Easy to workaround with a block in the corner.
+		"E#########EEEE###EEEEE###E###E###E\n"
 		"player_start_orientation_rad 3.14\n"
 		"player_ammo 30\n";
+		
+		
 
+	/*
+		level <<
+		"x 4 "
+		"z 3 "
+		"cell_size 64 "
+		"####\n"
+		"#PE#\n"
+		"####\n"
+		"player_start_orientation_rad 0\n"
+		"player_ammo 30\n";*/
 
 	return level;
 }

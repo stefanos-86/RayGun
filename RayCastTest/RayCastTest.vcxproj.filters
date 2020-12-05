@@ -9,6 +9,7 @@
     <ClCompile Include="SpriteTest.cpp" />
     <ClCompile Include="HudTest.cpp" />
     <ClCompile Include="WorldTest.cpp" />
+    <ClCompile Include="KdTreeTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

@@ -9,6 +9,7 @@
 #include "Canvas.h"
 #include "PI.h"
 
+#include <iostream>
 
 namespace rc {
 		
@@ -92,12 +93,26 @@ RayHit Sprite::intersection(const Ray& ray) const
 	return result;
 }
 
+
+void Objects::build_accelerators() {
+	std::vector<const Sprite*> enemies_addresses;
+	for (const auto& x : enemies)
+		enemies_addresses.push_back(&x); // TODO: betting that the enemies will never move!
+
+	enemies_accelerator = KdTree::build(enemies_addresses, 20, 20);  // TODO! Review completely the tree structure???
+}
+
 std::vector<RayHit> Objects::all_intersections(const Ray& ray, const RayHit& cutoff, const uint8_t enumerated_kinds) const noexcept
 {
 	std::vector<RayHit> valid_hits;  // Do not reserve. There are few interesction at the same time, not worth it.
 	
 	if (enumerated_kinds & (uint8_t) TextureIndex::ENEMY) {
+		// TODO assert(enemies_accelerator)
+		//const auto broad_phase_hits = enemies_accelerator->intersect(ray, cutoff.distance);
+		//const std::vector<RayHit> hits = intersections(ray, cutoff, broad_phase_hits);
+		//std::cout << "BF " << broad_phase_hits.size() << " NF " << hits.size() << " tot " << enemies.size() << "\n";
 		const std::vector<RayHit> hits = intersections(ray, cutoff, enemies);
+		
 		valid_hits.insert(valid_hits.end(), hits.begin(), hits.end());
 	}
 
@@ -148,6 +163,24 @@ std::vector<RayHit> Objects::intersections(const Ray& ray, const RayHit& cutoff,
 	return hits;
 }
 
+std::vector<RayHit> Objects::intersections(const Ray& ray, const RayHit& cutoff, std::vector<const Sprite*> objects) const
+{
+	std::vector<RayHit> hits;
+	for (const Sprite* sprite : objects) {
+		if (!sprite->active)  // ALSO todo: can't deactivate landmarks... can I hide the exits?
+			continue;
+
+		RayHit candidate_hit = sprite->intersection(ray);
+
+		if (candidate_hit.really_hit() &&
+			cutoff.really_hit() &&  // TODO: may be improper. Should I assume that a no hit cut off means "draw nothing"? It should be "draw everything".
+			candidate_hit.distance < cutoff.distance)
+		{
+			hits.push_back(candidate_hit);
+		}
+	}
+	return hits;
+}
 
 
 
