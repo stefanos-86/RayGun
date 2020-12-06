@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <numeric>
 #include <limits>
+#include <stdexcept>
 
 #include "Sprite.h"
 
@@ -12,9 +13,12 @@ namespace rc {
 		const uint8_t max_depth,
 		const uint8_t small_enough_size)
 	{
-		// TODO: test max depth > 0.
-		// TODO: fail in case there are more than 255 objects.
+		if (max_depth == 0)
+			throw std::runtime_error("Kd tree depth must be at least one.");
 		
+		if (objects.size() > std::numeric_limits<uint8_t>::max())
+			throw std::runtime_error("Too many objects, can not build tree.");
+				
 		root.node_content = std::vector<uint8_t>(objects.size(), 0);
 		std::iota(root.node_content.begin(), root.node_content.end(), 0);
 		root.split(max_depth - 1, small_enough_size, objects);
@@ -63,40 +67,35 @@ namespace rc {
 			from_low = low->intersect(ray, cutoff_distance);
 		}
 
-		// Merge vectors, remove duplicates. TODO: do I have to do this at every recursive call?
+		// Merge vectors to return all values.
 		from_low.insert(from_low.end(), from_high.begin(), from_high.end());
-
-
 		return from_low;
 	}
 
 	void KdTreeNode::split(uint8_t depth, const uint8_t small_enough_size, const std::vector<Sprite>& objects_collection)
 	{
-		
 		if (depth == 0)
 			return; // Max depth reached, can not split further.
 
 		if (node_content.size() <= small_enough_size)
 			return; // Node is small, no need to split.
 
-		// Nope, we have to split.
+		// Nope, we have to split. No complex euristic, for simplicity. Cut in half and hope for the best.
 		partition_direction = largest_extent(split_value, objects_collection);
 		
-		// No area euristic, for simplicity. Cut in half and hope for the best.
-
 		// Create both subtrees. I don't think you can end up with an empty node here.
 		low = std::make_unique<KdTreeNode>();
 		high = std::make_unique<KdTreeNode>();
 
 		split_low_high(split_value, objects_collection, low->node_content, high->node_content);
-		node_content.clear(); // Not a leaf, it has not content. It has been split among subnodes.
+		node_content.clear(); // Not a leaf, it has no content. It has been split among subnodes.
 
 		const uint8_t next_level = depth - 1;
 		low->split(next_level, small_enough_size, objects_collection);
 		high->split(next_level, small_enough_size, objects_collection);
 	}
 
-	KdTreeNode::Partition KdTreeNode::largest_extent(float& split_value, const std::vector<Sprite>& objects_collection) const
+	KdTreeNode::Partition KdTreeNode::largest_extent(float& split_value, const std::vector<Sprite>& objects_collection) const noexcept
 	{
 		float min_x = std::numeric_limits<float>::max();
 		float max_x = std::numeric_limits<float>::min();

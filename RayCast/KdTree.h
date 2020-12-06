@@ -11,6 +11,11 @@ namespace rc {
 	/** "Inner class" for the KdTree. Refer to that class to know what is going on.
 	The tree and the nodes are in different classes to avoid multiple copies of fields and to
 	do certain operations only at the end of the intersection recursion.
+
+	Notice that the inner nodes and the leaves have different, mutually exclusive, content.
+	It could be optimized with an union.
+
+	Also notice that this is the pointer-based binary tree implementation. It may not be cache friendly.
 	*/
 	class KdTreeNode
 	{
@@ -21,24 +26,23 @@ namespace rc {
 
 		std::vector<uint8_t> intersect(const Ray& ray, const float cutoff_distance) const;
 
+		/** For the recursive tree construction. Divides the node content in the sub trees.*/
+		void split(uint8_t depth, const uint8_t small_enough_size, const std::vector<Sprite>& object_collection);
+
 		/** The line in the x-z plane that splits the low and high regions. */
 		float split_value;
 		KdTreeNode::Partition partition_direction;
 		std::unique_ptr<KdTreeNode> low;
 		std::unique_ptr<KdTreeNode> high;
 
-		std::vector<uint8_t> node_content;  // Only the leaves have this.
-		//TODO: to micro optimize, add a LEAF value to the partition directions and put [content], [low, high and split point] in a union.
-		
-
-		/** For the recursive tree construction. Divides the node content in the sub trees.*/
-		void split(uint8_t depth, const uint8_t small_enough_size, const std::vector<Sprite>& object_collection);
+		/** Contains the indices of the objects that belongs to the node. Filled only in the leaves. */
+		std::vector<uint8_t> node_content;
 
 	private:
 		/** Tells on what direction (x/z) the objects in the node extend the most.
 		It also set the split value - it is computed easily as part of the partition direction calculation.
 		In this case it is easier to have a function that does 2 things rather than separating the logic. */
-		KdTreeNode::Partition largest_extent(float& split_value, const std::vector<Sprite>& objects_collection) const;
+		KdTreeNode::Partition largest_extent(float& split_value, const std::vector<Sprite>& objects_collection) const noexcept;
 
 		/** Divides the objects in the node above and below the split value.
 		It follows the partition direction set in the node itself.*/
@@ -65,6 +69,8 @@ namespace rc {
 	used BSPs to speed up rendering, so here is one.
 
 	The simple implemetation seen here already has very good effects when there are many sprites around.
+	It could be optimized further. I did not test if a non-recursive tree traversal (e. g. with a stack of nodes
+	and a loop) is faster. I prefer to keep the code simple.
 	*/
 	class KdTree {
 	public:
@@ -75,7 +81,9 @@ namespace rc {
 		void build(const uint8_t max_depth, const uint8_t small_enough_size);
 
 		/** Returns the indices of the objects that may have an intersaction with the ray.
-		this->objects.at(any of the indices) points to the object itself. */
+		this->objects.at(any of the indices) points to the object itself. 
+		
+		Assumes that there was a call to build() before usage. But it does not check, for speed.*/
 		std::vector<uint8_t> intersect(const Ray& ray, const float cutoff_distance) const;
 
 		/** Actual storage of the objects in space.
