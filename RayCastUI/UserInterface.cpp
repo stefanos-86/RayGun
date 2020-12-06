@@ -4,6 +4,8 @@
 
 #include "ProjectionPlane.h"
 
+#include "Timer.h"
+
 namespace rc {
 
 	static void sdl_null_check(const void* pointer) {
@@ -197,12 +199,16 @@ namespace rc {
 	{
 		ProjectionPlane projection(UserInterface::SCREEN_WIDTH, UserInterface::SCREEN_HEIGHT, 60);
 
+		Timer rendering_timer;
+		
 		halt_game_loop = false;
 		while (! halt_game_loop) {
 			poll_input(world);
 
-			if (halt_game_loop)
+			if (halt_game_loop) {
+				rendering_timer.dump("Rendering");
 				return;
+			}
 
 			if (pause_game_loop) {
 				world.hud.alert_pause(*this);
@@ -213,10 +219,12 @@ namespace rc {
 			}
 			else
 			{
+				rendering_timer.start();
 				draw_background();
 				projection.project_objects(world, *this);
 				draw_debug_crosshair();
 				world.hud.display(world.player, *this);
+				rendering_timer.end();
 			}
 
 			SDL_RenderPresent(renderer);

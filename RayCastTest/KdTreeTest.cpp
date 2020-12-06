@@ -17,8 +17,8 @@ namespace rc {
 		KdTree tree;
 		tree.build(10, 2);
 
-		ASSERT_NULL(tree.low);
-		ASSERT_NULL(tree.high);
+		ASSERT_NULL(tree.root.low);
+		ASSERT_NULL(tree.root.high);
 		ASSERT_TRUE(tree.objects.empty());
 	}
 	
@@ -29,10 +29,10 @@ namespace rc {
 		tree.objects.emplace_back(0, 0, 64, sprite_id, TextureIndex::ENEMY);
 		tree.build(10, 2);
 
-		ASSERT_NULL(tree.low);
-		ASSERT_NULL(tree.high);
-		ASSERT_EQ(1, tree.node_content.size());
-		ASSERT_EQ(sprite_id, tree.objects.at(tree.node_content.front()).id);
+		ASSERT_NULL(tree.root.low);
+		ASSERT_NULL(tree.root.high);
+		ASSERT_EQ(1, tree.root.node_content.size());
+		ASSERT_EQ(sprite_id, tree.objects.at(tree.root.node_content.front()).id);
 	}
 	
 	TEST(kdTree, Build__two_elements__split) {
@@ -45,17 +45,17 @@ namespace rc {
 
 		tree.build(10, 1);  // Each node can have only 1 element.
 
-		ASSERT_EQ(tree.partition_direction, KdTree::Partition::ON_X);
-		ASSERT_NOT_NULL(tree.low);
-		ASSERT_NOT_NULL(tree.high);
-		ASSERT_EQ(1, tree.low->node_content.size());
-		ASSERT_EQ(0, tree.low->node_content.front());
-		ASSERT_EQ(1, tree.high->node_content.size());
-		ASSERT_EQ(1, tree.high->node_content.front());
+		ASSERT_EQ(tree.root.partition_direction, KdTreeNode::Partition::ON_X);
+		ASSERT_NOT_NULL(tree.root.low);
+		ASSERT_NOT_NULL(tree.root.high);
+		ASSERT_EQ(1, tree.root.low->node_content.size());
+		ASSERT_EQ(0, tree.root.low->node_content.front());
+		ASSERT_EQ(1, tree.root.high->node_content.size());
+		ASSERT_EQ(1, tree.root.high->node_content.front());
 
 		// Double check with object indices.
-		ASSERT_EQ(0, tree.objects.at(tree.low->node_content.front()).id);
-		ASSERT_EQ(1, tree.objects.at(tree.high->node_content.front()).id);
+		ASSERT_EQ(0, tree.objects.at(tree.root.low->node_content.front()).id);
+		ASSERT_EQ(1, tree.objects.at(tree.root.high->node_content.front()).id);
 	}
 	
 	
@@ -71,15 +71,15 @@ namespace rc {
 
 		tree.KdTree::build(10, 2);
 
-		ASSERT_EQ(tree.partition_direction, KdTree::Partition::ON_X);
-		ASSERT_NOT_NULL(tree.low);
-		ASSERT_NOT_NULL(tree.high);
-		ASSERT_EQ(2, tree.low->node_content.size());
-		ASSERT_EQ(0, tree.low->node_content.front());
-		ASSERT_EQ(1, tree.low->node_content.back());  // Object on both sides.
-		ASSERT_EQ(2, tree.high->node_content.size());
-		ASSERT_EQ(1, tree.high->node_content.front());  // Object on both sides.
-		ASSERT_EQ(2, tree.high->node_content.back());
+		ASSERT_EQ(tree.root.partition_direction, KdTreeNode::Partition::ON_X);
+		ASSERT_NOT_NULL(tree.root.low);
+		ASSERT_NOT_NULL(tree.root.high);
+		ASSERT_EQ(2, tree.root.low->node_content.size());
+		ASSERT_EQ(0, tree.root.low->node_content.front());
+		ASSERT_EQ(1, tree.root.low->node_content.back());  // Object on both sides.
+		ASSERT_EQ(2, tree.root.high->node_content.size());
+		ASSERT_EQ(1, tree.root.high->node_content.front());  // Object on both sides.
+		ASSERT_EQ(2, tree.root.high->node_content.back());
 	}
 	
 
@@ -99,20 +99,20 @@ namespace rc {
 
 		// Sad jungle of assertions, but has to explore the whole tree.
 
-		ASSERT_EQ(tree.partition_direction, KdTree::Partition::ON_X);
-		ASSERT_NOT_NULL(tree.low);
-		ASSERT_NOT_NULL(tree.high);
-		const KdTree& low_x = *(tree.low);
-		const KdTree& high_x = *(tree.high);
+		ASSERT_EQ(tree.root.partition_direction, KdTreeNode::Partition::ON_X);
+		ASSERT_NOT_NULL(tree.root.low);
+		ASSERT_NOT_NULL(tree.root.high);
+		const KdTreeNode& low_x = *(tree.root.low);
+		const KdTreeNode& high_x = *(tree.root.high);
 		
-		ASSERT_EQ(low_x.partition_direction, KdTree::Partition::ON_Z);
+		ASSERT_EQ(low_x.partition_direction, KdTreeNode::Partition::ON_Z);
 		ASSERT_NOT_NULL(low_x.low);
 		ASSERT_NOT_NULL(low_x.high);
 		ASSERT_EQ(0, low_x.low->node_content.front());
 		ASSERT_EQ(1, low_x.high->node_content.front());
 
 
-		ASSERT_EQ(high_x.partition_direction, KdTree::Partition::ON_Z);
+		ASSERT_EQ(high_x.partition_direction, KdTreeNode::Partition::ON_Z);
 		ASSERT_NOT_NULL(high_x.low);
 		ASSERT_NOT_NULL(high_x.high);
 		ASSERT_EQ(2, high_x.low->node_content.front());

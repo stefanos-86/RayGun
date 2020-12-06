@@ -11,7 +11,7 @@ namespace rc {
 		std::vector<RayHit> valid_hits;  // Do not reserve. There are few interesction at the same time, not worth it.
 
 		if (enumerated_kinds & (uint8_t)TextureIndex::ENEMY) {
-			// TODO assert(enemies was built)
+			// TODO assert(tree was built)
 
 			const auto broad_phase_hits = enemies.intersect(ray, cutoff.distance);
 			const std::vector<RayHit> hits = intersections(ray, cutoff, broad_phase_hits);
