@@ -3,7 +3,6 @@
 #include <cstdint>
 
 #include "Grid.h"
-#include "KdTree.h"
 #include "Ray.h"
  
 namespace rc {
@@ -50,35 +49,4 @@ namespace rc {
 	};
 
 
-	/** Just a collection to keep track of all the objects that can be seen onscreen. */
-	class Objects {
-	public:
-
-		void build_accelerators();
-
-		std::vector<Sprite> enemies;
-		std::vector<Sprite> exits;  // TODO: do I want to keep multiple exits? Can I cache the cell they are into? 
-
-		/** Returns all the hists from the intersection between the ray and any of the sprites.
-		    Hits further from the ray than the cutoff distance (the distance of the cutoff hit) are discarded.
-			Hits are sorted by distance in reverse (the more distant first) to help over-paint them.
-
-			No broad-phase in the ray-sprite collision detection.
-			TODO: find a way to avoid testing every sprite.
-
-			TODO There is also room to improve the memory managment, probably (e. g. do not return a new vector every time).
-		*/
-
-//	http://www.pbr-book.org/3ed-2018/Primitives_and_Intersection_Acceleration/Kd-Tree_Accelerator.html ?
-
-		std::vector <RayHit> all_intersections(const Ray& ray, const RayHit& cutoff, const uint8_t enumerated_kinds) const noexcept;
-
-		void deactivate(const uint8_t sprite_id);
-
-	private:
-		std::vector <RayHit> intersections(const Ray& ray, const RayHit& cutoff, std::vector<Sprite> objects) const;
-		std::vector <RayHit> intersections(const Ray& ray, const RayHit& cutoff, std::vector<const Sprite*> objects) const;
-		std::shared_ptr<KdTree> enemies_accelerator;  //Shared allow easier copy of the including object.
-	
-	};
 }

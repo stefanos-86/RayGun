@@ -4,6 +4,7 @@
 
 #include "Canvas.h"
 #include "Grid.h"
+#include "Objects.h"
 #include "Sprite.h"
 
 namespace rc {

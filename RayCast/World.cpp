@@ -2,6 +2,7 @@
 
 #include "World.h"
 
+#include <algorithm>
 #include <istream>
 #include <sstream>
 #include <stdexcept>
@@ -71,7 +72,7 @@ namespace rc {
 				break;
 			case 'E':
 				const WorldCoordinate enemy_wc = g.center_of(column_x, row_z);
-				objects.enemies.emplace_back(enemy_wc.x, enemy_wc.z, 64, sprite_id++, TextureIndex::ENEMY);  // TODO Again the damn size hardcode. And the id computed outside the Sprite class.
+				objects.enemies.objects.emplace_back(enemy_wc.x, enemy_wc.z, 64, sprite_id++, TextureIndex::ENEMY);  // TODO Again the damn size hardcode. And the id computed outside the Sprite class.
 				++column_x;
 				break;
 			case 'X':
@@ -99,6 +100,7 @@ namespace rc {
 			}
 		}
 
+		objects.enemies.build(10, 10); // TODO: change the tree building parameters dinamically? Avoid hardcode?
 		
 		if (!player_position_loaded)
 			throw std::runtime_error("No player on the map.");
@@ -108,9 +110,7 @@ namespace rc {
 
 		Player p{player_start_position.x, player_start_position.z, player_orientation, ammo};  // Not set: the kills, that begin at 0.
 		
-		auto w= World{g, p, objects};
-		w.sprites.build_accelerators();  // TODO: moving objects into world changes the memory layout -> vectors get moved!
-		return w;
+		return World{g, p, std::move(objects)};
 	}
 
 
@@ -125,4 +125,5 @@ namespace rc {
 
 		return false;
 	}
+
 }

@@ -2,13 +2,16 @@
 
 #include "Grid.h"
 #include "Hud.h"
+#include "Objects.h"
 #include "Player.h"
-#include "Sprite.h"
 
 namespace rc {
 
+	
+
 	/** Container of all the objects, to keep things tidy. */
-	struct World {
+	class World {
+	public:
 		Grid map;
 		Player player;
 		Objects sprites;

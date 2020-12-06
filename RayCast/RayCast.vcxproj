@@ -156,6 +156,7 @@
     <ClInclude Include="Grid.h" />
     <ClInclude Include="Hud.h" />
     <ClInclude Include="KdTree.h" />
+    <ClInclude Include="Objects.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PI.h" />
     <ClInclude Include="Player.h" />
@@ -168,6 +169,7 @@
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Hud.cpp" />
     <ClCompile Include="KdTree.cpp" />
+    <ClCompile Include="Objects.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

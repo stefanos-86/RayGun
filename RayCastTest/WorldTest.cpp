@@ -169,7 +169,7 @@ namespace rc {
 
         const Objects e = World::load(world_text).sprites;
 
-        ASSERT_EQ(1, e.enemies.size());
+        ASSERT_EQ(1, e.enemies.objects.size());
         // Sprite x and z are private. I would have to test via the intersection, but that is complicated...
     }
     

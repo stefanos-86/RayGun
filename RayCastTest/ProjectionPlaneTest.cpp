@@ -37,7 +37,6 @@ namespace rc {
         World w{ g, p, {{}} };
         MockCanvas mc;
 
-
         plane.project_objects(w, mc);
 
         ASSERT_TRUE(mc.column_calls.empty());
