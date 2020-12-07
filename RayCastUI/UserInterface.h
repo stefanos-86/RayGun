@@ -36,6 +36,23 @@ namespace rc {
 	};
 
 
+	/** RAII wrapper around the SDL sound data. */
+	class Sound {
+	public:
+		Sound(const std::string& file_path);
+		~Sound();
+
+		/** Sends the data to the audio device.
+		It enqueues it - it will have to wait all the other music to be played. */
+		void push_for_play() const;
+
+		SDL_AudioSpec sound_spec;  /// Public because needed to open devices.
+	private:
+		uint32_t buffer_length;
+		uint8_t* wav_buffer;
+
+	};
+
 	/** This class is the entry point to visualize things and react to keys.
 	    "Glues" the SDL calls and the rest of the game, ensures RAII handling of the SDL
 		data.

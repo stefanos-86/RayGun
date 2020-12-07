@@ -6,10 +6,6 @@
 #include "Grid.h"
 #include "UserInterface.h"
 
-// TODO Audio?
-// https://github.com/jakebesworth/Simple-SDL2-Audio/tree/master/src
-// https://gist.github.com/armornick/3447121
-
 // Just for the records: in 256 bytes on C64. http://www.pouet.net/prod.php?which=61298, https://www.youtube.com/watch?v=JxS0_ckSwqk
 
 

@@ -6,12 +6,71 @@
 
 #include "Timer.h"
 
+#include <iostream>
+
 namespace rc {
 
 	static void sdl_null_check(const void* pointer) {
 		if (!pointer)
 			throw std::runtime_error(SDL_GetError());
 	}
+
+	struct user_audio_data {
+		Uint8* audio_pos; // global pointer to the audio buffer to be played
+		Uint32 audio_len; // remaining length of the sample we have to play
+	};
+
+	// May need this again... queueing won't work for shooting. Unless I can open another device for the sfx?
+	//  Or maybe just do what they say here: https://discourse.libsdl.org/t/sdl2-play-multiple-wav-sounds-simultaneously-no-sdl2-mixer/25439/14
+	void my_audio_callback(void* userdata, Uint8* stream, int len) {
+		user_audio_data* d = (user_audio_data*)userdata;
+		if (d->audio_len == 0)
+			return;
+
+		len = (len > d->audio_len ? d->audio_len : len);
+		SDL_memcpy (stream, d->audio_pos, len); 					// simply copy from one buffer into the other
+		//SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME);// mix from one buffer into another
+
+		d->audio_pos += len;
+		d->audio_len -= len;
+	}
+
+	void play_music() {  // TODO: mode in a class function, or in a specific class with the music logic.
+		/* Will I ever need this?
+		int i, count = SDL_GetNumAudioDevices(0);
+
+		for (i = 0; i < count; ++i) {
+			std::cout << "Audio device " << i << " " << SDL_GetAudioDeviceName(i, 0) << std::endl;
+		}
+		*/
+		// Many thanks to https://gist.github.com/armornick/3447121
+
+		if (SDL_GetQueuedAudioSize(1) > 0)  // TODO: do not hardcode audio device.
+			return; // Do not add more music.
+
+		Sound sound_1("./1_rec.wav");  // TODO cache the sounds.
+		Sound sound_2("./2_rec.wav");
+		Sound sound_3("./3_rec.wav");
+		Sound sound_4("./4_rec.wav");
+		
+		static uint8_t counter = 0; // TODO: find a better looping strategy.
+		switch (counter++ % 4)
+		{
+		case 0:
+			sound_1.push_for_play();
+			break;
+		case 1:
+			sound_2.push_for_play();
+			break;
+		case 2:
+			sound_3.push_for_play();
+			break;
+		default:
+			sound_4.push_for_play();
+		}
+
+	}
+
 
 	static void sdl_return_check(const int rc) {
 		if (rc != 0)
@@ -89,6 +148,27 @@ namespace rc {
 
 		return alpha < 128;
 	}
+
+
+	Sound::Sound(const std::string& file_path) {
+		const SDL_AudioSpec* return_value = SDL_LoadWAV(
+			file_path.c_str(),
+			&sound_spec,
+			&wav_buffer,
+			&buffer_length);
+		sdl_null_check(return_value);
+	}
+
+	Sound::~Sound() {
+		SDL_FreeWAV(wav_buffer);
+	}
+
+	void Sound::push_for_play() const {
+		SDL_QueueAudio(1, wav_buffer, buffer_length); // TODO: pass the audio device as parameter.
+	}
+
+	
+
 	
 
 	UserInterface::UserInterface() :
@@ -103,6 +183,7 @@ namespace rc {
 
 	UserInterface::~UserInterface()
 	{
+		SDL_CloseAudio();
 		SDL_DestroyRenderer(renderer);
 		SDL_DestroyWindow(main_window);
 		SDL_Quit();
@@ -111,7 +192,7 @@ namespace rc {
 
 	void UserInterface::openWindow()
 	{
-		if (SDL_Init(SDL_INIT_VIDEO) < 0)
+		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 			throw std::runtime_error(SDL_GetError());
 
 		main_window = SDL_CreateWindow(
@@ -126,6 +207,11 @@ namespace rc {
 
 		renderer = SDL_CreateRenderer(main_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		sdl_null_check(renderer);
+
+		Sound this_is_tragic("./1_rec.wav");  // TODO: must avoid... This assumes all the sounds have the same specs, of course. Check SDL_ConvertAudio(), it may help.
+		if (SDL_OpenAudio(&(this_is_tragic.sound_spec), NULL) < 0)  // TODO: replace with https://wiki.libsdl.org/SDL_OpenAudioDevice
+			throw std::runtime_error(SDL_GetError());
+		SDL_PauseAudio(0);  // start playing immediately. TODO: pause audio... device.
 	}
 	
 	void UserInterface::poll_input(World& world)
@@ -227,8 +313,10 @@ namespace rc {
 				rendering_timer.end();
 			}
 
+			play_music(); // Even when paused!
 			SDL_RenderPresent(renderer);
 		}
+
 	}
 
 
@@ -334,5 +422,6 @@ namespace rc {
 		const int rc = SDL_RenderCopy(renderer, texture.texture, &source_slice, &dest_slice);  // TODO Or maybe I have to use SDL_BlitSurface?
 		sdl_return_check(rc);
 	}
+
 
 }
