@@ -66,10 +66,10 @@ namespace rc {
 	    "Glues" the SDL calls and the rest of the game, ensures RAII handling of the SDL
 		data.
 
-		It implements the Canvas interface so that it can be called back by the projection plane
+		It implements the Canvas and Loudspeaker interfaces so that it can be called back by the core classes
 		(it is a dependency inversion).
 	*/
-	class UserInterface : public Canvas
+	class UserInterface : public Canvas, public Loudspeaker
 	{
 	public:
 		static constexpr int SCREEN_WIDTH = 640;
@@ -83,8 +83,7 @@ namespace rc {
 		void game_loop(World& world);
 
 		void set_texture(const TextureIndex name, const std::string& file_path);
-		void set_sound(const SoundIndex name, const Sound* object);
-		void set_sound_test(const SoundIndex name, const std::string& file_path);
+		void set_sound(const SoundIndex name, const std::string& file_path);
 
 		void draw_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset, const TextureIndex what_to_draw) final;
 
@@ -93,6 +92,10 @@ namespace rc {
 		void draw_text(const std::string& text, uint16_t column, const uint16_t row, const uint8_t font_size) final;
 
 		void draw_image(uint16_t column_x, const uint16_t row_y, const TextureIndex what_to_draw) final;
+
+		bool still_playing() const noexcept;
+
+		void play_this_next(const SoundIndex segment) noexcept;
 
 	private:
 		SDL_Window* main_window;
@@ -104,8 +107,7 @@ namespace rc {
 		bool endgame;
 
 		std::unordered_map<TextureIndex, Image> textures;  //TODO: overkill. Textures are known at compile time -> use direct addressing array with TextureIndexes... as indexes. Also keep the image pointer in the sprites to avoid a lookup (but not a shared one, ownership is with the array...?)
-		std::unordered_map<SoundIndex, const Sound*> sounds;  //TODO: overkill. Sounds are known at compile time -> use direct addressing array with TextureIndexes... as indexes. Also keep the image pointer in the sprites to avoid a lookup (but not a shared one, ownership is with the array...?)
-		std::unordered_map<SoundIndex, Sound> sounds_test;  //TODO: overkill. Sounds are known at compile time -> use direct addressing array with TextureIndexes... as indexes. Also keep the image pointer in the sprites to avoid a lookup (but not a shared one, ownership is with the array...?)
+		std::unordered_map<SoundIndex, Sound> sounds;  //TODO: overkill. Sounds are known at compile time -> use direct addressing array with TextureIndexes... as indexes. Also keep the image pointer in the sprites to avoid a lookup (but not a shared one, ownership is with the array...?)
 
 		UserInterface(const UserInterface&) = delete;
 		void operator=(const UserInterface&) = delete;
@@ -122,8 +124,6 @@ namespace rc {
 		/** Color in red the pixel in the middle of the screen.
 		    This is meant as a debug aid, to see what the player is pointing at. */
 		void draw_debug_crosshair();
-
-		void play_music();
 	};
 
 }

@@ -13,17 +13,6 @@ namespace rc {
 			throw std::runtime_error(SDL_GetError());
 	}
 
-	void UserInterface::play_music() {  // TODO: mode in a class function, or in a specific class with the music logic.
-		// Many thanks to https://gist.github.com/armornick/3447121
-		// Instruction for mixing: https://discourse.libsdl.org/t/sdl2-play-multiple-wav-sounds-simultaneously-no-sdl2-mixer/25439/14
-
-		if (SDL_GetQueuedAudioSize(1) > 0)  // TODO: do not hardcode audio device.
-			return; // Do not add more music.
-		
-		sounds.at(rc::SoundIndex::MUSIC_CALM)->push_for_play();
-	}
-
-
 	static void sdl_return_check(const int rc) {
 		if (rc != 0)
 			throw std::runtime_error(SDL_GetError());
@@ -191,8 +180,8 @@ namespace rc {
 		renderer = SDL_CreateRenderer(main_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		sdl_null_check(renderer);
 
-		Sound* reference_sound = const_cast<Sound*>(sounds.at(SoundIndex::MUSIC_CALM));  // TODO: must avoid... This assumes all the sounds have the same specs, of course. Check SDL_ConvertAudio(), it may help.
-		if (SDL_OpenAudio(&(reference_sound->sound_spec), NULL) < 0)  // TODO: replace with https://wiki.libsdl.org/SDL_OpenAudioDevice
+		Sound& reference_sound = const_cast<Sound&>(sounds.at(SoundIndex::MUSIC_CALM));  // TODO: must avoid... This assumes all the sounds have the same specs, of course. Check SDL_ConvertAudio(), it may help.
+		if (SDL_OpenAudio(&(reference_sound.sound_spec), NULL) < 0)  // TODO: replace with https://wiki.libsdl.org/SDL_OpenAudioDevice
 			throw std::runtime_error(SDL_GetError());
 		SDL_PauseAudio(0);  // start playing immediately. TODO: pause audio... device.
 	}
@@ -296,7 +285,7 @@ namespace rc {
 				rendering_timer.end();
 			}
 			SDL_RenderPresent(renderer);
-			play_music(); // Even when paused, do not stop the background music.
+			world.music.play_more_music(*this); // Even when paused, do not stop the background music.
 		}
 
 	}
@@ -307,14 +296,9 @@ namespace rc {
 		textures.emplace(name, Image(file_path, renderer));
 	}
 
-	void UserInterface::set_sound(const SoundIndex name, const Sound* object)
+	void UserInterface::set_sound(const SoundIndex name, const std::string& file_path)
 	{
-		sounds.emplace(name, object);
-	}
-
-	void UserInterface::set_sound_test(const SoundIndex name, const std::string& file_path)
-	{
-		sounds_test.emplace(name, Sound(file_path));
+		sounds.emplace(name, Sound(file_path));
 	}
 
 	void UserInterface::draw_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset, const TextureIndex what_to_draw)
@@ -413,6 +397,14 @@ namespace rc {
 
 		const int rc = SDL_RenderCopy(renderer, texture.texture, &source_slice, &dest_slice);  // TODO Or maybe I have to use SDL_BlitSurface?
 		sdl_return_check(rc);
+	}
+
+	bool UserInterface::still_playing() const noexcept {
+		return SDL_GetQueuedAudioSize(1) > 0;  // TODO: do not hardcode audio device.
+	}
+
+	void UserInterface::play_this_next(const SoundIndex segment) noexcept {
+		sounds.at(segment).push_for_play();
 	}
 
 

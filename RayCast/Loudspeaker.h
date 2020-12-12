@@ -13,7 +13,14 @@ namespace rc {
 	};
 
 	class Loudspeaker {
+	public:
+		virtual ~Loudspeaker() {};
 
+		/** Returns true if there is music in the buffer. */
+		virtual bool still_playing() const noexcept = 0;
+
+		/** Adds the sound segment to the "playlist" for the background music. */
+		virtual void play_this_next(const SoundIndex segment) noexcept = 0;
 	};
 
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BackgroundMusic.h"
 #include "Grid.h"
 #include "Hud.h"
 #include "Objects.h"
@@ -16,6 +17,7 @@ namespace rc {
 		Player player;
 		Objects sprites;
 		Hud hud;
+		BackgroundMusic music;
 
 		static World load(std::istream& serialized_world);
 

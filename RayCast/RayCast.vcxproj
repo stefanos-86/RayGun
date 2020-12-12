@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BackgroundMusic.h" />
     <ClInclude Include="Canvas.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Grid.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BackgroundMusic.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Hud.cpp" />
     <ClCompile Include="KdTree.cpp" />
