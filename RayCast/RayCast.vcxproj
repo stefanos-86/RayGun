@@ -156,6 +156,7 @@
     <ClInclude Include="Grid.h" />
     <ClInclude Include="Hud.h" />
     <ClInclude Include="KdTree.h" />
+    <ClInclude Include="Loudspeaker.h" />
     <ClInclude Include="Objects.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PI.h" />

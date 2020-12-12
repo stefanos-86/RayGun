@@ -6,6 +6,7 @@
 #include <SDL.h>
 
 #include "Canvas.h"
+#include "Loudspeaker.h"
 #include "World.h"
 
 namespace rc {
@@ -46,7 +47,15 @@ namespace rc {
 		It enqueues it - it will have to wait all the other music to be played. */
 		void push_for_play() const;
 
+		/** Required to allow creation via STL containers emplace methods and avoid extra deletes of the stored pointers. */
+		Sound(Sound&& other) noexcept;
+
+		/** Required to allow creation via STL containers emplace methods and avoid extra deletes of the stored pointers. */
+		Sound& operator=(Sound&& other) noexcept;
+
 		SDL_AudioSpec sound_spec;  /// Public because needed to open devices.
+	
+	
 	private:
 		uint32_t buffer_length;
 		uint8_t* wav_buffer;
@@ -74,6 +83,8 @@ namespace rc {
 		void game_loop(World& world);
 
 		void set_texture(const TextureIndex name, const std::string& file_path);
+		void set_sound(const SoundIndex name, const Sound* object);
+		void set_sound_test(const SoundIndex name, const std::string& file_path);
 
 		void draw_slice(const uint16_t column, const int16_t top_row, const uint16_t height, const uint16_t texture_offset, const TextureIndex what_to_draw) final;
 
@@ -93,6 +104,8 @@ namespace rc {
 		bool endgame;
 
 		std::unordered_map<TextureIndex, Image> textures;  //TODO: overkill. Textures are known at compile time -> use direct addressing array with TextureIndexes... as indexes. Also keep the image pointer in the sprites to avoid a lookup (but not a shared one, ownership is with the array...?)
+		std::unordered_map<SoundIndex, const Sound*> sounds;  //TODO: overkill. Sounds are known at compile time -> use direct addressing array with TextureIndexes... as indexes. Also keep the image pointer in the sprites to avoid a lookup (but not a shared one, ownership is with the array...?)
+		std::unordered_map<SoundIndex, Sound> sounds_test;  //TODO: overkill. Sounds are known at compile time -> use direct addressing array with TextureIndexes... as indexes. Also keep the image pointer in the sprites to avoid a lookup (but not a shared one, ownership is with the array...?)
 
 		UserInterface(const UserInterface&) = delete;
 		void operator=(const UserInterface&) = delete;
@@ -109,6 +122,8 @@ namespace rc {
 		/** Color in red the pixel in the middle of the screen.
 		    This is meant as a debug aid, to see what the player is pointing at. */
 		void draw_debug_crosshair();
+
+		void play_music();
 	};
 
 }

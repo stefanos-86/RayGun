@@ -104,6 +104,22 @@ int main(int argc, char* args[])
 		rc::World world = rc::World::load(level_file);
 
 		rc::UserInterface ui;
+
+		const rc::Sound sound_0("./impact.wav");
+		const rc::Sound sound_1("./1_rec.wav");
+		const rc::Sound sound_2("./2_rec.wav");
+		const rc::Sound sound_3("./3_rec.wav");
+		const rc::Sound sound_4("./4_rec.wav");
+
+		ui.set_sound(rc::SoundIndex::GUN_SHOT, &sound_0);
+		ui.set_sound(rc::SoundIndex::MUSIC_CALM, &sound_1);
+		ui.set_sound(rc::SoundIndex::MUSIC_SLOW, &sound_2);
+		ui.set_sound(rc::SoundIndex::MUSIC_MID, &sound_3);
+		ui.set_sound(rc::SoundIndex::MUSIC_FAST, &sound_4);
+		
+		ui.set_sound_test(rc::SoundIndex::MUSIC_CALM, "./1_rec.wav");
+		ui.set_sound_test(rc::SoundIndex::MUSIC_SLOW, "./2_rec.wav");
+
 		ui.openWindow();
 
 		ui.set_texture(rc::TextureIndex::WALL, "stone_wall.bmp");
