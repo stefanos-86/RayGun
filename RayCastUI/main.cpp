@@ -12,10 +12,12 @@
 /** I am not going to implement code to load the world from a file. 
     This simple hardcode will do. */
 std::stringstream fake_file_load() {
-	std::stringstream level;
+	std::stringstream level_basic;
+	std::stringstream level_enemy_performance;
+	std::stringstream level_to_play;
 
 
-	/*level << 
+	level_basic <<
 		"x 10\n"
 		"z 15\n"
 		"cell_size 64\n"
@@ -35,35 +37,13 @@ std::stringstream fake_file_load() {
 		"#X...E...#\n"
 		"##########\n"
 		"player_start_orientation_rad 1.57\n"
-		"player_ammo 30\n";*/
+		"player_ammo 30\n";
 	
-	/*level << 
+	
+	level_enemy_performance <<
 		"x 34 "
 		"z 11 "
 		"cell_size 64 "
-		// This is way less readable than I imagined at the beginning.
-		"#############.########.##.###.###.\n"
-		"#...........##.......P#..#...#X..#\n"
-		"#.........#X#.....#####..#...#...#\n"
-		"#.#.#.#.#.##.......#..#..#E..#...#\n"
-		"#.........#...###...###.###.###.#.\n"
-		"#E............###................#\n"
-		"#.........#...#E#...###.###.###.#.\n"
-		"#.#.#.#.#.##.......#.#...#...#...#\n"
-		"#.........#.#E....#..#.E.#.E.#...#\n"
-		"#........E#..#...#...#...#...#...#\n"
-		".#########....###.....###.###.###.\n"
-		"player_start_orientation_rad 3.14\n"
-		"player_ammo 30\n"; 
-		*/
-		
-	
-	
-	level <<
-		"x 34 "
-		"z 11 "
-		"cell_size 64 "
-		// This is way less readable than I imagined at the beginning.
 		"#############E########E##E###E###E\n"
 		"#EEEEEEEEEEE##EEEEEEEP#EE#EEE#XEE#\n"
 		"#EEEEEEEEE#X#EEEEE#####EE#EEE#EEE#\n"
@@ -77,21 +57,31 @@ std::stringstream fake_file_load() {
 		"E#########EEEE###EEEEE###E###E###E\n"
 		"player_start_orientation_rad 3.14\n"
 		"player_ammo 30\n";
-		
-		
-
-	/*
-		level <<
-		"x 4 "
-		"z 3 "
+	level_to_play <<
+		"x 34 "
+		"z 16 "
 		"cell_size 64 "
-		"####\n"
-		"#PE#\n"
-		"####\n"
-		"player_start_orientation_rad 0\n"
-		"player_ammo 30\n";*/
+		// This is way less readable than I imagined at the beginning.
+		"#############.########.##.###.###.\n"
+		"#...........##.......P#..#...#X..#\n"
+		"#.........#X#.....#####..#...#...#\n"
+		"#.#.#.#.#.##.......#..#..#E..#...#\n"
+		"#.........#...###...###.###.###.#.\n"
+		"#E............###................#\n"
+		"#.........#...#E#...###.###.###.#.\n"
+		"#.#.#.#.#.##.......#.#...#...#...#\n"
+		"#.........#.#E....#..#.E.#.E.#...#\n"
+		"#........E#..#...#...#...#...#...#\n"
+		".#########....###.....###.###.#..#\n"
+		"......#####...###.............#..#\n"
+		".#####.EE..###...##############..#\n"
+		"#.X.....#......#...EE........E...#\n"
+		".#####.EE..###...################.\n"
+		"......#####...###...............\n"
+		"player_start_orientation_rad 3.14\n"
+		"player_ammo 30\n";
 
-	return level;
+	return level_to_play;
 }
 
 int main(int argc, char* args[])

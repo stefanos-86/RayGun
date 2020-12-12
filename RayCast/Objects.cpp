@@ -17,7 +17,7 @@ namespace rc {
 			const std::vector<RayHit> hits = intersections(ray, cutoff, broad_phase_hits);
 			//std::cout << "BF " << broad_phase_hits.size() << " NF " << hits.size() << "\n";
 			
-			// Unoptimized code, to compare...
+			// Unoptimized code, to compare... Notice that when there are few enemies this is way faster!
 			//const std::vector<RayHit> hits = intersections(ray, cutoff, enemies.objects);
 
 			valid_hits.insert(valid_hits.end(), hits.begin(), hits.end());
@@ -49,6 +49,21 @@ namespace rc {
 			throw std::runtime_error("Attempting to deactivate a sprite that is not there.");
 
 		to_be_shut_off->active = false;
+	}
+
+	uint8_t Objects::enemies_near(const float x, const float z, const float cutoff) const
+	{
+		const float squared_cutoff = cutoff * cutoff;  // Use squared distance to avoid roots.
+		uint8_t counter = 0;
+		for (const auto& enemy : enemies.objects) { // TODO: attempt to optimize via KD tree?
+			const float h_distance = x - enemy.x;
+			const float v_distance = z - enemy.z;
+			const float squared_distance = (h_distance * h_distance + v_distance * v_distance); // TODO Yet another copy!
+		
+			if (squared_distance <= squared_cutoff)
+				++counter;
+		}
+		return counter;
 	}
 
 	std::vector<RayHit> Objects::intersections(const Ray& ray, const RayHit& cutoff, const std::vector<Sprite>& objects) const

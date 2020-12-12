@@ -26,6 +26,11 @@ namespace rc {
 
 		void deactivate(const uint8_t sprite_id);
 
+		/** How many enemies are within cutoff distance from the (x, z) point. 
+		TODO: test.
+		*/
+		uint8_t enemies_near(const float x, const float z, const float cutoff) const;
+
 	private:
 		/// kept for comparison with optimized version. Will be erased, sooner or later. Or kept for simpler collections that do not need trees.
 		std::vector <RayHit> intersections(const Ray& ray, const RayHit& cutoff, const std::vector<Sprite>& objects) const;

@@ -285,7 +285,7 @@ namespace rc {
 				rendering_timer.end();
 			}
 			SDL_RenderPresent(renderer);
-			world.music.play_more_music(*this); // Even when paused, do not stop the background music.
+			world.music.play_more_music(*this, world.sprites, world.player); // Even when paused, do not stop the background music.
 		}
 
 	}
