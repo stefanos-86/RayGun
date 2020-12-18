@@ -4,10 +4,10 @@
 #include <stdexcept>
 
 namespace rc {
-	void BackgroundMusic::play_more_music(Loudspeaker& speaker, const Objects& objects, const Player& player)
+	SoundIndex BackgroundMusic::select_music_score(const Objects& objects, const Player& player)
 	{
-		if (speaker.still_playing())
-			return;
+		//if (speaker.still_playing())
+		//	return;
 
 		const float distance_to_exit = objects.distance_to_closest_exit(player.x_position, player.z_position);
 		SoundIndex next_segment = SoundIndex::MUSIC_CALM;
@@ -18,6 +18,6 @@ namespace rc {
 		else if (distance_to_exit < 64 * 8)
 			next_segment = SoundIndex::MUSIC_SLOW;
 
-		speaker.play_this_next(next_segment);
+		return next_segment;
 	}
 }

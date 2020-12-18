@@ -47,6 +47,10 @@ namespace rc {
 		It enqueues it - it will have to wait all the other music to be played. */
 		void push_for_play() const;
 
+		bool next_chunk_mix(const uint32_t len, Uint8* stream, const uint8_t volume);
+
+		void rewind() noexcept;
+
 		/** Required to allow creation via STL containers emplace methods and avoid extra deletes of the stored pointers. */
 		Sound(Sound&& other) noexcept;
 
@@ -55,10 +59,12 @@ namespace rc {
 
 		SDL_AudioSpec sound_spec;  /// Public because needed to open devices.
 	
-	
+		uint8_t* wav_buffer;  // Public to pass it into SDL.
+			
 	private:
 		uint32_t buffer_length;
-		uint8_t* wav_buffer;
+		uint32_t buffer_position;
+		
 
 	};
 
@@ -76,11 +82,11 @@ namespace rc {
 		static constexpr int SCREEN_HEIGHT = 480;
 
 		/** Try not to create more than one! It instantiates SDL structures on creation.*/
-		UserInterface();
+		UserInterface(World& world);
 		~UserInterface();
 
 		void openWindow();
-		void game_loop(World& world);
+		void game_loop();
 
 		void set_texture(const TextureIndex name, const std::string& file_path);
 		void set_sound(const SoundIndex name, const std::string& file_path);
@@ -97,7 +103,11 @@ namespace rc {
 
 		void play_this_next(const SoundIndex segment) noexcept;
 
+		void play_sound(const SoundIndex sound);
+
 	private:
+		World& world;  /// NO copy! Must live longer than the interface! Did not want to do this, but I need to keep a reference for the audio callback.
+
 		SDL_Window* main_window;
 		SDL_Surface* main_window_surface;
 		SDL_Renderer* renderer;
@@ -112,7 +122,7 @@ namespace rc {
 		UserInterface(const UserInterface&) = delete;
 		void operator=(const UserInterface&) = delete;
 
-		void poll_input(World& world);
+		void poll_input();
 
 		/** Cleans the frame buffer, draws the ceiling.
 		Striclty speaking, this class should only offer primitives to do so, and let the 
@@ -124,6 +134,21 @@ namespace rc {
 		/** Color in red the pixel in the middle of the screen.
 		    This is meant as a debug aid, to see what the player is pointing at. */
 		void draw_debug_crosshair();
+
+		// Make private if pass private function as callback
+		SoundIndex test_sound;
+		SoundIndex sfx_sound;
+
+		/** Callback for SDL to pass the sound buffer to play.
+		
+			A static method is the  simplest way to have something that looks like a C function pointer that
+		    SDL can use.
+			
+		    The audio queue API does not allow to mix sounds as comfortably as the callback API.
+			The drawback is some low level work on buffers.*/
+		static void audio_callback(void* userdata, Uint8* stream, int len);
+
+		
 	};
 
 }

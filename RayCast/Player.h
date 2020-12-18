@@ -5,6 +5,7 @@
 #include "Canvas.h"
 #include "Grid.h"
 #include "Objects.h"
+#include "Loudspeaker.h"
 #include "Sprite.h"
 
 namespace rc {
@@ -29,7 +30,7 @@ namespace rc {
 	public:
 		void advance(const float axis, const Grid& map) noexcept;
 		void turn(const float axis) noexcept;
-		void shoot(const Grid& map, Objects& targets, const Canvas& image_tester) noexcept;
+		void shoot(const Grid& map, Objects& targets, const Canvas& image_tester, Loudspeaker& sfx) noexcept;
 
 		float x_position;
 		float z_position;

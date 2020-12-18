@@ -5,6 +5,7 @@
 namespace rc {
 
 	enum class SoundIndex : uint8_t {
+		SILENCE,
 		GUN_SHOT,
 		MUSIC_CALM,
 		MUSIC_SLOW,
@@ -21,6 +22,8 @@ namespace rc {
 
 		/** Adds the sound segment to the "playlist" for the background music. */
 		virtual void play_this_next(const SoundIndex segment) noexcept = 0;
+
+		virtual void play_sound(const SoundIndex sound) = 0;
 	};
 
 }

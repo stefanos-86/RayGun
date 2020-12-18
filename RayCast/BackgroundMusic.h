@@ -20,7 +20,8 @@ namespace rc {
 		* It is somewhat basic and not really effective.
 		TODO: test.
 		*/
-		void play_more_music(Loudspeaker& speaker, const Objects& objects, const Player& player);
+		SoundIndex select_music_score(const Objects& objects, const Player& player);
+
 
 	private:
 		uint8_t segment_counter;

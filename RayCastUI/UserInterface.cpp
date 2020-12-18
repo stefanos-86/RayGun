@@ -1,10 +1,13 @@
 #include "UserInterface.h"
 
+#include <functional>
 #include <stdexcept>
 
 #include "ProjectionPlane.h"
 
 #include "Timer.h"
+
+#include <iostream>
 
 namespace rc {
 
@@ -96,6 +99,7 @@ namespace rc {
 	Sound::Sound(const std::string& file_path) {
 		wav_buffer = nullptr;
 		buffer_length = 0;
+		buffer_position = 0;
 		memset(&sound_spec, 0, sizeof(SDL_AudioSpec));
 
 		const SDL_AudioSpec* return_value = SDL_LoadWAV(
@@ -109,7 +113,8 @@ namespace rc {
 	Sound::Sound(Sound&& other) noexcept :
 		sound_spec(other.sound_spec),
 		buffer_length(other.buffer_length),
-		wav_buffer(other.wav_buffer)
+		wav_buffer(other.wav_buffer),
+		buffer_position(other.buffer_position)
 	{
 		// No idea about how to reset a sound spec.
 		other.buffer_length = 0;
@@ -123,6 +128,7 @@ namespace rc {
 
 		sound_spec = other.sound_spec;
 		buffer_length = other.buffer_length;
+		buffer_position = other.buffer_position;
 		wav_buffer = other.wav_buffer;
 
 		// No idea about how to reset a sound spec.
@@ -139,17 +145,40 @@ namespace rc {
 
 	void Sound::push_for_play() const {
 		// TODO: pass the audio device as parameter.
-		SDL_QueueAudio(1, wav_buffer, buffer_length); // TODO: using half the duration makes the music more responsive. I have to talk to the Maestro about this...
+		//SDL_QueueAudio(1, wav_buffer, buffer_length); // TODO: using half the duration makes the music more responsive. I have to talk to the Maestro about this...
 	}
 
 
-	UserInterface::UserInterface() :
+	bool Sound::next_chunk_mix(const uint32_t len, Uint8* stream, const uint8_t volume)
+	{
+		const uint32_t left_in_buffer = buffer_length - buffer_position;
+		const uint32_t real_length = (len > left_in_buffer ? left_in_buffer : len);
+
+		SDL_MixAudio(stream, wav_buffer + buffer_position, len, volume);
+		buffer_position += len;
+
+		const bool end_of_sound = buffer_position >= buffer_length; // tells if the sound if fully played.
+		if (end_of_sound)
+			rewind();
+
+		return end_of_sound;
+	}
+
+	void Sound::rewind() noexcept {
+		buffer_position = 0;
+	}
+
+
+	UserInterface::UserInterface(World& world) :
+		world(world),
 		main_window(nullptr),
 		main_window_surface(nullptr),
 		renderer(nullptr),
 		halt_game_loop(true),  // Safe default.
 		pause_game_loop(false),
-		endgame(false)
+		endgame(false),
+		test_sound(SoundIndex::MUSIC_CALM),
+		sfx_sound(SoundIndex::SILENCE)
 	{
 	}
 
@@ -160,6 +189,26 @@ namespace rc {
 		SDL_DestroyRenderer(renderer);
 		SDL_DestroyWindow(main_window);
 		SDL_Quit();
+	}
+
+
+	void UserInterface::audio_callback(void* userdata, Uint8* stream, int len) {
+		// TODO: check null pointers.
+		
+		// Clean up the buffer. May not overwrite all of it.
+		memset(stream, 0, len);
+
+		UserInterface* ui = (UserInterface*)userdata;
+
+		const SoundIndex background_music = ui->world.music.select_music_score(ui->world.sprites, ui->world.player);
+		const bool loop_background = ui->sounds.at(background_music).next_chunk_mix(len, stream, 120);
+		
+		if (ui->sfx_sound != SoundIndex::SILENCE) {
+			Sound& sound_effect = ui->sounds.at(ui->sfx_sound);
+			const bool sfx_finished = sound_effect.next_chunk_mix(len, stream, 10);
+			if (sfx_finished)
+				ui->sfx_sound = SoundIndex::SILENCE;
+		}
 	}
 
 
@@ -182,12 +231,14 @@ namespace rc {
 		sdl_null_check(renderer);
 
 		Sound& reference_sound = const_cast<Sound&>(sounds.at(SoundIndex::MUSIC_CALM));  // TODO: must avoid... This assumes all the sounds have the same specs, of course. Check SDL_ConvertAudio(), it may help.
+		reference_sound.sound_spec.callback = UserInterface::audio_callback;
+		reference_sound.sound_spec.userdata = this;
 		if (SDL_OpenAudio(&(reference_sound.sound_spec), NULL) < 0)  // TODO: replace with https://wiki.libsdl.org/SDL_OpenAudioDevice
 			throw std::runtime_error(SDL_GetError());
 		SDL_PauseAudio(0);  // start playing immediately. TODO: pause audio... device.
 	}
 	
-	void UserInterface::poll_input(World& world)
+	void UserInterface::poll_input()
 	{
 		Player& player = world.player;
 		const Grid& map = world.map;
@@ -204,7 +255,7 @@ namespace rc {
 				else if (user_input.key.keysym.scancode == SDL_SCANCODE_SPACE && !pause_game_loop)
 					// Cheap way out to avoid a cooldown timer on the shoot key. Using the key state
 					// would cause a shot per frame (too fast).
-					player.shoot(map, world.sprites, *this);
+					player.shoot(map, world.sprites, *this, *this);
 			}
 
 		if (pause_game_loop || endgame)
@@ -254,7 +305,7 @@ namespace rc {
 		SDL_RenderDrawPoint(renderer, UserInterface::SCREEN_WIDTH / 2, UserInterface::SCREEN_HEIGHT / 2);
 	}
 
-	void UserInterface::game_loop(World& world)
+	void UserInterface::game_loop()
 	{
 		ProjectionPlane projection(UserInterface::SCREEN_WIDTH, UserInterface::SCREEN_HEIGHT, 60);
 
@@ -262,7 +313,7 @@ namespace rc {
 		
 		halt_game_loop = false;
 		while (! halt_game_loop) {
-			poll_input(world);
+			poll_input();
 
 			if (halt_game_loop) {
 				rendering_timer.dump("Rendering");
@@ -286,7 +337,7 @@ namespace rc {
 				rendering_timer.end();
 			}
 			SDL_RenderPresent(renderer);
-			world.music.play_more_music(*this, world.sprites, world.player); // Even when paused, do not stop the background music.
+			test_sound = world.music.select_music_score(world.sprites, world.player); // Even when paused, do not stop the background music.
 		}
 
 	}
@@ -401,11 +452,19 @@ namespace rc {
 	}
 
 	bool UserInterface::still_playing() const noexcept {
-		return SDL_GetQueuedAudioSize(1) > 0;  // TODO: do not hardcode audio device.
+		return true; // SDL_GetQueuedAudioSize(1) > 0;  // TODO: do not hardcode audio device.
 	}
 
 	void UserInterface::play_this_next(const SoundIndex segment) noexcept {
-		sounds.at(segment).push_for_play();
+		std::cout << "Next sound " << (int) segment << "\n";
+		test_sound = segment;
+	}
+
+	void UserInterface::play_sound(const SoundIndex sound) {
+		sfx_sound = sound;
+
+		// Force the noise to start again if already playing. Makes for better burst shots.
+		sounds.at(sfx_sound).rewind();
 	}
 
 

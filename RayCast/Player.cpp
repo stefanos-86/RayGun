@@ -3,6 +3,7 @@
 
 #include <cmath>
 
+#include "Loudspeaker.h"
 #include "PI.h"
 
 
@@ -49,7 +50,7 @@ namespace rc {
 			orientation = 0;
 	}
 
-	void Player::shoot(const Grid& map, Objects& targets, const Canvas& image_tester) noexcept
+	void Player::shoot(const Grid& map, Objects& targets, const Canvas& image_tester, Loudspeaker& sfx) noexcept
 	{
 		if (bullets_left == 0)
 			return;
@@ -69,6 +70,7 @@ namespace rc {
 			}
 
 		--bullets_left;
+		sfx.play_sound(SoundIndex::GUN_SHOT);
 	}
 
 }

@@ -93,7 +93,7 @@ int main(int argc, char* args[])
 		std::stringstream level_file = fake_file_load();
 		rc::World world = rc::World::load(level_file);
 
-		rc::UserInterface ui;
+		rc::UserInterface ui(world);
 
 		ui.set_sound(rc::SoundIndex::GUN_SHOT, "impact.wav");
 		ui.set_sound(rc::SoundIndex::MUSIC_CALM, "1_rec.wav");
@@ -109,7 +109,7 @@ int main(int argc, char* args[])
 		ui.set_texture(rc::TextureIndex::HUD, "gun.bmp");
 		ui.set_texture(rc::TextureIndex::EXIT, "exit.bmp");
 
-		ui.game_loop(world);
+		ui.game_loop();
 	}
 	catch (std::runtime_error& x) {
 		std::cerr << x.what() << std::endl;
