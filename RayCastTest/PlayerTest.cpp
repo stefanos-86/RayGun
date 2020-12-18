@@ -3,7 +3,7 @@
 #include "Player.h"
 
 #include "Grid.h"
-#include "MockCanvas.h"
+#include "MockInterface.h"
 #include "PI.h"
 
 namespace rc {
@@ -90,7 +90,8 @@ namespace rc {
 
 		Objects no_one;
 		MockCanvas always_hit;
-		p.shoot(empty_map, no_one, always_hit);
+		MockSpeaker no_sound;
+		p.shoot(empty_map, no_one, always_hit, no_sound);
 		ASSERT_EQ(0, p.bullets_left);
 	}
 

@@ -2,7 +2,7 @@
 
 #include "Hud.h"
 
-#include "MockCanvas.h"
+#include "MockInterface.h"
 #include "Player.h"
 
 namespace rc {

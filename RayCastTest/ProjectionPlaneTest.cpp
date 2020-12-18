@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "Grid.h"
-#include "MockCanvas.h"
+#include "MockInterface.h"
 #include "Player.h"
 #include "World.h"
 

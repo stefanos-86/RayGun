@@ -1,13 +1,10 @@
 #include "UserInterface.h"
 
-#include <functional>
 #include <stdexcept>
 
 #include "ProjectionPlane.h"
 
 #include "Timer.h"
-
-#include <iostream>
 
 namespace rc {
 
@@ -107,7 +104,6 @@ namespace rc {
 			&sound_spec,
 			&wav_buffer,
 			&buffer_length);
-	std::cout << "init " << (int)buffer_length << "\n";
 		sdl_null_check(return_value);
 	}
 
@@ -146,26 +142,28 @@ namespace rc {
 
 	bool Sound::mix_next_chunk(const uint32_t len, Uint8* stream, const uint8_t volume, const Repetition loop)
 	{
-		std::cout << "call " << (int)buffer_length << "\n";
-
 		const bool looping_sound = (loop == Repetition::LOOP);
 
 		uint32_t copied = 0;
 		bool end_of_sound = false;
 
-		while (copied < len)  // Imagine a sound shorter than the buffer, or almost at the end. Must loop to fill.
+		int loops = 0;
+
+		/* In case we are near the end of the buffer (or there is a very, very short sound) there may 
+		not be enough data to copy. In this case, loop on the buffer (if the sound is looping) to fill
+		the requested data. */
+		while (copied < len)
 		{
+			loops++;
+
 			const uint32_t left_in_buffer = buffer_length - buffer_position;
 			const uint32_t copy_length = std::min(left_in_buffer, len);
-
-			std::cout << (int)copy_length << "-" << (int)copied << "/" << (int)len << "    " <<(int)left_in_buffer <<"\n";
 
 			SDL_MixAudio(stream, wav_buffer + buffer_position, copy_length, volume);
 			buffer_position += copy_length;
 			copied += copy_length;
-			std::cout << "bis" << (int)copied << "\n";
 
-			end_of_sound = buffer_position >= buffer_length; // tells if the sound if fully played.
+			end_of_sound = buffer_position >= buffer_length;
 			if (end_of_sound) {
 				rewind();
 				
@@ -174,7 +172,7 @@ namespace rc {
 			}
 		}
 
-		return end_of_sound && (! looping_sound);
+		return end_of_sound && (! looping_sound);  // Looping sounds never really end.
 	}
 
 	void Sound::rewind() noexcept {

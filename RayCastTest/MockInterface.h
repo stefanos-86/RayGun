@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Canvas.h"
+#include "Loudspeaker.h"
 
 namespace rc {
 
@@ -25,5 +26,10 @@ namespace rc {
         std::vector<uint16_t> height_calls;
 
         std::string last_drawn_string;
+    };
+
+    class MockSpeaker : public Loudspeaker {
+    public:
+        void play_sound(const SoundIndex sound) {};
     };
 }
