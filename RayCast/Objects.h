@@ -26,10 +26,8 @@ namespace rc {
 
 		void deactivate(const uint8_t sprite_id);
 
-		/** How many enemies are within cutoff distance from the (x, z) point. 
-		TODO: test.
-		*/
-		uint8_t enemies_near(const float x, const float z, const float cutoff) const;
+		/** Returns the distance to the closest exit - straight line, does not account for walls. */
+		float distance_to_closest_exit(const float x, const float z) const noexcept;
 
 	private:
 		/// kept for comparison with optimized version. Will be erased, sooner or later. Or kept for simpler collections that do not need trees.

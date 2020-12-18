@@ -138,7 +138,8 @@ namespace rc {
 
 
 	void Sound::push_for_play() const {
-		SDL_QueueAudio(1, wav_buffer, buffer_length); // TODO: pass the audio device as parameter.
+		// TODO: pass the audio device as parameter.
+		SDL_QueueAudio(1, wav_buffer, buffer_length); // TODO: using half the duration makes the music more responsive. I have to talk to the Maestro about this...
 	}
 
 

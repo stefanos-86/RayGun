@@ -51,19 +51,24 @@ namespace rc {
 		to_be_shut_off->active = false;
 	}
 
-	uint8_t Objects::enemies_near(const float x, const float z, const float cutoff) const
+
+	float Objects::distance_to_closest_exit(const float x, const float z) const noexcept
 	{
-		const float squared_cutoff = cutoff * cutoff;  // Use squared distance to avoid roots.
-		uint8_t counter = 0;
-		for (const auto& enemy : enemies.objects) { // TODO: attempt to optimize via KD tree?
-			const float h_distance = x - enemy.x;
-			const float v_distance = z - enemy.z;
-			const float squared_distance = (h_distance * h_distance + v_distance * v_distance); // TODO Yet another copy!
-		
-			if (squared_distance <= squared_cutoff)
-				++counter;
+		float closest_distance = std::numeric_limits<float>::max();
+		for (const auto& exit : exits) {
+
+			// TODO Oh, no... not again...
+			const float h_distance = x - exit.x;
+			const float v_distance = z - exit.z;
+			const float squared_distance = (h_distance * h_distance + v_distance * v_distance);
+
+			
+			if (squared_distance < closest_distance)
+				closest_distance = squared_distance;
 		}
-		return counter;
+
+		return std::sqrt(closest_distance);
+
 	}
 
 	std::vector<RayHit> Objects::intersections(const Ray& ray, const RayHit& cutoff, const std::vector<Sprite>& objects) const

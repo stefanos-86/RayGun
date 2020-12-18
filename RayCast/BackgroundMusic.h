@@ -12,7 +12,14 @@ namespace rc {
 	class BackgroundMusic
 	{
 	public:
-		// TODO: test.
+		/** Decides what to send to the loudspeaker next.
+		* 
+		* The current logic gives an audio queue to the distance of the closest exit (disregarding walls).
+		* (and keeps an "excited" music when out of ammo).
+		* 
+		* It is somewhat basic and not really effective.
+		TODO: test.
+		*/
 		void play_more_music(Loudspeaker& speaker, const Objects& objects, const Player& player);
 
 	private:
