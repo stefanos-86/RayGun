@@ -16,13 +16,11 @@ namespace rc {
 	class Loudspeaker {
 	public:
 		virtual ~Loudspeaker() {};
-
-		/** Returns true if there is music in the buffer. */
-		virtual bool still_playing() const noexcept = 0;
-
-		/** Adds the sound segment to the "playlist" for the background music. */
-		virtual void play_this_next(const SoundIndex segment) noexcept = 0;
-
+		
+		/** Plays the sound immediately and from the beginning.
+			It is OK to "cut" any other sound that was playing before, but leave the music
+			to play in the background.
+		*/
 		virtual void play_sound(const SoundIndex sound) = 0;
 	};
 

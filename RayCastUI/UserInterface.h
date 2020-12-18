@@ -40,15 +40,18 @@ namespace rc {
 	/** RAII wrapper around the SDL sound data. */
 	class Sound {
 	public:
+		enum class Repetition : uint8_t {
+			LOOP,
+			ONCE
+		};
+
 		Sound(const std::string& file_path);
 		~Sound();
 
-		/** Sends the data to the audio device.
-		It enqueues it - it will have to wait all the other music to be played. */
-		void push_for_play() const;
+		/** Copy the sound data in the stream, attempting to fill the given length. */
+		bool mix_next_chunk(const uint32_t len, Uint8* stream, const uint8_t volume, const Repetition loop);
 
-		bool next_chunk_mix(const uint32_t len, Uint8* stream, const uint8_t volume);
-
+		/** Restart playing the sound from the beginning. */
 		void rewind() noexcept;
 
 		/** Required to allow creation via STL containers emplace methods and avoid extra deletes of the stored pointers. */
@@ -99,10 +102,6 @@ namespace rc {
 
 		void draw_image(uint16_t column_x, const uint16_t row_y, const TextureIndex what_to_draw) final;
 
-		bool still_playing() const noexcept;
-
-		void play_this_next(const SoundIndex segment) noexcept;
-
 		void play_sound(const SoundIndex sound);
 
 	private:
@@ -135,8 +134,7 @@ namespace rc {
 		    This is meant as a debug aid, to see what the player is pointing at. */
 		void draw_debug_crosshair();
 
-		// Make private if pass private function as callback
-		SoundIndex test_sound;
+		/** Sound being playes in the effects mix channel (or silence). */
 		SoundIndex sfx_sound;
 
 		/** Callback for SDL to pass the sound buffer to play.

@@ -107,6 +107,7 @@ namespace rc {
 			&sound_spec,
 			&wav_buffer,
 			&buffer_length);
+	std::cout << "init " << (int)buffer_length << "\n";
 		sdl_null_check(return_value);
 	}
 
@@ -143,25 +144,37 @@ namespace rc {
 	}
 
 
-	void Sound::push_for_play() const {
-		// TODO: pass the audio device as parameter.
-		//SDL_QueueAudio(1, wav_buffer, buffer_length); // TODO: using half the duration makes the music more responsive. I have to talk to the Maestro about this...
-	}
-
-
-	bool Sound::next_chunk_mix(const uint32_t len, Uint8* stream, const uint8_t volume)
+	bool Sound::mix_next_chunk(const uint32_t len, Uint8* stream, const uint8_t volume, const Repetition loop)
 	{
-		const uint32_t left_in_buffer = buffer_length - buffer_position;
-		const uint32_t real_length = (len > left_in_buffer ? left_in_buffer : len);
+		std::cout << "call " << (int)buffer_length << "\n";
 
-		SDL_MixAudio(stream, wav_buffer + buffer_position, len, volume);
-		buffer_position += len;
+		const bool looping_sound = (loop == Repetition::LOOP);
 
-		const bool end_of_sound = buffer_position >= buffer_length; // tells if the sound if fully played.
-		if (end_of_sound)
-			rewind();
+		uint32_t copied = 0;
+		bool end_of_sound = false;
 
-		return end_of_sound;
+		while (copied < len)  // Imagine a sound shorter than the buffer, or almost at the end. Must loop to fill.
+		{
+			const uint32_t left_in_buffer = buffer_length - buffer_position;
+			const uint32_t copy_length = std::min(left_in_buffer, len);
+
+			std::cout << (int)copy_length << "-" << (int)copied << "/" << (int)len << "    " <<(int)left_in_buffer <<"\n";
+
+			SDL_MixAudio(stream, wav_buffer + buffer_position, copy_length, volume);
+			buffer_position += copy_length;
+			copied += copy_length;
+			std::cout << "bis" << (int)copied << "\n";
+
+			end_of_sound = buffer_position >= buffer_length; // tells if the sound if fully played.
+			if (end_of_sound) {
+				rewind();
+				
+				if (!looping_sound)
+					break;
+			}
+		}
+
+		return end_of_sound && (! looping_sound);
 	}
 
 	void Sound::rewind() noexcept {
@@ -177,7 +190,6 @@ namespace rc {
 		halt_game_loop(true),  // Safe default.
 		pause_game_loop(false),
 		endgame(false),
-		test_sound(SoundIndex::MUSIC_CALM),
 		sfx_sound(SoundIndex::SILENCE)
 	{
 	}
@@ -195,19 +207,22 @@ namespace rc {
 	void UserInterface::audio_callback(void* userdata, Uint8* stream, int len) {
 		// TODO: check null pointers.
 		
-		// Clean up the buffer. May not overwrite all of it.
+		// Clean up the buffer. May not overwrite all of it with music.
 		memset(stream, 0, len);
 
 		UserInterface* ui = (UserInterface*)userdata;
 
+		// The music always continues, even when the game is paused.
+		// Intentionally ignoring the case of pauses in the middle of a gun shot.
 		const SoundIndex background_music = ui->world.music.select_music_score(ui->world.sprites, ui->world.player);
-		const bool loop_background = ui->sounds.at(background_music).next_chunk_mix(len, stream, 120);
+		const bool loop_background = ui->sounds.at(background_music).mix_next_chunk(len, stream, 120, Sound::Repetition::LOOP);
 		
 		if (ui->sfx_sound != SoundIndex::SILENCE) {
 			Sound& sound_effect = ui->sounds.at(ui->sfx_sound);
-			const bool sfx_finished = sound_effect.next_chunk_mix(len, stream, 10);
-			if (sfx_finished)
+			const bool sfx_finished = sound_effect.mix_next_chunk(len, stream, 10, Sound::Repetition::ONCE);  // TODO: hardcoded volumes!
+			if (sfx_finished) {
 				ui->sfx_sound = SoundIndex::SILENCE;
+			}
 		}
 	}
 
@@ -337,7 +352,6 @@ namespace rc {
 				rendering_timer.end();
 			}
 			SDL_RenderPresent(renderer);
-			test_sound = world.music.select_music_score(world.sprites, world.player); // Even when paused, do not stop the background music.
 		}
 
 	}
@@ -451,14 +465,6 @@ namespace rc {
 		sdl_return_check(rc);
 	}
 
-	bool UserInterface::still_playing() const noexcept {
-		return true; // SDL_GetQueuedAudioSize(1) > 0;  // TODO: do not hardcode audio device.
-	}
-
-	void UserInterface::play_this_next(const SoundIndex segment) noexcept {
-		std::cout << "Next sound " << (int) segment << "\n";
-		test_sound = segment;
-	}
 
 	void UserInterface::play_sound(const SoundIndex sound) {
 		sfx_sound = sound;
