@@ -1,7 +1,7 @@
 # RayGun
 This is "Part 2" of [my experiment with Ray Casting](https://github.com/stefanos-86/Ray-Cast-Exercise): turn it into a Game.
 
-![Sample screeshot 1](https://github.com/stefanos-86/RayGun/blob/main/screenshot_for_readme.png "Least happy cardboard targets ever.")
+![Sample screeshot 1](https://github.com/stefanos-86/RayGun/blob/main/screenshot_for_readme.png "The least happy cardboard targets ever.")
 
 ## Is this a real game?
 I will let you decide from the feature list. We have:
@@ -35,3 +35,7 @@ The only reliability target was: "it runs, most of the time".
 
 If, after all this, you still want to compile and play this game, refer to the README of the original project. It works in the same way.
 Additional commands: space bar to shoot, P to pause, ESC to quit.
+
+### Music Score By Nora Kant
+Special thanks to Alessio C. of [Nora Kant](https://soundcloud.com/nora-kant) for the 4 musical tracks that form the background music.
+The bad in-game on-the-fly mixing... is entirely my fault.
