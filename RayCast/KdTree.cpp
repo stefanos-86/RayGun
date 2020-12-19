@@ -167,7 +167,7 @@ namespace rc {
 		// TODO: can we do the whole search using only squared distances?
 		const float distance_to_cross_point = std::sqrt(distance_from_split * distance_from_split + height_over_ray * height_over_ray);  // I have this formula all over the place. TODO!
 
-		if (distance_to_cross_point < distance_to_cross_point) {
+		if (distance_to_cross_point < original_cutoff_distance) {
 			const float new_cutoff = original_cutoff_distance - distance_to_cross_point;  // The ray has to walk "the rest of the way".
 
 			const float new_ray_x = (partition_direction == Partition::ON_X) ?
