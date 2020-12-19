@@ -1,6 +1,8 @@
 # RayGun
 This is "Part 2" [my experiment with Ray Casting](https://github.com/stefanos-86/Ray-Cast-Exercise): turn it into a Game.
 
+![Sample screeshot 1](https://github.com/stefanos-86/RayGun/blob/main/screenshot_for_readme.png "The least happy cardboard targets ever.")
+
 ## Is this a real game?
 I will let you decide from the feature list. We have:
 * a maze you have to escape from;
