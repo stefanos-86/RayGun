@@ -6,7 +6,7 @@ This is "Part 2" [my experiment with Ray Casting](https://github.com/stefanos-86
 ## Is this a real game?
 I will let you decide from the feature list. We have:
 * a maze you have to escape from;
-* a gun;
+* a ~~photo-edited spray bottle~~ gun;
 * (immobile) targets to hit;
 * music and sound effect (singular, there's only one);
 * Binary Space Partition trees (can't have a "classic FPS" without them).
