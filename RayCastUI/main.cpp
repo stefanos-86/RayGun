@@ -6,8 +6,12 @@
 #include "Grid.h"
 #include "UserInterface.h"
 
-// Just for the records: in 256 bytes on C64. http://www.pouet.net/prod.php?which=61298, https://www.youtube.com/watch?v=JxS0_ckSwqk
+/*
+TODO: use the fast floating point model (Project options, C/C++, Code generation, Floating point model).
+A quick test show that it has a big impact.
 
+Just for the records: in 256 bytes on C64. http://www.pouet.net/prod.php?which=61298, https://www.youtube.com/watch?v=JxS0_ckSwqk
+*/
 
 /** I am not going to implement code to load the world from a file. 
     This simple hardcode will do. */
