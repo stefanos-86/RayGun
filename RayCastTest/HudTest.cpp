@@ -15,7 +15,7 @@ namespace rc {
 
         h.display(p, c);
 
-        ASSERT_EQ("AMMO:25  KILLS:123", c.last_drawn_string);
+        ASSERT_EQ("AMMO:25  TARGETS:123", c.last_drawn_string);
     }
 
     TEST(Hud, display__ammo_kills_single_digit) {
@@ -26,6 +26,6 @@ namespace rc {
 
         h.display(p, c);
 
-        ASSERT_EQ("AMMO:01  KILLS:000", c.last_drawn_string);
+        ASSERT_EQ("AMMO:01  TARGETS:000", c.last_drawn_string);
     }
 }

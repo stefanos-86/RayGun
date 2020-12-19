@@ -205,14 +205,14 @@ namespace rc {
 	void UserInterface::audio_callback(void* userdata, Uint8* stream, int len) {
 		// TODO: check null pointers.
 		
-		// Clean up the buffer. May not overwrite all of it with music.
+		// Clean up the buffer. TODO: may avoid by copying the bacground music.
 		memset(stream, 0, len);
 
 		UserInterface* ui = (UserInterface*)userdata;
 
 		// The music always continues, even when the game is paused.
 		// Intentionally ignoring the case of pauses in the middle of a gun shot.
-		const SoundIndex background_music = ui->world.music.select_music_score(ui->world.sprites, ui->world.player);
+		const SoundIndex background_music = ui->world.music.select_music_score(ui->world.sprites, ui->world.player);  //TODO: breaks the dependency inversion?
 		const bool loop_background = ui->sounds.at(background_music).mix_next_chunk(len, stream, 120, Sound::Repetition::LOOP);
 		
 		if (ui->sfx_sound != SoundIndex::SILENCE) {
@@ -231,7 +231,7 @@ namespace rc {
 			throw std::runtime_error(SDL_GetError());
 
 		main_window = SDL_CreateWindow(
-			"Ray Cast Exercise", 
+			"Shooting Raynge", 
 			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
 			UserInterface::SCREEN_WIDTH, UserInterface::SCREEN_HEIGHT,
 			SDL_WINDOW_SHOWN);
@@ -322,14 +322,14 @@ namespace rc {
 	{
 		ProjectionPlane projection(UserInterface::SCREEN_WIDTH, UserInterface::SCREEN_HEIGHT, 60);
 
-		Timer rendering_timer;
+		//Timer rendering_timer; //Intentionally commented out - occasionally used to profile.
 		
 		halt_game_loop = false;
 		while (! halt_game_loop) {
 			poll_input();
 
 			if (halt_game_loop) {
-				rendering_timer.dump("Rendering");
+				//rendering_timer.dump("Rendering");
 				return;
 			}
 
@@ -342,12 +342,12 @@ namespace rc {
 			}
 			else
 			{
-				rendering_timer.start();
+				//rendering_timer.start();
 				draw_background();
 				projection.project_objects(world, *this);
 				draw_debug_crosshair();
 				world.hud.display(world.player, *this);
-				rendering_timer.end();
+				//rendering_timer.end();
 			}
 			SDL_RenderPresent(renderer);
 		}

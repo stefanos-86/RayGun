@@ -101,7 +101,7 @@ int main(int argc, char* args[])
 		ui.set_sound(rc::SoundIndex::MUSIC_MID, "3_rec.wav");
 		ui.set_sound(rc::SoundIndex::MUSIC_FAST, "4_rec.wav");
 		
-		ui.openWindow();
+		ui.openWindow(); // TODO: separate "open window" and "create renderer", so that loading a texture does not depend on the window being open.
 
 		ui.set_texture(rc::TextureIndex::WALL, "stone_wall.bmp");
 		ui.set_texture(rc::TextureIndex::ENEMY, "bad_guy.bmp");
@@ -113,10 +113,13 @@ int main(int argc, char* args[])
 	}
 	catch (std::runtime_error& x) {
 		std::cerr << x.what() << std::endl;
+		return 1;
 	}
-	/*catch (...) {
+	catch (...) {
 		// This block should probably do something more intelligent than this.
 		std::cerr << "Unfathomable error." << std::endl;
-	}*/
+		return 2;
+	}
+
 	return 0;
 }

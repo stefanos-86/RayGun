@@ -72,7 +72,7 @@ namespace rc {
 		return from_low;
 	}
 
-	void KdTreeNode::split(uint8_t depth, const uint8_t small_enough_size, const std::vector<Sprite>& objects_collection)
+	void KdTreeNode::split(const uint8_t depth, const uint8_t small_enough_size, const std::vector<Sprite>& objects_collection)
 	{
 		if (depth == 0)
 			return; // Max depth reached, can not split further.
@@ -163,9 +163,11 @@ namespace rc {
 
 		const float distance_from_split = std::abs(ray_origin - split_value);
 		const float height_over_ray = distance_from_split * tangent;
+
+		// TODO: can we do the whole search using only squared distances?
 		const float distance_to_cross_point = std::sqrt(distance_from_split * distance_from_split + height_over_ray * height_over_ray);  // I have this formula all over the place. TODO!
 
-		if (distance_to_cross_point < original_cutoff_distance) {
+		if (distance_to_cross_point < distance_to_cross_point) {
 			const float new_cutoff = original_cutoff_distance - distance_to_cross_point;  // The ray has to walk "the rest of the way".
 
 			const float new_ray_x = (partition_direction == Partition::ON_X) ?

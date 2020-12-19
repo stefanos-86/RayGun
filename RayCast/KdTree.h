@@ -27,7 +27,7 @@ namespace rc {
 		std::vector<uint8_t> intersect(const Ray& ray, const float cutoff_distance) const;
 
 		/** For the recursive tree construction. Divides the node content in the sub trees.*/
-		void split(uint8_t depth, const uint8_t small_enough_size, const std::vector<Sprite>& object_collection);
+		void split(const uint8_t depth, const uint8_t small_enough_size, const std::vector<Sprite>& object_collection);
 
 		/** The line in the x-z plane that splits the low and high regions. */
 		float split_value;
@@ -35,7 +35,9 @@ namespace rc {
 		std::unique_ptr<KdTreeNode> low;
 		std::unique_ptr<KdTreeNode> high;
 
-		/** Contains the indices of the objects that belongs to the node. Filled only in the leaves. */
+		/** Contains the indices of the objects that belongs to the node. Filled only in the leaves.
+		TODO: could be in a union with all the rest. Leaf nodes have this, internal nodes have the split info and subnodes.
+		*/
 		std::vector<uint8_t> node_content;
 
 	private:

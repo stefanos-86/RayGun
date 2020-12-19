@@ -51,7 +51,7 @@ namespace rc {
 		virtual void draw_text(const std::string& text, uint16_t column, const uint16_t row, const uint8_t font_size) = 0;
 
 
-		virtual void draw_image(uint16_t column_x, const uint16_t row_y, const TextureIndex what_to_draw) {};
+		virtual void draw_image(uint16_t column_x, const uint16_t row_y, const TextureIndex what_to_draw) = 0;
 
 	};
 }

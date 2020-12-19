@@ -21,6 +21,10 @@ namespace rc {
             last_drawn_string = text;
         }
 
+        void draw_image(uint16_t column_x, const uint16_t row_y, const TextureIndex what_to_draw) 
+        {
+        }
+
         std::vector<uint16_t> column_calls;
         std::vector<uint16_t> top_row_calls;
         std::vector<uint16_t> height_calls;
