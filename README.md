@@ -37,5 +37,5 @@ If, after all this, you still want to compile and play this game, refer to the R
 Additional commands: space bar to shoot, P to pause, ESC to quit.
 
 ### Music Score By Nora Kant
-Special thanks to Alessio C. of [Nora Kant](https://soundcloud.com/nora-kant) for the 4 musical tracks that form the background music.
+Special thanks to Alessio Castorrini. of [Nora Kant](https://soundcloud.com/nora-kant) for the 4 musical tracks that form the background music.
 The bad in-game on-the-fly mixing... is entirely my fault.
